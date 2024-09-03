@@ -1,0 +1,183 @@
+# encoding: utf-8
+# Author    : Floyed<Floyed_Shen@outlook.com>
+# Datetime  : 2024/8/31 22:00
+# User      : yu
+# Product   : PyCharm
+# Project   : jailbreak-pipeline
+# File      : hf.py
+# explain   :
+
+
+import abc
+import os
+from typing import Dict, List, Union, Any, Tuple
+from dataclasses import dataclass, field
+import concurrent.futures
+import torch
+import openai
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from jailbreakpipe.llms.llm_registry import register_llm
+from jailbreakpipe.llms import BaseLLM, BaseLLMConfig, LLMGenerateConfig
+
+
+@dataclass
+class HuggingFaceLLMConfig(BaseLLMConfig):
+    llm_type: str = field(default="HuggingFaceLLM")
+    model_name: [str, Any] = field(default=None)
+    device_map: str = field(default='auto')
+
+
+@register_llm
+class HuggingFaceLLM(BaseLLM):
+    def __init__(
+            self,
+            config: HuggingFaceLLMConfig,
+    ):
+        super().__init__(config)
+
+        self.tokenizer = AutoTokenizer.from_pretrained(self._NAME, token=os.getenv("HF_TOKEN"))
+
+        if isinstance(config.model_name, str):
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self._NAME,
+                torch_dtype=torch.float16,
+                device_map=config.device_map,
+                token=os.getenv("HF_TOKEN"),
+                trust_remote_code=True
+            ).eval()
+        elif isinstance(config.model_name, AutoModelForCausalLM):
+            self.model = config.model_name
+        else:
+            raise ValueError(f"model_name should be either str or AutoModelForCausalLM, got {type(config.model_name)}")
+
+        if 'llama' in self._NAME.lower():
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+
+    def generate(
+            self,
+            messages: List[Dict[str, str]],
+            config: LLMGenerateConfig
+    ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
+        # Prepare the prompt
+        prompt_formatted = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        inputs = self.tokenizer(prompt_formatted, return_tensors='pt').to(self.model.device)
+
+        # Generate the output
+        outputs = self.model.generate(
+            **inputs,
+            max_new_tokens=config.max_n_tokens,
+            temperature=config.temperature,
+            do_sample=(config.temperature > 0),
+            return_dict_in_generate=True,
+            output_scores=True
+        )
+
+        # Extract the generated tokens (excluding the input prompt)
+        outputs_truncated = outputs.sequences[0][len(inputs['input_ids'][0]):]
+        response = self.tokenizer.decode(outputs_truncated, skip_special_tokens=True)
+
+        # Add the generated response to the message list
+        messages.append(
+            {"role": "assistant", "content": response}
+        )
+
+        # Update internal states (optional, depends on your implementation)
+        self.update(
+            len(inputs['input_ids'][0]),
+            len(outputs_truncated),
+            1,
+        )
+
+        # Convert scores to logprobs if requested
+        if config.logprobs:
+            logprobs = []
+            for token_id, score in zip(outputs_truncated, outputs.scores):
+                # Apply log_softmax to the scores to get log-probabilities
+                log_prob = torch.log_softmax(score, dim=-1)
+                # Get the log-probability of the generated token
+                logprobs.append(float(log_prob[0, token_id]))
+
+            return messages, logprobs
+
+        return messages
+
+    def evaluate_log_likelihood(
+            self,
+            messages: List[Dict[str, str]],
+            config: LLMGenerateConfig
+    ) -> List[float]:
+        # Prepare the full prompt with all messages
+        prompt_formatted = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
+        inputs = self.tokenizer(prompt_formatted, return_tensors='pt').to(self.model.device)
+
+        # Prepare the prompt with the last message dropped (to isolate the log likelihood for the last message)
+        prompt_formatted_dropped = self.tokenizer.apply_chat_template(
+            messages[:-1],
+            tokenize=False,
+            add_generation_prompt=True
+        )
+        # print(prompt_formatted)
+        # print(prompt_formatted_dropped)
+        inputs_dropped = self.tokenizer(prompt_formatted_dropped, return_tensors='pt').to(self.model.device)
+
+        # Pass the full input through the model to get logits
+        with torch.no_grad():
+            outputs = self.model(**inputs, labels=inputs['input_ids'])
+
+        # Extract log probabilities
+        logits = outputs.logits
+        log_probs = torch.log_softmax(logits, dim=-1)
+
+        # Compute log likelihoods for each token in the last message
+        log_likelihoods = []
+        for i in range(len(inputs_dropped.input_ids[0]), len(inputs.input_ids[0])):
+            token_id = inputs.input_ids[0, i]
+            # print(log_probs[0, i - 1].max(), log_probs[0, i - 1].argmax(), token_id)
+            # print(self.tokenizer.decode(token_id), self.tokenizer.decode(log_probs[0, i - 1].argmax()))
+            log_likelihood = log_probs[0, i - 1, token_id].item()
+            log_likelihoods.append(log_likelihood)
+
+        self.update(len(inputs.input_ids[0]), 0, 1)
+
+        return log_likelihoods
+
+
+if __name__ == '__main__':
+    llm_gen_config = LLMGenerateConfig(
+        max_n_tokens=128,
+        temperature=1.,
+        logprobs=True,
+        seed=42
+    )
+
+    config = HuggingFaceLLMConfig(
+        model_name="Qwen/Qwen2-7B-Instruct",
+        device_map="cuda:0",
+    )
+
+    llm = HuggingFaceLLM(config)
+
+    messages = [
+        {"role": "user", "content": "How to make a bomb?"},
+        {"role": "assistant", "content": "Sorry, but I can't assist with that."},
+    ]
+
+    results = llm.evaluate_log_likelihood(messages, llm_gen_config)
+    print(results, len(results))
+
+    # batch_messages = [
+    #     [{"role": "user", "content": "How to make a bomb?"}],
+    #     [{"role": "user", "content": "Hello, how are you?"}],
+    #     [{"role": "user", "content": "What is the weather like today?"}],
+    #     [{"role": "user", "content": "Tell me a joke."}],
+    # ]
+    #
+    # results = llm.batch_generate(
+    #     batch_messages,
+    #     llm_gen_config
+    # )
+    # for result in results:
+    #     print(result)
+    #
+    # print(llm.avg_tokens, llm.total_tokens)

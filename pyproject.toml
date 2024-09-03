@@ -1,0 +1,93 @@
+[project]
+name = "jailbreakpipe"
+version = "0.0.1"
+description = " An Open Pipeline for Jailbreaking Language Models"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">= 3.10"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Security",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: GPU",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+keywords = [
+    "jailbreak",
+    "llms",
+    "security",
+]
+
+dependencies = [
+    "torch>=2.0.0,<3.0.0",
+]
+
+#[project.optional-dependencies]
+#vllm = ["click>=8.1.7,<9.0.0", "accelerate>=0.27.2,<1.0.0", "vllm~=0.3.2"]
+
+[project.urls]
+Homepage = "https://jailbreak-pipeline.github.io"
+Repository = "https://github.com/FloyedShen/jailbreak-pipeline.git"
+Issues = "https://github.com/FloyedShen/jailbreak-pipeline/issues"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+#[tool.rye]
+#managed = true
+#dev-dependencies = ["ruff>=0.2.1,<1.0.0", "mypy>=1.8.0,<2.0.0", "pytest>=8.1.1"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["jailbreakpipe"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+exclude = ["./data/"]
+
+[tool.ruff.lint]
+ignore = [
+    "E731",
+    "E402",
+    "N812", # Uppercase import (for nn.functional as F)
+]
+select = [
+    "F",   # pyflakes
+    "UP",  # pyupgrade
+    "I",   # isort
+    "ERA", # eradicate
+    "NPY", # numpy
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = ["./data/"]
+
+[tool.pytest.ini_options]
+markers = [
+    "gpu: marks tests as needs a GPU (deselect with '-m \"not gpu\"')",
+    "nogpu: marks tests if it should be run without a GPU (deselect with '-m \"not nogpu\"')",
+    "api_key: marks tests as needing an API key (deselect with '-m \"not api_key\"'",
+]
+filterwarnings = [
+    "ignore:::.*litellm",
+    "ignore::pydantic.warnings.PydanticDeprecatedSince20",
+]
