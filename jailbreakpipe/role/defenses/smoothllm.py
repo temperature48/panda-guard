@@ -13,6 +13,7 @@ import random
 from copy import deepcopy
 from dataclasses import dataclass, field
 from jailbreakpipe.role.defenses import BaseDefender, BaseDefenderConfig
+from jailbreakpipe.role.defenses.defender_registry import register_defender
 from jailbreakpipe.utils import is_user_turn
 
 
@@ -25,7 +26,14 @@ class SmoothLLMDefenderConfig(BaseDefenderConfig):
     batch_inference: bool = field(default=True)  # New option for batch inference
 
 
+@register_defender
 class SmoothLLMDefender(BaseDefender):
+    """
+    Robey, A., Wong, E., Hassani, H., & Pappas, G. J. (2023).
+    Smoothllm: Defending large language models against jailbreaking attacks.
+    arXiv preprint arXiv:2310.03684.
+    https://github.com/arobey1/smooth-llm
+    """
 
     def __init__(self, config: SmoothLLMDefenderConfig):
         super().__init__(config)

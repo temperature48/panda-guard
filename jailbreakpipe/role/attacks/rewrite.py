@@ -10,6 +10,7 @@
 from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from jailbreakpipe.role.attacks import BaseAttacker, BaseAttackerConfig
+from jailbreakpipe.role.attacks.attacker_registry import register_attacker
 from jailbreakpipe.llms import create_llm, BaseLLMConfig, LLMGenerateConfig
 from jailbreakpipe.utils import is_user_turn
 
@@ -23,6 +24,7 @@ class RewriteAttackerConfig(BaseAttackerConfig):
     rewrite_template: str = field(default=None)
 
 
+@register_attacker
 class RewriteAttacker(BaseAttacker):
 
     def __init__(self, config: RewriteAttackerConfig):

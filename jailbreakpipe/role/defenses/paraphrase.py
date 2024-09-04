@@ -11,6 +11,7 @@ from typing import List, Dict
 import warnings
 
 from jailbreakpipe.role.defenses import BaseDefender, BaseDefenderConfig
+from jailbreakpipe.role.defenses.defender_registry import register_defender
 from jailbreakpipe.llms import BaseLLMConfig, LLMGenerateConfig, create_llm
 
 
@@ -18,11 +19,16 @@ from jailbreakpipe.llms import BaseLLMConfig, LLMGenerateConfig, create_llm
 class ParaphraseDefenderConfig(BaseDefenderConfig):
     defender_cls: str = field(default="ParaphraseDefender")
     paraphrase_llm_config: BaseLLMConfig = field(default_factory=BaseLLMConfig)
-    paraphrase_llm_gen_config: LLMGenerateConfig = field(default_factory=lambda: LLMGenerateConfig(max_n_tokens=1024))
+    paraphrase_llm_gen_config: LLMGenerateConfig = field(default_factory=lambda: LLMGenerateConfig(max_n_tokens=512))
 
 
+@register_defender
 class ParaphraseDefender(BaseDefender):
-
+    """
+    Neel Jain, Avi Schwarzschild, Yuxin Wen, Gowthami Somepalli, John Kirchenbauer, Ping-yeh Chiang, Micah Goldblum, Aniruddha Saha, Jonas Geiping, and Tom Goldstein. 2023.
+    Baseline defenses for adversarial attacks against aligned language models.
+    arXiv preprint arXiv:2309.00614.
+    """
     def __init__(self, config: ParaphraseDefenderConfig):
         super().__init__(config)
         self.paraphrase_llm = create_llm(config.paraphrase_llm_config)

@@ -9,4 +9,16 @@
 
 from jailbreakpipe.role.judges.base import BaseJudge, BaseJudgeConfig
 from jailbreakpipe.role.judges.rule_based import RuleBasedJudge, RuleBasedJudgeConfig
-from jailbreakpipe.role.judges.llm_based import LMMJudge, LMMJudgeConfig, PairLLMJudgeConfig
+from jailbreakpipe.role.judges.llm_based import PairLLMJudge, PairLLMJudgeConfig
+from jailbreakpipe.role.judges.judge_registry import create_judge
+
+__all__ = [
+    "BaseJudge",
+    "BaseJudgeConfig",
+    "RuleBasedJudge",
+    "RuleBasedJudgeConfig",
+    "PairLLMJudge",
+    "PairLLMJudgeConfig",
+    "PairLLMJudgeConfig",
+    "create_judge"
+]

@@ -16,18 +16,15 @@ from jailbreakpipe.llms import BaseLLMConfig, LLMGenerateConfig, create_llm
 from jailbreakpipe.utils import is_user_turn
 
 
+REJECT_RESPONSE = "I'm sorry, but I cannot assist with that request."
+
+
 @dataclass
 class BaseDefenderConfig(abc.ABC):
     defender_cls: str = field(default=None)
     defender_name: str = field(default=None)
     target_llm_config: BaseLLMConfig = field(default_factory=BaseLLMConfig)
     target_llm_gen_config: LLMGenerateConfig = field(default=None)
-
-
-@dataclass
-class NoneDefenderConfig(BaseDefenderConfig):
-    defender_cls: str = field(default="NoneDefender")
-    defender_name: str = field(default="None")
 
 
 class BaseDefender(abc.ABC):
@@ -48,19 +45,6 @@ class BaseDefender(abc.ABC):
     ) -> List[Dict[str, str]]:
         messages = self.target_llm.generate(messages, self.target_llm_gen_config)
         return messages
-
-
-class NoneDefender(BaseDefender):
-
-    def __init__(self, config: NoneDefenderConfig):
-        super().__init__(config)
-
-    def defense(
-            self,
-            messages: List[Dict[str, str]] = None,
-    ) -> List[Dict[str, str]]:
-        assert is_user_turn(messages)
-        return super().defense(messages)
 
 
 if __name__ == '__main__':

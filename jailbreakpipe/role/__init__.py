@@ -6,3 +6,7 @@
 # Project   : jailbreak-pipeline
 # File      : __init__.py.py
 # explain   :
+
+from jailbreakpipe.role.defenses import *
+from jailbreakpipe.role.attacks import *
+from jailbreakpipe.role.judges import *

@@ -10,6 +10,7 @@
 from typing import Dict, List
 from dataclasses import dataclass, field
 from jailbreakpipe.role.attacks import BaseAttacker, BaseAttackerConfig
+from jailbreakpipe.role.attacks.attacker_registry import register_attacker
 from jailbreakpipe.utils import is_user_turn
 
 
@@ -19,6 +20,7 @@ class TransferAttackerConfig(BaseAttackerConfig):
     attacker_name: str = field(default=None)
 
 
+@register_attacker
 class TransferAttacker(BaseAttacker):
 
     def __init__(
@@ -35,10 +37,10 @@ class TransferAttacker(BaseAttacker):
 
         is_user_turn(messages)
 
-        assert "prompt" in kwargs
-        prompt = kwargs["prompt"]
+        assert "request_reformulated" in kwargs
+        request_reformulated = kwargs["request_reformulated"]
 
-        messages[-1]["content"] = prompt
+        messages[-1]["content"] = request_reformulated
 
         return messages
 

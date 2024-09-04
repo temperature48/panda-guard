@@ -10,6 +10,7 @@
 from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from jailbreakpipe.role.defenses import BaseDefender, BaseDefenderConfig
+from jailbreakpipe.role.defenses.defender_registry import register_defender
 from jailbreakpipe.llms import BaseLLM
 from jailbreakpipe.utils import is_user_turn
 
@@ -27,8 +28,13 @@ class IclDefenderConfig(BaseDefenderConfig):
     ])
 
 
+@register_defender
 class IclDefender(BaseDefender):
-
+    """
+    Wei, Zeming, Yifei Wang, and Yisen Wang.
+    Jailbreak and guard aligned language models with only few in-context demonstrations.
+    arXiv preprint arXiv:2310.06387 (2023).
+    """
     def __init__(self, config: IclDefenderConfig):
         super().__init__(config)
         self.icl_prompt = config.in_context_prompt

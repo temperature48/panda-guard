@@ -16,6 +16,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from jailbreakpipe.role.defenses import BaseDefender, BaseDefenderConfig
+from jailbreakpipe.role.defenses.defender_registry import register_defender
 from jailbreakpipe.utils import is_user_turn
 from jailbreakpipe.llms import BaseLLMConfig, LLMGenerateConfig, create_llm
 
@@ -23,6 +24,7 @@ from jailbreakpipe.llms import BaseLLMConfig, LLMGenerateConfig, create_llm
 @dataclass
 class SemanticSmoothLLMDefenderConfig(BaseDefenderConfig):
     defender_cls: str = field(default="SemanticSmoothLLMDefender")
+    # defender_name: str = field(default="SemanticSmoothLLMDefender")
     perturbation_type: str = field(default='random')
     num_samples: int = field(default=3)
     batch_size: int = field(default=1)
@@ -30,8 +32,14 @@ class SemanticSmoothLLMDefenderConfig(BaseDefenderConfig):
     perturbation_llm_gen_config: LLMGenerateConfig = field(default_factory=lambda: LLMGenerateConfig(max_n_tokens=300))
 
 
+@register_defender
 class SemanticSmoothLLMDefender(BaseDefender):
-
+    """
+    Robey, A., Wong, E., Hassani, H., & Pappas, G. J. (2023).
+    Smoothllm: Defending large language models against jailbreaking attacks.
+    arXiv preprint arXiv:2310.03684.
+    https://github.com/arobey1/smooth-llm
+    """
     def __init__(self, config: SemanticSmoothLLMDefenderConfig):
         super().__init__(config)
         self.perturbation_llm = create_llm(config.perturbation_llm_config)  # 初始化perturbation_llm

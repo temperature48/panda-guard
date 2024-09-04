@@ -12,7 +12,8 @@ from typing import List, Dict
 import math
 import warnings
 
-from jailbreakpipe.role.defenses import BaseDefender, BaseDefenderConfig
+from jailbreakpipe.role.defenses import BaseDefender, BaseDefenderConfig, REJECT_RESPONSE
+from jailbreakpipe.role.defenses.defender_registry import register_defender
 from jailbreakpipe.llms import BaseLLMConfig, LLMGenerateConfig, create_llm
 
 
@@ -25,7 +26,13 @@ class BackTranslationDefenderConfig(BaseDefenderConfig):
     return_new_response_anyway: bool = field(default=False)
 
 
+@register_defender
 class BackTranslationDefender(BaseDefender):
+    """
+    Defending LLMs against Jailbreaking Attacks via Backtranslation
+    Wang, Yihan and Shi, Zhouxing and Bai, Andrew and Hsieh, Cho-Jui
+    https://github.com/YihanWang617/LLM-Jailbreaking-Defense-Backtranslation
+    """
 
     def __init__(self, config: BackTranslationDefenderConfig):
         super().__init__(config)
@@ -51,7 +58,7 @@ class BackTranslationDefender(BaseDefender):
         )[-1]['content']
 
         if self._check_rejection(response, exclude_lack_of_info=False):
-            messages.append({"role": "assistant", "content": "I'm sorry, but I cannot assist with that request."})
+            messages.append({"role": "assistant", "content": REJECT_RESPONSE})
             return messages
 
         possible_prompt = self._infer_question(response)
@@ -74,7 +81,7 @@ class BackTranslationDefender(BaseDefender):
             messages.append({"role": "assistant", "content": response})
             return messages
 
-        messages.append({"role": "assistant", "content": "I'm sorry, but I cannot assist with that request."})
+        messages.append({"role": "assistant", "content": REJECT_RESPONSE})
         return messages
 
     def _infer_question(self, response: str) -> str:

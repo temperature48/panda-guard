@@ -6,8 +6,9 @@
 # Project   : jailbreak-pipeline
 # File      : register_llm.py
 # explain   :
-
-from typing import TypeVar
+import importlib
+from typing import TypeVar, Union, Dict, Any
+import jailbreakpipe.llms as llms
 from jailbreakpipe.llms.base import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 
 
@@ -22,5 +23,9 @@ def register_llm(llm: type[T]) -> type[T]:
     return llm
 
 
-def create_llm(config: BaseLLMConfig) -> BaseLLM:
+def create_llm(config: Union[BaseLLMConfig, Dict[str, Any]]) -> BaseLLM:
+    # if isinstance(config, BaseLLMConfig):
     return LLMS[config.llm_type](config)
+    # else:
+    #     config = getattr(llms, config["llm_type"] + 'Config')(**config)
+    #     return LLMS[config.llm_type](config)

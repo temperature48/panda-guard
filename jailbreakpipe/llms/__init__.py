@@ -11,3 +11,16 @@ from jailbreakpipe.llms.base import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 from jailbreakpipe.llms.oai import OpenAiChatLLM, OpenAiLLM, OpenAiLLMConfig
 from jailbreakpipe.llms.hf import HuggingFaceLLM, HuggingFaceLLMConfig
 from jailbreakpipe.llms.llm_registry import LLMS, create_llm
+
+__all__ = [
+    "BaseLLM",
+    "BaseLLMConfig",
+    "LLMGenerateConfig",
+    "OpenAiChatLLM",
+    "OpenAiLLM",
+    "OpenAiLLMConfig",
+    "HuggingFaceLLM",
+    "HuggingFaceLLMConfig",
+    "LLMS",
+    "create_llm",
+]

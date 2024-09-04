@@ -86,6 +86,7 @@ class OpenAiChatLLM(BaseLLM):
     ) -> List[float]:
         raise NotImplementedError("OpenAI Chat does not support log likelihood evaluation.")
 
+
 @register_llm
 class OpenAiLLM(BaseLLM):
     def __init__(
