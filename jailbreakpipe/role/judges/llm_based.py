@@ -60,8 +60,11 @@ class LMMJudge(BaseJudge):
         self.judge_llm = create_llm(config.judge_llm_config)
         self.judge_llm_gen_config = config.judge_llm_gen_config
 
+        self._NAME += f"_{config.judge_llm_config.model_name.replace('/', '_')}"
+
         self.system_template = config.system_template
         self.user_template = config.user_template
+
     def judge(
             self,
             messages: List[Dict[str, str]] = None,
@@ -82,7 +85,7 @@ class LMMJudge(BaseJudge):
         try:
             broken = int(re.search(r'\[(\d+)\]', judgement).group(1))  # == 10
         except AttributeError:
-            print(f"[Error] Messages: {messages}\n Judgement: {judgement}\n")
+            print(f"[Error while Judging] messages: {messages}\n Judgement: {judgement}\n")
             if 'I cannot' in judgement:
                 broken = 10  # Refusal due to ethical or legal concerns
             else:

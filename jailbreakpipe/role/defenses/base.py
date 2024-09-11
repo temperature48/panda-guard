@@ -72,7 +72,6 @@ if __name__ == '__main__':
         base_url="http://172.18.129.80:8000/v1"
     )
 
-
     messages = [
         {
             "role": "system",

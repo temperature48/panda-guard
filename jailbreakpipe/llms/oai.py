@@ -139,6 +139,7 @@ class OpenAiLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> List[float]:
+        # print(messages)
         prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         response = self.client.completions.create(
             model=self._NAME,

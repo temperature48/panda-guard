@@ -8,9 +8,12 @@
 # explain   :
 
 from jailbreakpipe.llms.base import BaseLLM, BaseLLMConfig, LLMGenerateConfig
-from jailbreakpipe.llms.oai import OpenAiChatLLM, OpenAiLLM, OpenAiLLMConfig
+from jailbreakpipe.llms.oai import OpenAiChatLLM, OpenAiLLM, OpenAiLLMConfig, OpenAiChatLLMConfig
 from jailbreakpipe.llms.hf import HuggingFaceLLM, HuggingFaceLLMConfig
 from jailbreakpipe.llms.llm_registry import LLMS, create_llm
+from jailbreakpipe.llms.repe_utils import repe_pipeline_registry
+
+repe_pipeline_registry()
 
 __all__ = [
     "BaseLLM",
@@ -19,6 +22,7 @@ __all__ = [
     "OpenAiChatLLM",
     "OpenAiLLM",
     "OpenAiLLMConfig",
+    "OpenAiChatLLMConfig",
     "HuggingFaceLLM",
     "HuggingFaceLLMConfig",
     "LLMS",

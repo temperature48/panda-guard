@@ -18,7 +18,7 @@ from jailbreakpipe.utils import is_user_turn
 @dataclass
 class NoneDefenderConfig(BaseDefenderConfig):
     defender_cls: str = field(default="NoneDefender")
-    defender_name: str = field(default="None")
+    defender_name: str = field(default=None)
 
 
 @dataclass

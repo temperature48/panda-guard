@@ -20,6 +20,7 @@ class ParaphraseDefenderConfig(BaseDefenderConfig):
     defender_cls: str = field(default="ParaphraseDefender")
     paraphrase_llm_config: BaseLLMConfig = field(default_factory=BaseLLMConfig)
     paraphrase_llm_gen_config: LLMGenerateConfig = field(default_factory=lambda: LLMGenerateConfig(max_n_tokens=512))
+    paraphrase_prompt: str = field(default='paraphrase the following paragraph: \n"{prompt}"\n\n')
 
 
 @register_defender
@@ -33,6 +34,7 @@ class ParaphraseDefender(BaseDefender):
         super().__init__(config)
         self.paraphrase_llm = create_llm(config.paraphrase_llm_config)
         self.paraphrase_llm_gen_config = config.paraphrase_llm_gen_config
+        self.paraphrase_prompt = config.paraphrase_prompt
 
     def defense(
             self,
@@ -48,27 +50,12 @@ class ParaphraseDefender(BaseDefender):
             warnings.warn("""A \\n character is found in the output of paraphrase model and the content after \\n is removed.""")
             paraphrase_prompt = "\n".join(paraphrase_prompt.split('\n')[1:])
 
-        # # Generate the response using the target LLM
-        # paraphrase_response = self.target_llm.generate(
-        #     [{"role": "user", "content": paraphrase_prompt}],
-        #     self.target_llm_gen_config
-        # )[-1]['content']
-        #
-        # # Append the generated response to the messages list
-        # messages.append({
-        #     "role": "assistant",
-        #     "content": paraphrase_response
-        # })
         messages[-1]['content'] = paraphrase_prompt
 
         return super().defense(messages)
 
-    def _paraphrase(self, prompt: str, verbose: bool = False) -> str:
-        paraphrase_prompt = f'paraphrase the following paragraph: \n"{prompt}"\n\n'
-
-        if verbose:
-            print('Asking the model to paraphrase the prompt:')
-            print(paraphrase_prompt)
+    def _paraphrase(self, prompt: str) -> str:
+        paraphrase_prompt = self.paraphrase_prompt.format(prompt=prompt)
 
         output = self.paraphrase_llm.generate(
             [{"role": "user", "content": paraphrase_prompt}],
@@ -76,8 +63,5 @@ class ParaphraseDefender(BaseDefender):
         )[-1]['content']
 
         paraphrase_prompt = output.strip().strip(']').strip('[')
-
-        if verbose:
-            print('Paraphrased prompt:', paraphrase_prompt)
 
         return paraphrase_prompt

@@ -10,6 +10,7 @@
 import abc
 from typing import Dict, List, Union, Any
 from dataclasses import dataclass, field
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from jailbreakpipe.role.judges.rule_based import BaseJudge
 from jailbreakpipe.llms import BaseLLM, BaseLLMConfig
@@ -62,7 +63,8 @@ class InferPipeline:
         defense = self.defender.defense(attack)
         self.log(defense, "[DEFENSE]")
 
-        judge_results = {judge._NAME: judge.judge(defense, request) for judge in self.judges}
+        # 使用多线程并行执行 judge
+        judge_results = self.parallel_judging(defense, request)
 
         usage = self.calc_tokens()
 
@@ -71,6 +73,22 @@ class InferPipeline:
             "judges": judge_results,
             "usage": usage
         }
+
+    def parallel_judging(self, defense: List[Dict[str, str]], request: str) -> Dict[str, Any]:
+        judge_results = {}
+
+        # 使用 ThreadPoolExecutor 进行多线程并行
+        with ThreadPoolExecutor() as executor:
+            future_to_judge = {executor.submit(judge.judge, defense, request): judge for judge in self.judges}
+            for future in as_completed(future_to_judge):
+                judge = future_to_judge[future]
+                try:
+                    result = future.result()
+                    judge_results[judge._NAME] = result
+                except Exception as exc:
+                    print(f'Judge {judge._NAME} generated an exception: {exc}')
+
+        return judge_results
 
     def calc_tokens(self) -> Dict[str, Dict[str, int]]:
         attacker_prompt_tokens = sum(llm.prompt_tokens for llm in self.attack_llms)
@@ -97,5 +115,3 @@ class InferPipeline:
             print(stage)
             print(messages)
             print()
-
-
