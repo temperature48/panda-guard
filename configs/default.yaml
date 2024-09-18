@@ -6,7 +6,7 @@ defender:
   defender_cls: "NoneDefender"
   target_llm_config:
     llm_type: "OpenAiLLM"
-    model_name: "meta-llama/Meta-Llama-3.1-70B-Instruct"
+    model_name: "meta-llama/Meta-Llama-3-70B-Instruct"
     base_url: "http://172.18.129.80:8000/v1"
   target_llm_gen_config:
     max_n_tokens: 150
@@ -14,30 +14,32 @@ defender:
     logprobs: False
     seed: null
 
-judges:
-  - judge_cls: "PairLLMJudge"
-    judge_llm_config:
-      llm_type: "OpenAiLLM"
-      model_name: "meta-llama/Meta-Llama-3.1-70B-Instruct"
-      base_url: "http://172.18.129.80:8000/v1"
-    judge_llm_gen_config:
-      max_n_tokens: 25
-      temperature: 0.0
-      logprobs: False
-      seed: 42
-  - judge_cls: "PairLLMJudge"
-    judge_llm_config:
-      llm_type: "OpenAiChatLLM"
-      model_name: "Qwen/Qwen2-72B-Instruct"
-      base_url: "http://210.75.240.144:3006/v1"
-    judge_llm_gen_config:
-      max_n_tokens: 25
-      temperature: 0.0
-      logprobs: False
-      seed: 42
-  - judge_cls: "RuleBasedJudge"
+judges: null
+#  - judge_cls: "PairLLMJudge"
+#    judge_llm_config:
+#      llm_type: "OpenAiChatLLM"
+#      model_name: "meta-llama/Meta-Llama-3-70B-Instruct"
+#      base_url: "http://172.18.131.12:8000/v1"
+#      api_key: "token-casia-braincog-233"
+#    judge_llm_gen_config:
+#      max_n_tokens: 25
+#      temperature: 0.0
+#      logprobs: False
+#      seed: 42
+#  - judge_cls: "PairLLMJudge"
+#    judge_llm_config:
+#      llm_type: "OpenAiChatLLM"
+#      model_name: "Qwen/Qwen2-72B-Instruct"
+#      base_url: "http://172.18.131.6:8000/v1"
+#      api_key: "token-casia-braincog-233"
+#    judge_llm_gen_config:
+#      max_n_tokens: 25
+#      temperature: 0.0
+#      logprobs: False
+#      seed: 42
+#  - judge_cls: "RuleBasedJudge"
 
 misc:
   output_file: null
   threads: 1
-  input_file: "../data/jbb_expanded.csv"
+  input_file: "../../data/jbb_expanded.csv"

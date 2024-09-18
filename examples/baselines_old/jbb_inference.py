@@ -26,15 +26,18 @@ def load_config(yaml_file):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run evaluation pipeline")
-    parser.add_argument('--config', type=str, default="../configs/default.yaml", help='Path to YAML configuration file')
-    parser.add_argument('--llms', type=str, default="../configs/llms.yaml", help='Path to list of available LLMs')
+    parser.add_argument('--config', type=str, default="../../configs/default.yaml", help='Path to YAML configuration file')
+    parser.add_argument('--llms', type=str, default="../../configs/llms.yaml", help='Path to list of available LLMs')
     parser.add_argument('--target-llm', type=str, default=None)
     parser.add_argument('--attack', type=str, default=None)
     parser.add_argument('--defense', type=str, default=None)
     parser.add_argument('--judges', type=str, default=None)
-    parser.add_argument('--output-dir', type=str, default="../results/jbb", help='Output directory')
+    parser.add_argument('--output-dir', type=str, default="../../results/jbb", help='Output directory')
     parser.add_argument('--repeats', type=int, default=10, help='Number of times to repeat the experiment')
     return parser.parse_args()
+
+
+args = parse_args()
 
 
 # @lru_cache(maxsize=None)
@@ -102,13 +105,14 @@ def run_inference(pipe, row, attacker_config):
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": row["Goal"]}
     ]
+    if 'gemma' in args.target_llm:
+        messages = [{"role": "user", "content": row["Goal"]}]
     result = pipe(messages, row["Goal"], request_reformulated=row.get(attacker_config.attacker_name, None))
     pipe.reset()
     return result
 
 
 def main():
-    args = parse_args()
 
     # Load and possibly override the YAML configuration
     config_dict = load_config(args.config)

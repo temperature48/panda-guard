@@ -98,7 +98,8 @@ class OpenAiLLM(BaseLLM):
             config.model_name,
             # self.model_name.replace('3.1', '3'),
             token=os.getenv("HF_TOKEN"),
-            trust_remote_code=True
+            trust_remote_code=True,
+            local_files_only=True,
         )
         self.client = openai.OpenAI(
             base_url=config.base_url,
@@ -110,7 +111,20 @@ class OpenAiLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
+
+        if 'gemma' in self._NAME.lower() and messages[0]['role'] == 'system':
+            system_prompt = messages[0]['content']
+            messages = messages[1:]
+            messages[0]['content'] = system_prompt + '\n\n' + messages[0]['content']
+
         prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+        tokens = self.tokenizer(prompt, return_tensors='pt')
+
+        if tokens['input_ids'].shape[1] > 3840:
+            truncated_tokens = tokens['input_ids'][:, :3840]
+            prompt = self.tokenizer.decode(truncated_tokens[0], skip_special_tokens=True)
+
         response = self.client.completions.create(
             model=self._NAME,
             prompt=prompt,

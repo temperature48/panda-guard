@@ -37,13 +37,13 @@ def load_config(yaml_file):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run evaluation pipeline")
-    parser.add_argument('--config', type=str, default="../configs/alpaca_eval.yaml", help='Path to YAML configuration file')
-    parser.add_argument('--llms', type=str, default="../configs/llms.yaml", help='Path to list of available LLMs')
+    parser.add_argument('--config', type=str, default="../../configs/alpaca_eval.yaml", help='Path to YAML configuration file')
+    parser.add_argument('--llms', type=str, default="../../configs/llms.yaml", help='Path to list of available LLMs')
     parser.add_argument('--attack', type=str, default=None)
     parser.add_argument('--defense', type=str, default=None)
     parser.add_argument('--judges', type=str, default=None)
     parser.add_argument('--target-llm', type=str, default=None)
-    parser.add_argument('--output-dir', type=str, default="../results/alpaca_eval", help='Output directory')
+    parser.add_argument('--output-dir', type=str, default="../../results/alpaca_eval", help='Output directory')
     parser.add_argument('--repeats', type=int, default=1, help='Number of times to repeat the experiment')
     return parser.parse_args()
 
@@ -101,7 +101,7 @@ def run_inference(pipe, row, attacker_config):
     ]
     result = pipe(messages, None, request_reformulated=row["instruction"])
     pipe.reset()
-    print(result)
+    # print(result)
     return result
 
 
@@ -116,8 +116,11 @@ def main():
         print(f"File {config_dict['misc']['output_file']} already exists. Skipping...")
         return
 
+    print(f"File {config_dict['misc']['output_file']} does not exist. Running...")
+
     # Load CSV input file
-    eval_set = datasets.load_dataset("tatsu-lab/alpaca_eval", "alpaca_eval")["eval"]
+    # eval_set = datasets.load_dataset("tatsu-lab/alpaca_eval", "alpaca_eval")["eval"]
+    eval_set = datasets.load_dataset("/root/.cache/huggingface/datasets/tatsu-lab___alpaca_eval")['test']
 
     # Convert YAML dictionary into attacker, defender, and judge configurations
     attacker_config, defender_config, _ = parse_configs_from_dict(config_dict)

@@ -56,9 +56,10 @@ def parse_configs_from_dict(config_dict: Dict[str, Any]):
     # Load the judge configurations
     judge_configs = []
     judge_config_dicts = config_dict.get("judges", [])
-    for judge_config_dict in judge_config_dicts:
-        JudgeClass = load_class(judge_config_dict.get("judge_cls"))
-        judge_config = parse_nested_config(JudgeClass, judge_config_dict)
-        judge_configs.append(judge_config)
+    if judge_config_dicts is not None:
+        for judge_config_dict in judge_config_dicts:
+            JudgeClass = load_class(judge_config_dict.get("judge_cls"))
+            judge_config = parse_nested_config(JudgeClass, judge_config_dict)
+            judge_configs.append(judge_config)
 
     return attacker_config, defender_config, judge_configs

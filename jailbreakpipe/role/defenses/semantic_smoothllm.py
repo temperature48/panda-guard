@@ -84,8 +84,8 @@ class SemanticSmoothLLMDefender(BaseDefender):
             for output in all_outputs
         ]
 
-        if len(are_copies_jailbroken) == 0:
-            raise ValueError("LLM did not generate any outputs.")
+        # if len(are_copies_jailbroken) == 0:
+        #     raise ValueError("LLM did not generate any outputs.")
 
         outputs_and_jbs = list(zip(all_outputs, are_copies_jailbroken))
 
@@ -118,9 +118,9 @@ class SemanticSmoothLLMDefender(BaseDefender):
 
     def perturb_with_llm(self, template: str, harmful_prompt: str) -> str:
         prompt = template.replace('{QUERY}', harmful_prompt)
-        output = self.perturbation_llm.generate(
+        output = self.target_llm.generate(
             [{"role": "user", "content": prompt}],
-            self.perturbation_llm_gen_config
+            self.target_llm_gen_config
         )[-1]['content']
         return output
 

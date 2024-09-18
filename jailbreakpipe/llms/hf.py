@@ -36,7 +36,8 @@ class HuggingFaceLLM(BaseLLM):
     ):
         super().__init__(config)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(self._NAME, token=os.getenv("HF_TOKEN"))
+        self.tokenizer = AutoTokenizer.from_pretrained(self._NAME, token=os.getenv("HF_TOKEN"), local_files_only=True)
+        self.tokenizer.padding_side = 'left'
 
         if isinstance(config.model_name, str):
             self.model = AutoModelForCausalLM.from_pretrained(
@@ -44,7 +45,8 @@ class HuggingFaceLLM(BaseLLM):
                 torch_dtype=torch.float16,
                 device_map=config.device_map,
                 token=os.getenv("HF_TOKEN"),
-                trust_remote_code=True
+                trust_remote_code=True,
+                local_files_only=True
             ).eval()
         elif isinstance(config.model_name, AutoModelForCausalLM):
             self.model = config.model_name
@@ -54,6 +56,9 @@ class HuggingFaceLLM(BaseLLM):
         if 'llama' in self._NAME.lower():
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+
     def generate(
             self,
             messages: List[Dict[str, str]],
@@ -61,7 +66,13 @@ class HuggingFaceLLM(BaseLLM):
     ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
         # Prepare the prompt
         prompt_formatted = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = self.tokenizer(prompt_formatted, return_tensors='pt').to(self.model.device)
+
+        inputs = self.tokenizer(
+            prompt_formatted, return_tensors='pt',
+            padding=True,
+            truncation=True,
+            max_length=config.max_n_tokens,
+        ).to(self.model.device)
 
         # Generate the output
         outputs = self.model.generate(
@@ -70,7 +81,8 @@ class HuggingFaceLLM(BaseLLM):
             temperature=config.temperature,
             do_sample=(config.temperature > 0),
             return_dict_in_generate=True,
-            output_scores=True
+            output_scores=True,
+            pad_token_id=self.tokenizer.eos_token_id
         )
 
         # Extract the generated tokens (excluding the input prompt)
@@ -101,6 +113,44 @@ class HuggingFaceLLM(BaseLLM):
             return messages, logprobs
 
         return messages
+
+    def batch_generate(
+            self,
+            batch_messages: List[List[Dict[str, str]]],
+            config: LLMGenerateConfig,
+    ) -> List[List[Dict[str, str]]]:
+        """
+        Generate responses for a batch of messages in a single call using transformers' generate method.
+        """
+        if len(batch_messages) == 0:
+            return []
+
+        # Format prompts for the entire batch
+        batch_prompts = [self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+                         for messages in batch_messages]
+        # Tokenize the batch of prompts
+        inputs = self.tokenizer(batch_prompts, return_tensors='pt', padding=True, truncation=True).to(self.model.device)
+
+        # Use model's generate method to handle batch generation
+        outputs = self.model.generate(
+            **inputs,
+            max_new_tokens=config.max_n_tokens,
+            # max_length=config.max_n_tokens,
+            temperature=config.temperature,
+            do_sample=(config.temperature > 0),
+            return_dict_in_generate=True,
+            output_scores=config.logprobs,
+            pad_token_id=self.tokenizer.eos_token_id
+        )
+
+        # Decode the outputs and create the response format
+        generated_responses = []
+        for i, output in enumerate(outputs.sequences):
+            response_text = self.tokenizer.decode(output[len(inputs['input_ids'][i]):], skip_special_tokens=True)
+            batch_messages[i].append({"role": "assistant", "content": response_text})
+            generated_responses.append(batch_messages[i])
+
+        return generated_responses
 
     def evaluate_log_likelihood(
             self,

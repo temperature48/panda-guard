@@ -71,7 +71,7 @@ class RewriteDefender(BaseDefender):
 
         assert is_user_turn(messages)
 
-        if self.system_template:
+        if self.system_template and 'gemma' not in self.target_llm._NAME.lower():
             if messages[0]["role"] != "system":
                 messages.insert(0, {
                     "role": "system",

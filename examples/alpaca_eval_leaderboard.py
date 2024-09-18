@@ -6,13 +6,15 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 def execute_command(model_output, reference_output, output_directory):
-    if os.path.exists(os.path.join(output_directory, "weighted_alpaca_eval_qwen_2/annotations.json")):
+    if os.path.exists(os.path.join(output_directory, "alpaca_eval_llama3_70b_fn/annotations.json")):
         print(f"Skipping {model_output} as {output_directory} already exists.")
         return None
 
     if not validate_json(model_output):
         print(f"Skipping invalid JSON file: {model_output}")
         return None
+
+    print(f"Processing {model_output} and {reference_output} to {output_directory}")
 
     command = [
         "HF_ENDPOINT=https://hf-mirror.com",
@@ -24,7 +26,8 @@ def execute_command(model_output, reference_output, output_directory):
         "--output_path",
         output_directory,
         "--annotators_config",
-        "weighted_alpaca_eval_qwen_2"
+        args.evaluator,
+        # "alpaca_eval_llama3_70b_fn_copy"
     ]
     print(f"Executing: {' '.join(command)}")
     try:
@@ -52,14 +55,18 @@ def process_directory(input_root, output_root, threads):
         model_outputs = []
 
         for file in files:
-            if file == 'NoneDefender.json':
+            if file == 'NoneDefender.json' or '0.000' in file:
                 reference_output = os.path.join(root, file)
             elif file.endswith(".json") and file != 'NoneDefender.json':
                 model_outputs.append(os.path.join(root, file))
 
+        if model_outputs and not reference_output:
+            reference_output = os.path.join(root.replace('repe', '1'), 'NoneDefender.json')
+
         if reference_output:
             with ThreadPoolExecutor(max_workers=threads) as executor:
-                for model_output in model_outputs:
+                for model_output in model_outputs[3::5]:
+                    print(model_output)
                     relative_path = os.path.relpath(root, input_root)
                     output_directory = os.path.join(output_root, relative_path, os.path.splitext(os.path.basename(model_output))[0])
 
@@ -72,18 +79,17 @@ def process_directory(input_root, output_root, threads):
     print("All commands completed.")
 
 
-# 主函数，解析输入参数
-def main():
+# python alpaca_eval_leaderboard.py ../results/alpaca_eval/repe_.9 ../results/alpaca_eval_leaderboard/repe_.9  --threads 4
+# python alpaca_eval_leaderboard.py ../results/alpaca_eval/1 ../results/alpaca_eval_leaderboard/1  --threads 4
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Execute alpaca_eval on JSON files in a directory.")
     parser.add_argument("input_root", type=str, help="The root directory to search for JSON files.")
     parser.add_argument("output_root", type=str, help="The root directory to save the evaluation results.")
-    parser.add_argument("--threads", type=int, default=4, help="Number of threads to use.")
+    parser.add_argument("--threads", type=int, default=1, help="Number of threads to use.")
+    parser.add_argument("--evaluator", type=str, default='alpaca_eval_llama3_70b_fn', help="Number of threads to use.")
 
     args = parser.parse_args()
 
     # 执行目录处理
     process_directory(args.input_root, args.output_root, args.threads)
 
-
-if __name__ == "__main__":
-    main()

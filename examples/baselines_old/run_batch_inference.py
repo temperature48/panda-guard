@@ -17,12 +17,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # def parse_args():
 parser = argparse.ArgumentParser(description="Run batch inference for multiple configurations")
 parser.add_argument('--inference-script', type=str, default="jbb_inference", help='Path to the jbb_inference.py script')
-parser.add_argument('--attack-dir', type=str, default="../configs/attacks/transfer", help='Path to attack configurations directory')
-parser.add_argument('--defense-dir', type=str, default="../configs/defenses/", help='Path to defense configurations directory')
-parser.add_argument('--llms', type=str, default="../configs/llms.yaml", help='Path to llms.yaml configuration file')
+parser.add_argument('--attack-dir', type=str, default="../../configs/attacks/transfer", help='Path to attack configurations directory')
+parser.add_argument('--defense-dir', type=str, default="../../configs/defenses/", help='Path to defense configurations directory')
+parser.add_argument('--llms', type=str, default="../../configs/llms.yaml", help='Path to llms.yaml configuration file')
 parser.add_argument('--max-workers', type=int, default=16, help='Number of parallel threads to use')
-parser.add_argument('--output-dir', type=str, default="../results/", help='Output directory for batch results')
-parser.add_argument('--repeats', type=int, default=10, help='Number of times to repeat the experiment')
+parser.add_argument('--output-dir', type=str, default="../../results/", help='Output directory for batch results')
+parser.add_argument('--repeats', type=int, default=1, help='Number of times to repeat the experiment')
 args = parser.parse_args()
 
 args.output_dir = os.path.join(args.output_dir, "_".join(args.inference_script.split('_')[:-1]))
@@ -38,14 +38,15 @@ def run_inference_for_llm(attack_file, defense_file, llm_name, llms_path, output
     # Construct the command to run the inference script with the current configuration
     command = [
         'python', inference_script + '.py',
-        '--config', '../configs/default.yaml',  # Assuming default config is needed
+        '--config', '../../configs/default.yaml',  # Assuming default config is needed
         '--attack', attack_file,
         '--defense', defense_file,
         '--llms', llms_path,
         '--target-llm', llm_name,
         '--output-dir', output_dir,
+        '--repeat', str(args.repeats),
     ]
-    # print(command)
+    print(" ".join(command))
     # Run the inference script
     result = subprocess.run(command, capture_output=True, text=True)
     return command, result.stdout, result.stderr
