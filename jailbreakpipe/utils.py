@@ -8,6 +8,8 @@
 # explain   :
 
 import abc
+import subprocess
+import time
 from typing import Dict, List, Union, Any, Tuple
 import importlib
 
@@ -63,3 +65,35 @@ def parse_configs_from_dict(config_dict: Dict[str, Any]):
             judge_configs.append(judge_config)
 
     return attacker_config, defender_config, judge_configs
+
+
+def get_gpu_memory_usage(device: str):
+    gpu_id = device.split(':')[-1]
+    result = subprocess.run(
+        ['nvidia-smi', '--query-gpu=memory.total,memory.used,memory.free', '--format=csv,nounits,noheader',
+         '--id=' + gpu_id],
+        stdout=subprocess.PIPE,
+        encoding='utf-8'
+    )
+
+    # 解析 nvidia-smi 返回的显存信息
+    output = result.stdout.strip()
+    total_mem, used_mem, free_mem = map(int, output.split(', '))
+    return total_mem, used_mem, free_mem
+
+
+def wait_for_gpu_memory(device: str, threshold: float = 0.8, check_interval: int = 5):
+    while True:
+        total_mem, used_mem, free_mem = get_gpu_memory_usage(device)
+        free_ratio = free_mem / total_mem
+
+        print(
+            f"GPU {device}: Total: {total_mem}MB, Used: {used_mem}MB, Free: {free_mem}MB ({free_ratio * 100:.2f}% free)")
+
+        if free_ratio >= threshold:
+            print(f"GPU {device} has more than {threshold * 100}% free memory. Proceeding...")
+            break
+
+        print(f"Waiting for GPU {device} to have more than {threshold * 100}% free memory...")
+        time.sleep(check_interval)
+

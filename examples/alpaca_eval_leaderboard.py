@@ -65,7 +65,9 @@ def process_directory(input_root, output_root, threads):
 
         if reference_output:
             with ThreadPoolExecutor(max_workers=threads) as executor:
-                for model_output in model_outputs[3::5]:
+                # for model_output in model_outputs[3::5]:
+                for model_output in model_outputs:
+
                     print(model_output)
                     relative_path = os.path.relpath(root, input_root)
                     output_directory = os.path.join(output_root, relative_path, os.path.splitext(os.path.basename(model_output))[0])

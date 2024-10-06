@@ -46,7 +46,7 @@ class HuggingFaceLLM(BaseLLM):
                 device_map=config.device_map,
                 token=os.getenv("HF_TOKEN"),
                 trust_remote_code=True,
-                local_files_only=True
+                # local_files_only=True
             ).eval()
         elif isinstance(config.model_name, AutoModelForCausalLM):
             self.model = config.model_name

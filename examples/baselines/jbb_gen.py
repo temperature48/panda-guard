@@ -111,8 +111,10 @@ def run_inference(pipe, row, attacker_config):
     return result
 
 
-# python jbb_gen.py --target-llm Qwen/Qwen2-7B-Instruct --device cuda:0 --part 0
-# python jbb_gen.py --target-llm Qwen/Qwen2-7B-Instruct --device cuda:5 --part 1
+# python jbb_gen.py --target-llm google/gemma-2-2b-it --device cuda:0 --part 0
+# python jbb_gen.py --target-llm google/gemma-2-2b-it --device cuda:1 --part 1
+# python jbb_gen.py --target-llm google/gemma-2-2b-it --device cuda:2 --part 2
+# python jbb_gen.py --target-llm google/gemma-2-2b-it --device cuda:3 --part 3
 
 # python jbb_gen.py --target-llm meta-llama/Meta-Llama-3-8B-Instruct --device cuda:1 --part 0
 # python jbb_gen.py --target-llm meta-llama/Meta-Llama-3-8B-Instruct --device cuda:4 --part 1
@@ -147,8 +149,8 @@ if __name__ == '__main__':
     llm = create_llm(llm_config)
     # args.llm_config = llm_config
 
-    # for attack_file in tqdm(attack_files[args.part::2], desc="Attacks"):
-    for attack_file in tqdm(attack_files, desc="Attacks"):
+    for attack_file in tqdm(attack_files[args.part::4], desc="Attacks"):
+    # for attack_file in tqdm(attack_files, desc="Attacks"):
 
         for defense_file in tqdm(defense_files, desc=f"Defenses for {attack_file}"):
 

@@ -23,7 +23,7 @@ from tqdm import tqdm
 
 from jailbreakpipe.llms import HuggingFaceLLMConfig, create_llm
 from jailbreakpipe.pipelines.inference import InferPipeline, InferPipelineConfig
-from jailbreakpipe.utils import parse_configs_from_dict
+from jailbreakpipe.utils import parse_configs_from_dict, wait_for_gpu_memory
 
 
 # Load the YAML configuration file
@@ -106,8 +106,10 @@ def run_inference(pipe, row, attacker_config):
     return result
 
 
-# python alpaca_eval_inference.py --target-llm Qwen/Qwen2-7B-Instruct --device cuda:0 --part 0
-# python alpaca_eval_inference.py --target-llm Qwen/Qwen2-7B-Instruct --device cuda:5 --part 1
+# python alpaca_eval_inference.py --target-llm google/gemma-2-2b-it --device cuda:4 --part 0
+# python alpaca_eval_inference.py --target-llm google/gemma-2-2b-it --device cuda:5 --part 1
+# python alpaca_eval_inference.py --target-llm google/gemma-2-2b-it --device cuda:6 --part 2
+# python alpaca_eval_inference.py --target-llm google/gemma-2-2b-it --device cuda:7 --part 3
 
 # python alpaca_eval_inference.py --target-llm meta-llama/Meta-Llama-3-8B-Instruct --device cuda:1 --part 0
 # python alpaca_eval_inference.py --target-llm meta-llama/Meta-Llama-3-8B-Instruct --device cuda:4 --part 1
@@ -127,6 +129,11 @@ def run_inference(pipe, row, attacker_config):
 # python alpaca_eval_inference.py --target-llm google/gemma-2-9b-it --device cuda:6 --part 0
 # python alpaca_eval_inference.py --target-llm google/gemma-2-9b-it --device cuda:7 --part 1
 
+# CUDA_VISIBLE_DEVICES=0,1 python alpaca_eval_inference.py --target-llm meta-llama/Meta-Llama-3-70B-Instruct --device auto --part 0
+# CUDA_VISIBLE_DEVICES=2,3 python alpaca_eval_inference.py --target-llm meta-llama/Meta-Llama-3-70B-Instruct --device auto --part 1
+# CUDA_VISIBLE_DEVICES=4,5 python alpaca_eval_inference.py --target-llm meta-llama/Meta-Llama-3-70B-Instruct --device auto --part 2
+# CUDA_VISIBLE_DEVICES=6,7 python alpaca_eval_inference.py --target-llm meta-llama/Meta-Llama-3-70B-Instruct --device auto --part 3
+
 if __name__ == '__main__':
     args = parse_args()
     defense_files = [os.path.join(args.defense_dir, f) for f in os.listdir(args.defense_dir) if f.endswith('.yaml')]
@@ -135,10 +142,12 @@ if __name__ == '__main__':
         model_name=args.target_llm,
         device_map=args.device,
     )
+    wait_for_gpu_memory('cuda:0', threshold=.7, check_interval=5)
+
     llm = create_llm(llm_config)
 
     # for defense_file in tqdm(defense_files):
-    for defense_file in tqdm(reversed(defense_files)):
+    for defense_file in tqdm(defense_files[args.part::4]):
         args.defense = defense_file
         # Load and possibly override the YAML configuration
         config_dict = load_config(args.config)

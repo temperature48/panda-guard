@@ -99,7 +99,7 @@ class OpenAiLLM(BaseLLM):
             # self.model_name.replace('3.1', '3'),
             token=os.getenv("HF_TOKEN"),
             trust_remote_code=True,
-            local_files_only=True,
+            # local_files_only=True,
         )
         self.client = openai.OpenAI(
             base_url=config.base_url,
