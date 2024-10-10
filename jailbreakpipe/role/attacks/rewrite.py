@@ -17,6 +17,15 @@ from jailbreakpipe.utils import is_user_turn
 
 @dataclass
 class RewriteAttackerConfig(BaseAttackerConfig):
+    """
+    Configuration for the Rewrite Attacker.
+
+    :param attacker_cls: Class of the attacker, default is "RewriteAttacker".  攻击者的类型，默认值为 "RewriteAttacker"
+    :param attacker_name: Name of the attacker.  攻击者的名称
+    :param llm_config: Configuration for the language model.  LLM配置
+    :param llm_gen_config: Configuration for generating output with LLM.  LLM生成配置
+    :param rewrite_template: Template for rewriting user prompts.  用于重写用户提示的模板
+    """
     attacker_cls: str = field(default="RewriteAttacker")
     attacker_name: str = field(default=None)
     llm_config: BaseLLMConfig = field(default_factory=BaseLLMConfig)
@@ -26,6 +35,11 @@ class RewriteAttackerConfig(BaseAttackerConfig):
 
 @register_attacker
 class RewriteAttacker(BaseAttacker):
+    """
+    Rewrite Attacker Implementation for modifying user prompts to bypass restrictions.
+
+    :param config: Configuration for the Rewrite Attacker.  用于Rewrite Attacker的配置
+    """
 
     def __init__(self, config: RewriteAttackerConfig):
         super().__init__(config)
@@ -34,6 +48,12 @@ class RewriteAttacker(BaseAttacker):
         self.rewrite_template = config.rewrite_template
 
     def rewrite(self, prompt: str) -> str:
+        """
+        Rewrite the given prompt using the specified template.
+
+        :param prompt: The original user prompt.  原始用户提示
+        :return: The rewritten prompt.  重写后的提示
+        """
         messages = [{
             "role": "user",
             "content": self.rewrite_template.format(content=prompt),
@@ -49,7 +69,13 @@ class RewriteAttacker(BaseAttacker):
             messages: List[Dict[str, str]],
             **kwargs
     ) -> List[Dict[str, str]]:
+        """
+        Execute an attack by rewriting the latest user prompt.
 
+        :param messages: List of messages in the conversation.  对话中的消息列表
+        :param kwargs: Additional parameters for the attack.  额外的攻击参数
+        :return: Modified list of messages with the rewritten prompt.  包含重写提示的更改消息列表
+        """
         assert is_user_turn(messages)
 
         rewritten = self.rewrite(messages[-1]["content"])

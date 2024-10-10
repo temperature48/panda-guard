@@ -7,4 +7,4 @@
 # File      : __init__.py.py
 # explain   :
 
-from jailbreakpipe.llms.repe_utils.pipelines import repe_pipeline_registry
+from jailbreakpipe.role.defenses.repe_utils.pipelines import repe_pipeline_registry

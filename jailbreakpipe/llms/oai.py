@@ -22,6 +22,14 @@ from jailbreakpipe.llms import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 
 @dataclass
 class OpenAiLLMConfig(BaseLLMConfig):
+    """
+    OpenAI LLM Configuration.
+
+    :param llm_type: Type of LLM, default is "OpenAiLLM".  LLM的类型，默认值为 "OpenAiLLM"
+    :param model_name: Name of the model.  模型的名称
+    :param base_url: Base URL for the OpenAI API.  OpenAI API的基础URL
+    :param api_key: API key for accessing OpenAI.  访问OpenAI的API密钥
+    """
     llm_type: str = field(default="OpenAiLLM")
     model_name: str = field(default=None)
     base_url: str = field(default=None)
@@ -30,6 +38,14 @@ class OpenAiLLMConfig(BaseLLMConfig):
 
 @dataclass
 class OpenAiChatLLMConfig(BaseLLMConfig):
+    """
+    OpenAI Chat LLM Configuration.
+
+    :param llm_type: Type of LLM, default is "OpenAiChatLLM".  LLM的类型，默认值为 "OpenAiChatLLM"
+    :param model_name: Name of the model.  模型的名称
+    :param base_url: Base URL for the OpenAI API.  OpenAI API的基础URL
+    :param api_key: API key for accessing OpenAI.  访问OpenAI的API密钥
+    """
     llm_type: str = field(default="OpenAiChatLLM")
     model_name: str = field(default=None)
     base_url: str = field(default=None)
@@ -38,6 +54,12 @@ class OpenAiChatLLMConfig(BaseLLMConfig):
 
 @register_llm
 class OpenAiChatLLM(BaseLLM):
+    """
+    OpenAI Chat LLM Implementation.
+
+    :param config: Configuration for OpenAI Chat LLM.  用于OpenAI小谱LLM的配置
+    """
+
     def __init__(
             self,
             config: OpenAiLLMConfig
@@ -53,7 +75,13 @@ class OpenAiChatLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
+        """
+        Generate a response for a given input using OpenAI Chat API.
 
+        :param messages: List of input messages.  输入的消息列表
+        :param config: Configuration for LLM generation.  生成配置
+        :return: Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答
+        """
         response = self.client.chat.completions.create(
             model=self._NAME,
             messages=messages,
@@ -84,11 +112,24 @@ class OpenAiChatLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> List[float]:
+        """
+        Evaluate the log likelihood of the given messages.
+
+        :param messages: List of messages for evaluation.  需要评估的消息列表
+        :param config: Configuration for LLM generation.  生成配置
+        :raises NotImplementedError: OpenAI Chat does not support log likelihood evaluation.  这个LLM属性不支持log likelihood评估
+        """
         raise NotImplementedError("OpenAI Chat does not support log likelihood evaluation.")
 
 
 @register_llm
 class OpenAiLLM(BaseLLM):
+    """
+    OpenAI LLM Implementation.
+
+    :param config: Configuration for OpenAI LLM.  用于OpenAI LLM的配置
+    """
+
     def __init__(
             self,
             config: OpenAiLLMConfig
@@ -96,10 +137,8 @@ class OpenAiLLM(BaseLLM):
         super().__init__(config)
         self.tokenizer = AutoTokenizer.from_pretrained(
             config.model_name,
-            # self.model_name.replace('3.1', '3'),
             token=os.getenv("HF_TOKEN"),
             trust_remote_code=True,
-            # local_files_only=True,
         )
         self.client = openai.OpenAI(
             base_url=config.base_url,
@@ -111,7 +150,13 @@ class OpenAiLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
+        """
+        Generate a response for a given input using OpenAI API.
 
+        :param messages: List of input messages.  输入的消息列表
+        :param config: Configuration for LLM generation.  生成配置
+        :return: Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答
+        """
         if 'gemma' in self._NAME.lower() and messages[0]['role'] == 'system':
             system_prompt = messages[0]['content']
             messages = messages[1:]
@@ -134,14 +179,13 @@ class OpenAiLLM(BaseLLM):
         )
         content = response.choices[0].text
         messages.append({"role": "assistant", "content": content})
-        # print(messages)
 
         self.update(
             response.usage.prompt_tokens,
             response.usage.completion_tokens,
             1,
         )
-        # print(response)
+
         if config.logprobs:
             logs = response.choices[0].logprobs.token_logprobs
             return messages, logs
@@ -153,7 +197,13 @@ class OpenAiLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> List[float]:
-        # print(messages)
+        """
+        Evaluate the log likelihood of the given messages.
+
+        :param messages: List of messages for evaluation.  需要评估的消息列表
+        :param config: Configuration for LLM generation.  生成配置
+        :return: List of log likelihood values.  返回的log likelihood值列表
+        """
         prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         response = self.client.completions.create(
             model=self._NAME,
@@ -165,7 +215,6 @@ class OpenAiLLM(BaseLLM):
         )
         logprobs = response.choices[0].logprobs.token_logprobs
 
-        # print(self.tokenizer(messages[-1]['content']))
         self.update(response.usage.prompt_tokens, 0, 1)
 
         return logprobs[-len(self.tokenizer(messages[-1]['content']).input_ids):]
@@ -173,6 +222,7 @@ class OpenAiLLM(BaseLLM):
 
 if __name__ == '__main__':
     from jailbreakpipe.llms import LLMS
+
     print(LLMS)
 
     llm_gen_config = LLMGenerateConfig(
@@ -196,18 +246,3 @@ if __name__ == '__main__':
 
     results = llm.evaluate_log_likelihood(messages, llm_gen_config)
     print(results, len(results))
-
-    # batch_messages = [
-    #     [{"role": "user", "content": "Hello, how are you?"}],
-    #     [{"role": "user", "content": "What is the weather like today?"}],
-    #     [{"role": "user", "content": "Tell me a joke."}],
-    # ]
-    #
-    # results = llm.batch_generate(
-    #     batch_messages,
-    #     llm_gen_config
-    # )
-    # for result in results:
-    #     print(result)
-    #
-    # print(llm.avg_tokens, llm.total_tokens)

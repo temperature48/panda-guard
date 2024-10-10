@@ -17,6 +17,13 @@ from jailbreakpipe.utils import is_user_turn
 
 @dataclass
 class IclDefenderConfig(BaseDefenderConfig):
+    """
+    Configuration for the In-Context Learning (ICL) Defender.
+
+    :param defender_cls: Class of the defender, default is "IclDefender".  防御者的类型，默认值为 "IclDefender"
+    :param defender_name: Name of the defender, default is "IclDefender".  防御者的名称，默认值为 "IclDefender"
+    :param in_context_prompt: In-context demonstration examples to guide the model's behavior.  用来引导模型行为的场景中示范例子
+    """
     defender_cls: str = field(default="IclDefender")
     defender_name: str = field(default="IclDefender")
     in_context_prompt: List[Dict[str, str]] = field(default_factory=lambda: [
@@ -31,10 +38,13 @@ class IclDefenderConfig(BaseDefenderConfig):
 @register_defender
 class IclDefender(BaseDefender):
     """
-    Wei, Zeming, Yifei Wang, and Yisen Wang.
-    Jailbreak and guard aligned language models with only few in-context demonstrations.
-    arXiv preprint arXiv:2310.06387 (2023).
+    In-Context Learning (ICL) Defender that guards against harmful prompts using few in-context demonstrations.
+
+    Reference: Wei, Zeming, Yifei Wang, and Yisen Wang. Jailbreak and guard aligned language models with only few in-context demonstrations. arXiv preprint arXiv:2310.06387 (2023).
+
+    :param config: Configuration for the ICL Defender.  用于ICL Defender的配置
     """
+
     def __init__(self, config: IclDefenderConfig):
         super().__init__(config)
         self.icl_prompt = config.in_context_prompt
@@ -43,7 +53,12 @@ class IclDefender(BaseDefender):
             self,
             messages: List[Dict[str, str]] = None,
     ) -> List[Dict[str, str]]:
+        """
+        Apply the in-context learning defense by adding demonstration examples to the conversation.
 
+        :param messages: List of input messages.  输入的消息列表
+        :return: Modified list of messages after applying the defense strategy.  应用防御策略后的更改消息列表
+        """
         assert is_user_turn(messages)
 
         if messages[0]["role"] == "system":

@@ -7,14 +7,11 @@
 # File      : hf.py
 # explain   :
 
-
-import abc
 import os
 from typing import Dict, List, Union, Any, Tuple
 from dataclasses import dataclass, field
-import concurrent.futures
 import torch
-import openai
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from jailbreakpipe.llms.llm_registry import register_llm
@@ -23,6 +20,13 @@ from jailbreakpipe.llms import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 
 @dataclass
 class HuggingFaceLLMConfig(BaseLLMConfig):
+    """
+    Hugging Face LLM Configuration.
+
+    :param llm_type: Type of LLM, default is "HuggingFaceLLM".  LLM的类型，默认值为 "HuggingFaceLLM"
+    :param model_name: Name of the model or model instance.  模型的名称或模型实例
+    :param device_map: Device mapping for model deployment.  用于模型部署的设备对应表
+    """
     llm_type: str = field(default="HuggingFaceLLM")
     model_name: [str, Any] = field(default=None)
     device_map: str = field(default='auto')
@@ -30,6 +34,12 @@ class HuggingFaceLLMConfig(BaseLLMConfig):
 
 @register_llm
 class HuggingFaceLLM(BaseLLM):
+    """
+    Hugging Face Language Model Implementation.
+
+    :param config: Configuration for Hugging Face LLM.  用于模型配置
+    """
+
     def __init__(
             self,
             config: HuggingFaceLLMConfig,
@@ -64,6 +74,13 @@ class HuggingFaceLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
+        """
+        Generate a response for a given input using Hugging Face model.
+
+        :param messages: List of input messages.  输入的消息列表
+        :param config: Configuration for LLM generation.  生成配置
+        :return: Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答
+        """
         # Prepare the prompt
         prompt_formatted = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
 
@@ -120,7 +137,11 @@ class HuggingFaceLLM(BaseLLM):
             config: LLMGenerateConfig,
     ) -> List[List[Dict[str, str]]]:
         """
-        Generate responses for a batch of messages in a single call using transformers' generate method.
+        Generate responses for a batch of messages in a single call.
+
+        :param batch_messages: List of batches of messages.  批量生成的消息列表
+        :param config: Configuration for LLM generation.  生成配置
+        :return: List of generated responses for each batch.  返回每个批量的生成应答列表
         """
         if len(batch_messages) == 0:
             return []
@@ -135,7 +156,6 @@ class HuggingFaceLLM(BaseLLM):
         outputs = self.model.generate(
             **inputs,
             max_new_tokens=config.max_n_tokens,
-            # max_length=config.max_n_tokens,
             temperature=config.temperature,
             do_sample=(config.temperature > 0),
             return_dict_in_generate=True,
@@ -157,6 +177,13 @@ class HuggingFaceLLM(BaseLLM):
             messages: List[Dict[str, str]],
             config: LLMGenerateConfig
     ) -> List[float]:
+        """
+        Evaluate the log likelihood of the given messages.
+
+        :param messages: List of messages for evaluation.  需要评估的消息列表
+        :param config: Configuration for LLM generation.  生成配置
+        :return: List of log likelihood values.  返回的log likelihood值列表
+        """
         # Prepare the full prompt with all messages
         prompt_formatted = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
         inputs = self.tokenizer(prompt_formatted, return_tensors='pt').to(self.model.device)
@@ -167,8 +194,6 @@ class HuggingFaceLLM(BaseLLM):
             tokenize=False,
             add_generation_prompt=True
         )
-        # print(prompt_formatted)
-        # print(prompt_formatted_dropped)
         inputs_dropped = self.tokenizer(prompt_formatted_dropped, return_tensors='pt').to(self.model.device)
 
         # Pass the full input through the model to get logits
@@ -183,8 +208,6 @@ class HuggingFaceLLM(BaseLLM):
         log_likelihoods = []
         for i in range(len(inputs_dropped.input_ids[0]), len(inputs.input_ids[0])):
             token_id = inputs.input_ids[0, i]
-            # print(log_probs[0, i - 1].max(), log_probs[0, i - 1].argmax(), token_id)
-            # print(self.tokenizer.decode(token_id), self.tokenizer.decode(log_probs[0, i - 1].argmax()))
             log_likelihood = log_probs[0, i - 1, token_id].item()
             log_likelihoods.append(log_likelihood)
 
@@ -215,19 +238,3 @@ if __name__ == '__main__':
 
     results = llm.evaluate_log_likelihood(messages, llm_gen_config)
     print(results, len(results))
-
-    # batch_messages = [
-    #     [{"role": "user", "content": "How to make a bomb?"}],
-    #     [{"role": "user", "content": "Hello, how are you?"}],
-    #     [{"role": "user", "content": "What is the weather like today?"}],
-    #     [{"role": "user", "content": "Tell me a joke."}],
-    # ]
-    #
-    # results = llm.batch_generate(
-    #     batch_messages,
-    #     llm_gen_config
-    # )
-    # for result in results:
-    #     print(result)
-    #
-    # print(llm.avg_tokens, llm.total_tokens)

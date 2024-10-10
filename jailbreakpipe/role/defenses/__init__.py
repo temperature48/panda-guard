@@ -15,7 +15,15 @@ from jailbreakpipe.role.defenses.semantic_smoothllm import SemanticSmoothLLMDefe
 from jailbreakpipe.role.defenses.paraphrase import ParaphraseDefender, ParaphraseDefenderConfig
 from jailbreakpipe.role.defenses.back_translate import BackTranslationDefender, BackTranslationDefenderConfig
 from jailbreakpipe.role.defenses.perplexity_filter import PerplexityFilterDefender, PerplexityFilterDefenderConfig
+
+from jailbreakpipe.role.defenses.repe import RepeDefender, RepeDefenderConfig
+
 from jailbreakpipe.role.defenses.defender_registry import create_defender
+
+
+from jailbreakpipe.role.defenses.repe_utils import repe_pipeline_registry
+repe_pipeline_registry()
+
 
 __all__ = [
     "BaseDefender",
@@ -37,5 +45,7 @@ __all__ = [
     "BackTranslationDefenderConfig",
     "PerplexityFilterDefender",
     "PerplexityFilterDefenderConfig",
+    "RepeDefender",
+    "RepeDefenderConfig",
     "create_defender",
 ]
