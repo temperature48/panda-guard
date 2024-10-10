@@ -23,8 +23,17 @@ from jailbreakpipe.llms import BaseLLMConfig, LLMGenerateConfig, create_llm
 
 @dataclass
 class SemanticSmoothLLMDefenderConfig(BaseDefenderConfig):
+    """
+    Configuration for SemanticSmoothLLMDefender.
+
+    :param defender_cls: Class of the defender, default is "SemanticSmoothLLMDefender". 防御者的类别，默认为 "SemanticSmoothLLMDefender"
+    :param perturbation_type: Type of perturbation to apply, default is 'random'. 应用的扰动类型，默认为 'random'
+    :param num_samples: Number of perturbed samples to generate, default is 3. 生成的扰动样本数量，默认为 3
+    :param batch_size: Batch size for processing, default is 1. 处理的批量大小，默认为 1
+    :param perturbation_llm_config: Configuration for the LLM used for perturbation generation. 用于扰动生成的LLM的配置
+    :param perturbation_llm_gen_config: Configuration for generation settings for the perturbation LLM. 扰动LLM生成设置的配置
+    """
     defender_cls: str = field(default="SemanticSmoothLLMDefender")
-    # defender_name: str = field(default="SemanticSmoothLLMDefender")
     perturbation_type: str = field(default='random')
     num_samples: int = field(default=3)
     batch_size: int = field(default=1)
@@ -35,14 +44,18 @@ class SemanticSmoothLLMDefenderConfig(BaseDefenderConfig):
 @register_defender
 class SemanticSmoothLLMDefender(BaseDefender):
     """
-    Robey, A., Wong, E., Hassani, H., & Pappas, G. J. (2023).
-    Smoothllm: Defending large language models against jailbreaking attacks.
-    arXiv preprint arXiv:2310.03684.
-    https://github.com/arobey1/smooth-llm
+    SemanticSmoothLLMDefender applies semantic smoothing to defend against jailbreak attacks.
+
+    Based on "Smoothllm: Defending large language models against jailbreaking attacks" by Robey et al. (2023).
+    Paper link: https://arxiv.org/abs/2310.03684
+
+    :param config: Configuration for SemanticSmoothLLMDefender. SemanticSmoothLLMDefender的配置
     """
+
     def __init__(self, config: SemanticSmoothLLMDefenderConfig):
         super().__init__(config)
-        self.perturbation_llm = create_llm(config.perturbation_llm_config)  # 初始化perturbation_llm
+        self.perturbation_llm = create_llm(
+            config.perturbation_llm_config)  # Initialize the LLM for perturbations 初始化用于扰动的LLM
         self.perturbation_llm_gen_config = config.perturbation_llm_gen_config
 
         self.batch_size = config.batch_size
@@ -53,7 +66,12 @@ class SemanticSmoothLLMDefender(BaseDefender):
             self,
             messages: List[Dict[str, str]] = None,
     ) -> List[Dict[str, str]]:
+        """
+        Apply semantic smoothing defense to the given messages.
 
+        :param messages: List of messages to defend against jailbreak attacks. 需要进行防御的消息列表
+        :return: List of messages after applying semantic smoothing. 应用语义平滑后的消息列表
+        """
         assert is_user_turn(messages), "It must be the user's turn to perform defense."
 
         prompt = messages[-1]['content']
@@ -69,12 +87,10 @@ class SemanticSmoothLLMDefender(BaseDefender):
             batch_messages = [messages.copy() for _ in batch]
             for j, perturbed_prompt in enumerate(batch):
                 batch_messages[j][-1]['content'] = perturbed_prompt
-                # print(batch_messages[j])
 
             batch_outputs = self.target_llm.batch_generate(
                 batch_messages, self.target_llm_gen_config
             )
-            # print(batch_outputs, "\n\n\n\n")
 
             batch_outputs = [output[-1]['content'] for output in batch_outputs]
             all_outputs.extend(batch_outputs)
@@ -83,9 +99,6 @@ class SemanticSmoothLLMDefender(BaseDefender):
             1 if self._is_jailbroken(output) else 0
             for output in all_outputs
         ]
-
-        # if len(are_copies_jailbroken) == 0:
-        #     raise ValueError("LLM did not generate any outputs.")
 
         outputs_and_jbs = list(zip(all_outputs, are_copies_jailbroken))
 
@@ -107,6 +120,12 @@ class SemanticSmoothLLMDefender(BaseDefender):
         return messages
 
     def _random_perturb(self, harmful_prompt: str) -> str:
+        """
+        Apply a random perturbation to the given prompt.
+
+        :param harmful_prompt: The harmful prompt to be perturbed. 需要扰动的有害提示
+        :return: The perturbed prompt. 扰动后的提示
+        """
         perturbation_list = ["paraphrase", "spellcheck", "summarize", "synonym", "translation", "verbtense"]
         if self.perturbation_type == 'random':
             self.perturbation_type = random.choice(perturbation_list)
@@ -117,6 +136,13 @@ class SemanticSmoothLLMDefender(BaseDefender):
             raise NotImplementedError(f"{self.perturbation_type} is not implemented!")
 
     def perturb_with_llm(self, template: str, harmful_prompt: str) -> str:
+        """
+        Use the LLM to generate a perturbed version of the harmful prompt.
+
+        :param template: The template to use for perturbation. 用于扰动的模板
+        :param harmful_prompt: The harmful prompt to be perturbed. 需要扰动的有害提示
+        :return: The perturbed prompt generated by the LLM. LLM生成的扰动后的提示
+        """
         prompt = template.replace('{QUERY}', harmful_prompt)
         output = self.target_llm.generate(
             [{"role": "user", "content": prompt}],
@@ -125,12 +151,25 @@ class SemanticSmoothLLMDefender(BaseDefender):
         return output
 
     def perturb(self, perturbation_type: str, harmful_prompt: str) -> str:
+        """
+        Apply a specific type of perturbation to the harmful prompt.
+
+        :param perturbation_type: The type of perturbation to apply. 要应用的扰动类型
+        :param harmful_prompt: The harmful prompt to be perturbed. 需要扰动的有害提示
+        :return: The perturbed prompt. 扰动后的提示
+        """
         script_dir = os.path.dirname(__file__)
         perturbation_template = open(
             os.path.join(script_dir, f'semantic_smoothing_templates/{perturbation_type}.txt'), 'r').read().strip()
         return self.perturb_with_llm(perturbation_template, harmful_prompt)
 
     def extract_res(self, outputs: List[str]) -> List[str]:
+        """
+        Extract the actual response content from LLM-generated outputs.
+
+        :param outputs: List of LLM-generated outputs. LLM生成的输出列表
+        :return: List of extracted responses. 提取的响应列表
+        """
         res = []
         for x in outputs:
             try:
@@ -168,8 +207,14 @@ class SemanticSmoothLLMDefender(BaseDefender):
                 continue
         return res
 
-    def _is_jailbroken(self, text: str) -> bool:
-        """Returns True if a prompt results in a jailbreak; False otherwise."""
+    @staticmethod
+    def _is_jailbroken(text: str) -> bool:
+        """
+        Check if a given prompt results in a jailbreak.
+
+        :param text: The generated response to check. 要检查的生成响应
+        :return: True if the response is a jailbreak, False otherwise. 如果响应是越狱攻击返回True，否则返回False
+        """
         TEST_PREFIXES = [
             "I'm sorry",
             "Sorry",

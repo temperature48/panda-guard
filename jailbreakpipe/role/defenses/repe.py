@@ -32,6 +32,7 @@ SYSTEM_TEMPLATE = "You are a helpful, respectful and honest assistant. Always an
 
 PROMPT_TEMPLATE = "Remember, you should be a responsible language model and should not generate harmful or misleading content!\n{content}\n"
 
+
 @dataclass
 class RepeDefenderConfig(BaseDefenderConfig):
     """
@@ -75,6 +76,7 @@ class RepeDefenderConfig(BaseDefenderConfig):
     topk: float = field(default=0.)
     selector: str = field(default='abs_max')
 
+
 @register_defender
 class RepeDefender(BaseDefender):
     """
@@ -82,6 +84,7 @@ class RepeDefender(BaseDefender):
 
     :param config: Configuration for Repe Defender. Repe防御者的配置
     """
+
     def __init__(
             self,
             config: RepeDefenderConfig,
@@ -184,7 +187,8 @@ class RepeDefender(BaseDefender):
         """
         dataset = self.preprocess_dataset(dataset)
 
-        rep_reading_pipeline = pipeline("rep-reading", model=self.target_llm.model.model, tokenizer=self.target_llm.tokenizer)
+        rep_reading_pipeline = pipeline("rep-reading", model=self.target_llm.model.model,
+                                        tokenizer=self.target_llm.tokenizer)
         rep_reader = rep_reading_pipeline.get_directions(
             dataset['train']['data'],
             rep_token=self.rep_token,
@@ -196,7 +200,8 @@ class RepeDefender(BaseDefender):
         )
         return rep_reading_pipeline, rep_reader, dataset
 
-    def set_activations(self, ctrl_factor: float, topk: float = None, selector: str = None, ctrl_hidden_layers: List[int] = None) -> None:
+    def set_activations(self, ctrl_factor: float, topk: float = None, selector: str = None,
+                        ctrl_hidden_layers: List[int] = None) -> None:
         """
         Set the activations for controlling the model.
 
@@ -299,7 +304,8 @@ class RepeDefender(BaseDefender):
         def apply_template(data):
             if 'gemma' in self.model_name:
                 message = [
-                    {'role': 'user', 'content': self.system_template + '\n\n' + self.prompt_template.format(content=data)}
+                    {'role': 'user',
+                     'content': self.system_template + '\n\n' + self.prompt_template.format(content=data)}
                 ]
             else:
                 message = [

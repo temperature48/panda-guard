@@ -19,6 +19,15 @@ from jailbreakpipe.utils import is_user_turn
 
 @dataclass
 class SmoothLLMDefenderConfig(BaseDefenderConfig):
+    """
+    Configuration for SmoothLLMDefender.
+
+    :param defender_cls: Class of the defender, default is "SmoothLLMDefender". 防御者的类别，默认为 "SmoothLLMDefender"
+    :param perturbation_type: Type of perturbation to apply, default is "swap". 应用的扰动类型，默认为 "swap"
+    :param perturbation_ratio: Ratio of the prompt to perturb, default is 0.1. 扰动提示的比例，默认为 0.1
+    :param num_perturbations: Number of perturbed prompts to generate, default is 3. 生成的扰动提示数量，默认为 3
+    :param batch_inference: Boolean flag indicating whether batch inference should be used, default is True. 是否使用批量推理的布尔标志，默认为 True
+    """
     defender_cls: str = field(default="SmoothLLMDefender")
     perturbation_type: str = field(default="swap")
     perturbation_ratio: float = field(default=0.1)
@@ -29,10 +38,12 @@ class SmoothLLMDefenderConfig(BaseDefenderConfig):
 @register_defender
 class SmoothLLMDefender(BaseDefender):
     """
-    Robey, A., Wong, E., Hassani, H., & Pappas, G. J. (2023).
-    Smoothllm: Defending large language models against jailbreaking attacks.
-    arXiv preprint arXiv:2310.03684.
-    https://github.com/arobey1/smooth-llm
+    SmoothLLMDefender applies perturbations to defend against jailbreak attacks.
+
+    Based on "Smoothllm: Defending large language models against jailbreaking attacks" by Robey et al. (2023).
+    Paper link: https://arxiv.org/abs/2310.03684
+
+    :param config: Configuration for SmoothLLMDefender. SmoothLLMDefender的配置
     """
 
     def __init__(self, config: SmoothLLMDefenderConfig):
@@ -47,7 +58,12 @@ class SmoothLLMDefender(BaseDefender):
             self,
             messages: List[Dict[str, str]] = None,
     ) -> List[Dict[str, str]]:
+        """
+        Apply SmoothLLM defense by generating multiple perturbed versions of the user's message and analyzing the responses.
 
+        :param messages: List of messages to defend against jailbreak attacks. 需要进行防御的消息列表
+        :return: List of messages after applying SmoothLLM defense. 应用SmoothLLM防御后的消息列表
+        """
         assert is_user_turn(messages), "It must be the user's turn to perform defense."
 
         # Perturb the last message from the user
@@ -105,7 +121,12 @@ class SmoothLLMDefender(BaseDefender):
         return messages
 
     def _random_perturb(self, prompt: str) -> str:
-        """Applies a random perturbation to the prompt based on the chosen method."""
+        """
+        Applies a random perturbation to the prompt based on the chosen method.
+
+        :param prompt: The prompt to be perturbed. 需要扰动的提示
+        :return: The perturbed prompt. 扰动后的提示
+        """
         if self.perturbation_type == "swap":
             return self._swap_perturbation(prompt)
         elif self.perturbation_type == "insert":
@@ -116,6 +137,12 @@ class SmoothLLMDefender(BaseDefender):
             raise ValueError(f"Unknown perturbation type: {self.perturbation_type}")
 
     def _swap_perturbation(self, s: str) -> str:
+        """
+        Apply a swap perturbation to randomly replace characters in the prompt.
+
+        :param s: The prompt to be perturbed. 需要扰动的提示
+        :return: The perturbed prompt with swapped characters. 具有交换字符的扰动提示
+        """
         list_s = list(s)
         sampled_indices = random.sample(range(len(s)), int(len(s) * self.perturbation_ratio))
         for i in sampled_indices:
@@ -123,6 +150,12 @@ class SmoothLLMDefender(BaseDefender):
         return ''.join(list_s)
 
     def _insert_perturbation(self, s: str) -> str:
+        """
+        Apply an insert perturbation to randomly insert characters in the prompt.
+
+        :param s: The prompt to be perturbed. 需要扰动的提示
+        :return: The perturbed prompt with inserted characters. 插入字符的扰动提示
+        """
         list_s = list(s)
         sampled_indices = random.sample(range(len(s)), int(len(s) * self.perturbation_ratio))
         for i in sampled_indices:
@@ -130,6 +163,12 @@ class SmoothLLMDefender(BaseDefender):
         return ''.join(list_s)
 
     def _patch_perturbation(self, s: str) -> str:
+        """
+        Apply a patch perturbation to replace a substring of the prompt.
+
+        :param s: The prompt to be perturbed. 需要扰动的提示
+        :return: The perturbed prompt with a replaced substring. 具有替换子字符串的扰动提示
+        """
         list_s = list(s)
         substring_width = int(len(s) * self.perturbation_ratio)
         max_start = len(s) - substring_width
@@ -139,7 +178,12 @@ class SmoothLLMDefender(BaseDefender):
         return ''.join(list_s)
 
     def _is_jailbroken(self, text: str) -> bool:
-        """Returns True if a prompt results in a jailbreak; False otherwise."""
+        """
+        Check if a given prompt results in a jailbreak.
+
+        :param text: The generated response to check. 要检查的生成响应
+        :return: True if the response is a jailbreak, False otherwise. 如果响应是越狱攻击返回True，否则返回False
+        """
         TEST_PREFIXES = [
             "I'm sorry",
             "Sorry",
@@ -156,4 +200,3 @@ class SmoothLLMDefender(BaseDefender):
             "Hello!"
         ]
         return not any(prefix in text for prefix in TEST_PREFIXES)
-

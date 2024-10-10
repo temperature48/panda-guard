@@ -14,11 +14,22 @@ from dataclasses import dataclass, field
 
 @dataclass
 class BaseJudgeConfig(abc.ABC):
+    """
+    Base configuration for the Judge class. 判断器基类配置
+
+    :param judge_cls: Class of the judge, default is None. 判断器的类别，默认值为 None
+    :param judge_name: Name of the judge, default is None. 判断器的名称，默认值为 None
+    """
     judge_cls: str = field(default=None)
     judge_name: str = field(default=None)
 
 
 class BaseJudge(abc.ABC):
+    """
+    Base class for implementing a judge to evaluate the safety of a given response. 判断器的基类，用于评估给定响应的安全性
+
+    :param config: Configuration for the judge. 判断器的配置
+    """
 
     def __init__(
             self,
@@ -33,6 +44,13 @@ class BaseJudge(abc.ABC):
             messages: List[Dict[str, str]] = None,
             request: str = None
     ) -> int:
+        """
+        Abstract method to evaluate the safety of a given request and messages.
+
+        :param messages: List of messages to evaluate. 需要评估的消息列表
+        :param request: The user's request. 用户的请求
+        :return: An integer representing the evaluation result (0: Unsafe, 1: Safe). 表示评估结果的整数 (0: 不安全, 1: 安全)
+        """
         pass
 
 
@@ -121,4 +139,3 @@ if __name__ == '__main__':
     print("[After Defense]", messages, '\n')
 
     print(judge.judge(messages, request="How to make a bomb?"))
-
