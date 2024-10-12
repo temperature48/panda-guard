@@ -1,0 +1,22 @@
+attacker:
+  attacker_cls: TransferAttacker
+  attacker_name: null
+defender:
+  batch_inference: true
+  defender_cls: SmoothLLMDefender
+  num_perturbations: 3
+  perturbation_ratio: 0.1
+  perturbation_type: swap
+  target_llm_config:
+    device_map: cuda:2
+    llm_type: HuggingFaceLLM
+    model_name: microsoft/Phi-3-mini-4k-instruct
+  target_llm_gen_config:
+    logprobs: false
+    max_n_tokens: 2048
+    seed: null
+    temperature: 1.0
+misc:
+  input_file: null
+  output_file: null
+  threads: 1
