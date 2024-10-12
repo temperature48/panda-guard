@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jailbreakpipe.utils &mdash; Jailbreak-Pipeline v0.0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=a801d45e"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Jailbreak-Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jailbreak-Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jailbreakpipe.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jailbreakpipe.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># encoding: utf-8</span>
+<span class="c1"># Author    : Floyed&lt;Floyed_Shen@outlook.com&gt;</span>
+<span class="c1"># Datetime  : 2024/9/1 17:34</span>
+<span class="c1"># User      : yu</span>
+<span class="c1"># Product   : PyCharm</span>
+<span class="c1"># Project   : jailbreak-pipeline</span>
+<span class="c1"># File      : utils.py</span>
+<span class="c1"># explain   : Utility functions for the jailbreak-pipeline.</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+
+
+<div class="viewcode-block" id="is_user_turn">
+<a class="viewcode-back" href="../../jailbreakpipe.html#jailbreakpipe.utils.is_user_turn">[docs]</a>
+<span class="k">def</span> <span class="nf">is_user_turn</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if it&#39;s the user&#39;s turn based on the last message.</span>
+
+<span class="sd">    根据最后一条消息检查是否为用户的回合。</span>
+
+<span class="sd">    :param messages: List of message dictionaries containing &quot;role&quot; and &quot;content&quot;.</span>
+<span class="sd">                     包含“角色”和“内容”的消息字典列表。</span>
+<span class="sd">    :return: True if the last message is from the user, False otherwise.</span>
+<span class="sd">             如果最后一条消息来自用户，则返回True，否则返回False。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">messages</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;user&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="is_assistant_turn">
+<a class="viewcode-back" href="../../jailbreakpipe.html#jailbreakpipe.utils.is_assistant_turn">[docs]</a>
+<span class="k">def</span> <span class="nf">is_assistant_turn</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if it&#39;s the assistant&#39;s turn based on the last message.</span>
+
+<span class="sd">    根据最后一条消息检查是否为助手的回合。</span>
+
+<span class="sd">    :param messages: List of message dictionaries containing &quot;role&quot; and &quot;content&quot;.</span>
+<span class="sd">                     包含“角色”和“内容”的消息字典列表。</span>
+<span class="sd">    :return: True if the last message is from the assistant, False otherwise.</span>
+<span class="sd">             如果最后一条消息来自助手，则返回True，否则返回False。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">messages</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;assistant&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="load_class">
+<a class="viewcode-back" href="../../jailbreakpipe.html#jailbreakpipe.utils.load_class">[docs]</a>
+<span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="n">config_cls_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dynamically load a class based on its name.</span>
+
+<span class="sd">    根据类名动态加载类。</span>
+
+<span class="sd">    :param config_cls_name: The name of the class to load.</span>
+<span class="sd">                            要加载的类的名称。</span>
+<span class="sd">    :return: The class object corresponding to the given name.</span>
+<span class="sd">             对应给定名称的类对象。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;jailbreakpipe.role&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">config_cls_name</span> <span class="o">+</span> <span class="s1">&#39;Config&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parse_nested_config">
+<a class="viewcode-back" href="../../jailbreakpipe.html#jailbreakpipe.utils.parse_nested_config">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_nested_config</span><span class="p">(</span><span class="n">config_cls</span><span class="p">,</span> <span class="n">config_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse nested configuration dictionaries into objects.</span>
+
+<span class="sd">    将嵌套的配置字典解析为对象。</span>
+
+<span class="sd">    :param config_cls: The class of the configuration.</span>
+<span class="sd">                       配置的类。</span>
+<span class="sd">    :param config_dict: Dictionary containing configuration data.</span>
+<span class="sd">                        包含配置信息的字典。</span>
+<span class="sd">    :return: An instance of the configuration class.</span>
+<span class="sd">             配置类的实例。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;jailbreakpipe.llms&quot;</span><span class="p">)</span>
+    <span class="n">nested_config_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">config_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">&quot;llm_gen_config&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">nested_config_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;LLMGenerateConfig&quot;</span><span class="p">)(</span><span class="o">**</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;llm_config&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">nested_config_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;llm_type&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Config&#39;</span><span class="p">)(</span><span class="o">**</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nested_config_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">config_cls</span><span class="p">(</span><span class="o">**</span><span class="n">nested_config_dict</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="parse_configs_from_dict">
+<a class="viewcode-back" href="../../jailbreakpipe.html#jailbreakpipe.utils.parse_configs_from_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_configs_from_dict</span><span class="p">(</span><span class="n">config_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a dictionary into configuration objects for the pipeline.</span>
+
+<span class="sd">    将字典转换为流程的配置对象。</span>
+
+<span class="sd">    :param config_dict: Dictionary containing configurations for attacker, defender, and judges.</span>
+<span class="sd">                        包含攻击者、防御者和评审配置的字典。</span>
+<span class="sd">    :return: A tuple containing the attacker configuration, defender configuration, and list of judge configurations.</span>
+<span class="sd">             包含攻击者配置、防御者配置和评审配置列表的元组。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load the attacker configuration.</span>
+    <span class="c1"># 加载攻击者配置。</span>
+    <span class="n">attacker_config_dict</span> <span class="o">=</span> <span class="n">config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attacker&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">AttackerClass</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">attacker_config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attacker_cls&quot;</span><span class="p">))</span>
+    <span class="n">attacker_config</span> <span class="o">=</span> <span class="n">parse_nested_config</span><span class="p">(</span><span class="n">AttackerClass</span><span class="p">,</span> <span class="n">attacker_config_dict</span><span class="p">)</span>
+
+    <span class="c1"># Load the defender configuration.</span>
+    <span class="c1"># 加载防御者配置。</span>
+    <span class="n">defender_config_dict</span> <span class="o">=</span> <span class="n">config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;defender&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">DefenderClass</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">defender_config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;defender_cls&quot;</span><span class="p">))</span>
+    <span class="n">defender_config</span> <span class="o">=</span> <span class="n">parse_nested_config</span><span class="p">(</span><span class="n">DefenderClass</span><span class="p">,</span> <span class="n">defender_config_dict</span><span class="p">)</span>
+
+    <span class="c1"># Load the judge configurations.</span>
+    <span class="c1"># 加载评审配置。</span>
+    <span class="n">judge_configs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">judge_config_dicts</span> <span class="o">=</span> <span class="n">config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;judges&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="n">judge_config_dicts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">judge_config_dict</span> <span class="ow">in</span> <span class="n">judge_config_dicts</span><span class="p">:</span>
+            <span class="n">JudgeClass</span> <span class="o">=</span> <span class="n">load_class</span><span class="p">(</span><span class="n">judge_config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;judge_cls&quot;</span><span class="p">))</span>
+            <span class="n">judge_config</span> <span class="o">=</span> <span class="n">parse_nested_config</span><span class="p">(</span><span class="n">JudgeClass</span><span class="p">,</span> <span class="n">judge_config_dict</span><span class="p">)</span>
+            <span class="n">judge_configs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">judge_config</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">attacker_config</span><span class="p">,</span> <span class="n">defender_config</span><span class="p">,</span> <span class="n">judge_configs</span></div>
+
+
+
+<div class="viewcode-block" id="get_gpu_memory_usage">
+<a class="viewcode-back" href="../../jailbreakpipe.html#jailbreakpipe.utils.get_gpu_memory_usage">[docs]</a>
+<span class="k">def</span> <span class="nf">get_gpu_memory_usage</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the total, used, and free GPU memory for a specified device.</span>
+
+<span class="sd">    获取指定设备的GPU总内存、已用内存和可用内存。</span>
+
+<span class="sd">    :param device: The GPU device identifier (e.g., &quot;cuda:0&quot;).</span>
+<span class="sd">                   GPU设备标识符（如“cuda:0”）。</span>
+<span class="sd">    :return: A tuple containing the total, used, and free memory in MB.</span>
+<span class="sd">             包含总内存、已用内存和可用内存的元组（以MB为单位）。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gpu_id</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">&#39;nvidia-smi&#39;</span><span class="p">,</span> <span class="s1">&#39;--query-gpu=memory.total,memory.used,memory.free&#39;</span><span class="p">,</span> <span class="s1">&#39;--format=csv,nounits,noheader&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;--id=&#39;</span> <span class="o">+</span> <span class="n">gpu_id</span><span class="p">],</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Parse the output from nvidia-smi.</span>
+    <span class="c1"># 解析nvidia-smi的输出。</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">total_mem</span><span class="p">,</span> <span class="n">used_mem</span><span class="p">,</span> <span class="n">free_mem</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">total_mem</span><span class="p">,</span> <span class="n">used_mem</span><span class="p">,</span> <span class="n">free_mem</span></div>
+
+
+
+<div class="viewcode-block" id="wait_for_gpu_memory">
+<a class="viewcode-back" href="../../jailbreakpipe.html#jailbreakpipe.utils.wait_for_gpu_memory">[docs]</a>
+<span class="k">def</span> <span class="nf">wait_for_gpu_memory</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">check_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wait until the specified GPU has sufficient free memory.</span>
+
+<span class="sd">    等待指定的GPU拥有足够的可用内存。</span>
+
+<span class="sd">    :param device: The GPU device identifier (e.g., &quot;cuda:0&quot;).</span>
+<span class="sd">                   GPU设备标识符（如“cuda:0”）。</span>
+<span class="sd">    :param threshold: The threshold of free memory ratio to proceed (e.g., 0.8 means 80% free).</span>
+<span class="sd">                      继续操作所需的可用内存比例阈值（如0.8表示80%的可用内存）。</span>
+<span class="sd">    :param check_interval: Time interval (in seconds) between checks.</span>
+<span class="sd">                           每次检查的时间间隔（秒）。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">total_mem</span><span class="p">,</span> <span class="n">used_mem</span><span class="p">,</span> <span class="n">free_mem</span> <span class="o">=</span> <span class="n">get_gpu_memory_usage</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">free_ratio</span> <span class="o">=</span> <span class="n">free_mem</span> <span class="o">/</span> <span class="n">total_mem</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;GPU </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2">: Total: </span><span class="si">{</span><span class="n">total_mem</span><span class="si">}</span><span class="s2">MB, Used: </span><span class="si">{</span><span class="n">used_mem</span><span class="si">}</span><span class="s2">MB, Free: </span><span class="si">{</span><span class="n">free_mem</span><span class="si">}</span><span class="s2">MB (</span><span class="si">{</span><span class="n">free_ratio</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">% free)&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">free_ratio</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GPU </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2"> has more than </span><span class="si">{</span><span class="n">threshold</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% free memory. Proceeding...&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Waiting for GPU </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2"> to have more than </span><span class="si">{</span><span class="n">threshold</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% free memory...&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">check_interval</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Floyed Shen, etc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

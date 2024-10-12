@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jailbreakpipe.role.defenses.repe_utils.rep_reading_pipeline &mdash; Jailbreak-Pipeline v0.0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=a801d45e"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Jailbreak-Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Jailbreak-Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jailbreakpipe.role.defenses.repe_utils.rep_reading_pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jailbreakpipe.role.defenses.repe_utils.rep_reading_pipeline</h1><div class="highlight"><pre>
+<span></span><span class="c1"># encoding: utf-8</span>
+<span class="c1"># Author    : Floyed&lt;Floyed_Shen@outlook.com&gt;</span>
+<span class="c1"># Datetime  : 2024/9/9 16:33</span>
+<span class="c1"># User      : yu</span>
+<span class="c1"># Product   : PyCharm</span>
+<span class="c1"># Project   : jailbreak-pipeline</span>
+<span class="c1"># File      : rep_reading_pipeline.py</span>
+<span class="c1"># explain   : Adapted from https://github.com/andyzoujm/representation-engineering.git</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.rep_readers</span> <span class="kn">import</span> <span class="n">DIRECTION_FINDERS</span><span class="p">,</span> <span class="n">RepReader</span>
+
+
+<div class="viewcode-block" id="RepReadingPipeline">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_reading_pipeline.RepReadingPipeline">[docs]</a>
+<span class="k">class</span> <span class="nc">RepReadingPipeline</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_hidden_states</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="p">,</span>
+            <span class="n">rep_token</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">hidden_layers</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">which_hidden_states</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="s1">&#39;encoder_hidden_states&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="s1">&#39;decoder_hidden_states&#39;</span><span class="p">):</span>
+            <span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;hidden_states&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">which_hidden_states</span><span class="si">}</span><span class="s1">_hidden_states&#39;</span><span class="p">]</span>
+
+        <span class="n">hidden_states_layers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;hidden_states&#39;</span><span class="p">][</span><span class="n">layer</span><span class="p">]</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">hidden_states</span><span class="p">[:,</span> <span class="n">rep_token</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="c1"># hidden_states_layers[layer] = hidden_states.cpu().to(dtype=torch.float32).detach().numpy()</span>
+            <span class="n">hidden_states_layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">hidden_states</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">hidden_states_layers</span>
+
+    <span class="k">def</span> <span class="nf">_sanitize_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">rep_reader</span><span class="p">:</span> <span class="n">RepReader</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">rep_token</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                             <span class="n">hidden_layers</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                             <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                             <span class="n">which_hidden_states</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="o">**</span><span class="n">tokenizer_kwargs</span><span class="p">):</span>
+        <span class="n">preprocess_params</span> <span class="o">=</span> <span class="n">tokenizer_kwargs</span>
+        <span class="n">forward_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">postprocess_params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">forward_params</span><span class="p">[</span><span class="s1">&#39;rep_token&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rep_token</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hidden_layers</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">hidden_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">hidden_layers</span><span class="p">]</span>
+
+        <span class="k">assert</span> <span class="n">rep_reader</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">rep_reader</span><span class="o">.</span><span class="n">directions</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden_layers</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;expect total rep_reader directions (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rep_reader</span><span class="o">.</span><span class="n">directions</span><span class="p">)</span><span class="si">}</span><span class="s2">)== total hidden_layers (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hidden_layers</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="n">forward_params</span><span class="p">[</span><span class="s1">&#39;rep_reader&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rep_reader</span>
+        <span class="n">forward_params</span><span class="p">[</span><span class="s1">&#39;hidden_layers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hidden_layers</span>
+        <span class="n">forward_params</span><span class="p">[</span><span class="s1">&#39;component_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">component_index</span>
+        <span class="n">forward_params</span><span class="p">[</span><span class="s1">&#39;which_hidden_states&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">which_hidden_states</span>
+
+        <span class="k">return</span> <span class="n">preprocess_params</span><span class="p">,</span> <span class="n">forward_params</span><span class="p">,</span> <span class="n">postprocess_params</span>
+
+<div class="viewcode-block" id="RepReadingPipeline.preprocess">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_reading_pipeline.RepReadingPipeline.preprocess">[docs]</a>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span>
+            <span class="o">**</span><span class="n">tokenizer_kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_processor</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_processor</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">add_end_of_utterance_token</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">framework</span><span class="p">,</span> <span class="o">**</span><span class="n">tokenizer_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RepReadingPipeline.postprocess">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_reading_pipeline.RepReadingPipeline.postprocess">[docs]</a>
+    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">outputs</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_inputs</span><span class="p">,</span> <span class="n">rep_token</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="n">rep_reader</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">component_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">which_hidden_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">tokenizer_args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">        - which_hidden_states (str): Specifies which part of the model (encoder, decoder, or both) to compute the hidden states from.</span>
+<span class="sd">                        It&#39;s applicable only for encoder-decoder models. Valid values: &#39;encoder&#39;, &#39;decoder&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get model hidden states and optionally transform them with a RepReader</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;encoder&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;decoder&quot;</span><span class="p">):</span>
+                <span class="n">decoder_start_token</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span><span class="p">]</span> <span class="o">*</span> <span class="n">model_inputs</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">decoder_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">decoder_start_token</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">input_ids</span>
+                <span class="n">model_inputs</span><span class="p">[</span><span class="s1">&#39;decoder_input_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">decoder_input</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">model_inputs</span><span class="p">,</span> <span class="n">output_hidden_states</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">hidden_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hidden_states</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">rep_token</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="n">which_hidden_states</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rep_reader</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hidden_states</span>
+
+        <span class="k">return</span> <span class="n">rep_reader</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="n">component_index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_batched_string_to_hiddens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_inputs</span><span class="p">,</span> <span class="n">rep_token</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">which_hidden_states</span><span class="p">,</span> <span class="o">**</span><span class="n">tokenizer_args</span><span class="p">):</span>
+        <span class="c1"># Wrapper method to get a dictionary hidden states from a list of strings</span>
+        <span class="n">hidden_states_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">train_inputs</span><span class="p">,</span> <span class="n">rep_token</span><span class="o">=</span><span class="n">rep_token</span><span class="p">,</span>
+                                     <span class="n">hidden_layers</span><span class="o">=</span><span class="n">hidden_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">rep_reader</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">which_hidden_states</span><span class="o">=</span><span class="n">which_hidden_states</span><span class="p">,</span> <span class="o">**</span><span class="n">tokenizer_args</span><span class="p">)</span>
+        <span class="n">hidden_states</span> <span class="o">=</span> <span class="p">{</span><span class="n">layer</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">hidden_states_batch</span> <span class="ow">in</span> <span class="n">hidden_states_outputs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_states_batch</span><span class="p">:</span>
+                <span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hidden_states_batch</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">hidden_states</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="k">def</span> <span class="nf">_validate_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_difference</span><span class="p">,</span> <span class="n">direction_method</span><span class="p">):</span>
+        <span class="c1"># validate params for get_directions</span>
+        <span class="k">if</span> <span class="n">direction_method</span> <span class="o">==</span> <span class="s1">&#39;clustermean&#39;</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">n_difference</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;n_difference must be 1 for clustermean&quot;</span>
+
+<div class="viewcode-block" id="RepReadingPipeline.get_directions">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_reading_pipeline.RepReadingPipeline.get_directions">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_directions</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">train_inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span>
+            <span class="n">rep_token</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">hidden_layers</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">n_difference</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">train_labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">direction_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pca&#39;</span><span class="p">,</span>
+            <span class="n">direction_finder_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+            <span class="n">which_hidden_states</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">tokenizer_args</span><span class="p">,):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Train a RepReader on the training data.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            batch_size: batch size to use when getting hidden states</span>
+<span class="sd">            direction_method: string specifying the RepReader strategy for finding directions</span>
+<span class="sd">            direction_finder_kwargs: kwargs to pass to RepReader constructor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hidden_layers</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hidden_layers</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="n">hidden_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">hidden_layers</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_params</span><span class="p">(</span><span class="n">n_difference</span><span class="p">,</span> <span class="n">direction_method</span><span class="p">)</span>
+
+        <span class="c1"># initialize a DirectionFinder</span>
+        <span class="n">direction_finder</span> <span class="o">=</span> <span class="n">DIRECTION_FINDERS</span><span class="p">[</span><span class="n">direction_method</span><span class="p">](</span><span class="o">**</span><span class="n">direction_finder_kwargs</span><span class="p">)</span>
+
+        <span class="c1"># if relevant, get the hidden state data for training set</span>
+        <span class="n">hidden_states</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">relative_hidden_states</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">direction_finder</span><span class="o">.</span><span class="n">needs_hiddens</span><span class="p">:</span>
+            <span class="c1"># get raw hidden states for the train inputs</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batched_string_to_hiddens</span><span class="p">(</span><span class="n">train_inputs</span><span class="p">,</span> <span class="n">rep_token</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">which_hidden_states</span><span class="p">,</span> <span class="o">**</span><span class="n">tokenizer_args</span><span class="p">)</span>
+
+            <span class="c1"># get differences between pairs</span>
+            <span class="n">relative_hidden_states</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">hidden_states</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_difference</span><span class="p">):</span>  <span class="c1"># B N C</span>
+                    <span class="n">relative_hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">relative_hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">][::</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">relative_hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+
+                <span class="c1"># get the directions</span>
+        <span class="n">direction_finder</span><span class="o">.</span><span class="n">directions</span> <span class="o">=</span> <span class="n">direction_finder</span><span class="o">.</span><span class="n">get_rep_directions</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">relative_hidden_states</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span>
+            <span class="n">train_choices</span><span class="o">=</span><span class="n">train_labels</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">direction_finder</span><span class="o">.</span><span class="n">directions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">direction_finder</span><span class="o">.</span><span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">direction_finder</span><span class="o">.</span><span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">direction_finder</span><span class="o">.</span><span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">train_labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">direction_finder</span><span class="o">.</span><span class="n">direction_signs</span> <span class="o">=</span> <span class="n">direction_finder</span><span class="o">.</span><span class="n">get_signs</span><span class="p">(</span>
+                <span class="n">hidden_states</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">direction_finder</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Floyed Shen, etc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

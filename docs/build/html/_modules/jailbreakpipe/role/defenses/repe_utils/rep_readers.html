@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jailbreakpipe.role.defenses.repe_utils.rep_readers &mdash; Jailbreak-Pipeline v0.0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=a801d45e"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Jailbreak-Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Jailbreak-Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jailbreakpipe.role.defenses.repe_utils.rep_readers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jailbreakpipe.role.defenses.repe_utils.rep_readers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># encoding: utf-8</span>
+<span class="c1"># Author    : Floyed&lt;Floyed_Shen@outlook.com&gt;</span>
+<span class="c1"># Datetime  : 2024/9/9 16:36</span>
+<span class="c1"># User      : yu</span>
+<span class="c1"># Product   : PyCharm</span>
+<span class="c1"># Project   : jailbreak-pipeline</span>
+<span class="c1"># File      : rep_readers.py</span>
+<span class="c1"># explain   : Adapted from https://github.com/andyzoujm/representation-engineering.git</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+
+<div class="viewcode-block" id="project_onto_direction">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.project_onto_direction">[docs]</a>
+<span class="k">def</span> <span class="nf">project_onto_direction</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Project matrix H (n, d_1) onto direction vector (d_2,)&quot;&quot;&quot;</span>
+    <span class="c1"># Calculate the magnitude of the direction vector</span>
+    <span class="c1"># Ensure H and direction are on the same device (CPU or GPU)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">mag</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">mag</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+    <span class="c1"># Calculate the projection</span>
+    <span class="n">projection</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="o">/</span> <span class="n">mag</span>
+    <span class="k">return</span> <span class="n">projection</span></div>
+
+
+
+<div class="viewcode-block" id="recenter">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.recenter">[docs]</a>
+<span class="k">def</span> <span class="nf">recenter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="n">mean</span></div>
+
+
+
+<div class="viewcode-block" id="RepReader">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.RepReader">[docs]</a>
+<span class="k">class</span> <span class="nc">RepReader</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to identify and store concept directions.</span>
+
+<span class="sd">    Subclasses implement the abstract methods to identify concept directions</span>
+<span class="sd">    for each hidden layer via strategies including PCA, embedding vectors</span>
+<span class="sd">    (aka the logits method), and cluster means.</span>
+
+<span class="sd">    RepReader instances are used by RepReaderPipeline to get concept scores.</span>
+
+<span class="sd">    Directions can be used for downstream interventions.&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">directions</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># directions accessible via directions[layer][component_index]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_signs</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># direction of high concept scores (mapping min/max to high/low)</span>
+
+<div class="viewcode-block" id="RepReader.get_rep_directions">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.RepReader.get_rep_directions">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_rep_directions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get concept directions for each hidden layer of the model</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: Model to get directions for</span>
+<span class="sd">            tokenizer: Tokenizer to use</span>
+<span class="sd">            hidden_states: Hidden states of the model on the training data (per layer)</span>
+<span class="sd">            hidden_layers: Layers to consider</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            directions: A dict mapping layers to direction arrays (n_components, hidden_size)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="RepReader.get_signs">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.RepReader.get_signs">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_signs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">train_choices</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given labels for the training data hidden_states, determine whether the</span>
+<span class="sd">        negative or positive direction corresponds to low/high concept</span>
+<span class="sd">        (and return corresponding signs -1 or 1 for each layer and component index)</span>
+
+<span class="sd">        NOTE: This method assumes that there are 2 entries in hidden_states per label,</span>
+<span class="sd">        aka len(hidden_states[layer]) == 2 * len(train_choices). For example, if</span>
+<span class="sd">        n_difference=1, then hidden_states here should be the raw hidden states</span>
+<span class="sd">        rather than the relative (i.e. the differences between pairs of examples).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            hidden_states: Hidden states of the model on the training data (per layer)</span>
+<span class="sd">            train_choices: Labels for the training data</span>
+<span class="sd">            hidden_layers: Layers to consider</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            signs: A dict mapping layers to sign arrays (n_components,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">signs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_hiddens</span> <span class="ow">and</span> <span class="n">hidden_states</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_choices</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Shape mismatch between hidden states (</span><span class="si">{</span><span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">) and labels (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_choices</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+                <span class="n">signs</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">):</span>
+                    <span class="n">transformed_hidden_states</span> <span class="o">=</span> <span class="n">project_onto_direction</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="n">component_index</span><span class="p">])</span>
+                    <span class="n">projected_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformed_hidden_states</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">transformed_hidden_states</span><span class="p">),</span> <span class="mi">2</span><span class="p">)]</span>
+
+                    <span class="n">outputs_min</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="o">==</span> <span class="n">o</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">projected_scores</span><span class="p">,</span> <span class="n">train_choices</span><span class="p">)]</span>
+                    <span class="n">outputs_max</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="o">==</span> <span class="n">o</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">projected_scores</span><span class="p">,</span> <span class="n">train_choices</span><span class="p">)]</span>
+
+                    <span class="n">signs</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">outputs_min</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">outputs_max</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+                <span class="n">signs</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">signs</span></div>
+
+
+<div class="viewcode-block" id="RepReader.transform">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.RepReader.transform">[docs]</a>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="n">component_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Project the hidden states onto the concept directions in self.directions</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            hidden_states: dictionary with entries of dimension (n_examples, hidden_size)</span>
+<span class="sd">            hidden_layers: list of layers to consider</span>
+<span class="sd">            component_index: index of the component to use from self.directions</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            transformed_hidden_states: dictionary with entries of dimension (n_examples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">component_index</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span>
+        <span class="n">transformed_hidden_states</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+            <span class="n">layer_hidden_states</span> <span class="o">=</span> <span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;H_train_means&#39;</span><span class="p">):</span>
+                <span class="n">layer_hidden_states</span> <span class="o">=</span> <span class="n">recenter</span><span class="p">(</span><span class="n">layer_hidden_states</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">H_train_means</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+
+            <span class="c1"># project hidden states onto found concept directions (e.g. onto PCA comp 0)</span>
+            <span class="n">H_transformed</span> <span class="o">=</span> <span class="n">project_onto_direction</span><span class="p">(</span><span class="n">layer_hidden_states</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="n">component_index</span><span class="p">])</span>
+            <span class="n">transformed_hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">H_transformed</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">transformed_hidden_states</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PCARepReader">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.PCARepReader">[docs]</a>
+<span class="k">class</span> <span class="nc">PCARepReader</span><span class="p">(</span><span class="n">RepReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract directions via PCA&quot;&quot;&quot;</span>
+    <span class="n">needs_hiddens</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="n">n_components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H_train_means</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="PCARepReader.get_rep_directions">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.PCARepReader.get_rep_directions">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_rep_directions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get PCA components for each layer&quot;&quot;&quot;</span>
+        <span class="n">directions</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+            <span class="n">H_train</span> <span class="o">=</span> <span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+            <span class="n">H_train_mean</span> <span class="o">=</span> <span class="n">H_train</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">H_train_means</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">H_train_mean</span>
+            <span class="n">H_train</span> <span class="o">=</span> <span class="n">recenter</span><span class="p">(</span><span class="n">H_train</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="n">H_train_mean</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+            <span class="n">H_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">H_train</span><span class="p">)</span>
+            <span class="n">pca_model</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span> <span class="n">whiten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">H_train</span><span class="p">)</span>
+
+            <span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">pca_model</span><span class="o">.</span><span class="n">components_</span>  <span class="c1"># shape (n_components, n_features)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="n">pca_model</span><span class="o">.</span><span class="n">n_components_</span>
+
+        <span class="k">return</span> <span class="n">directions</span></div>
+
+
+<div class="viewcode-block" id="PCARepReader.get_signs">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.PCARepReader.get_signs">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_signs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">):</span>
+
+        <span class="n">signs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+            <span class="c1"># print(hidden_states[layer].shape[0], train_labels)</span>
+            <span class="k">assert</span> <span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">train_labels</span><span class="p">)),</span> <span class="sa">f</span><span class="s2">&quot;Shape mismatch between hidden states (</span><span class="si">{</span><span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">) and labels (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">train_labels</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="n">layer_hidden_states</span> <span class="o">=</span> <span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+
+            <span class="c1"># NOTE: since scoring is ultimately comparative, the effect of this is moot</span>
+            <span class="n">layer_hidden_states</span> <span class="o">=</span> <span class="n">recenter</span><span class="p">(</span><span class="n">layer_hidden_states</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">H_train_means</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+
+            <span class="c1"># get the signs for each component</span>
+            <span class="n">layer_signs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">):</span>
+
+                <span class="n">transformed_hidden_states</span> <span class="o">=</span> <span class="n">project_onto_direction</span><span class="p">(</span><span class="n">layer_hidden_states</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">][</span><span class="n">component_index</span><span class="p">])</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+
+                <span class="n">pca_outputs_comp</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">transformed_hidden_states</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">train_labels</span><span class="p">[:</span><span class="n">i</span><span class="p">]),</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">train_labels</span><span class="p">[:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train_labels</span><span class="p">))]</span>
+
+                <span class="c1"># We do elements instead of argmin/max because sometimes we pad random choices in training</span>
+                <span class="n">pca_outputs_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="n">train_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pca_outputs_comp</span><span class="p">)])</span>
+                <span class="n">pca_outputs_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="n">train_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pca_outputs_comp</span><span class="p">)])</span>
+
+                <span class="n">layer_signs</span><span class="p">[</span><span class="n">component_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pca_outputs_max</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pca_outputs_min</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">layer_signs</span><span class="p">[</span><span class="n">component_index</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">layer_signs</span><span class="p">[</span><span class="n">component_index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># default to positive in case of tie</span>
+
+            <span class="n">signs</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_signs</span>
+
+        <span class="k">return</span> <span class="n">signs</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ClusterMeanRepReader">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.ClusterMeanRepReader">[docs]</a>
+<span class="k">class</span> <span class="nc">ClusterMeanRepReader</span><span class="p">(</span><span class="n">RepReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the direction that is the difference between the mean of the positive and negative clusters.&quot;&quot;&quot;</span>
+    <span class="n">n_components</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">needs_hiddens</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ClusterMeanRepReader.get_rep_directions">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.ClusterMeanRepReader.get_rep_directions">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_rep_directions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="c1"># train labels is necessary to differentiate between different classes</span>
+        <span class="n">train_choices</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;train_choices&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;train_choices&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="n">train_choices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;ClusterMeanRepReader requires train_choices to differentiate two clusters&quot;</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_choices</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">]),</span> <span class="sa">f</span><span class="s2">&quot;Shape mismatch between hidden states (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="si">}</span><span class="s2">) and labels (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_choices</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+        <span class="n">train_choices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train_choices</span><span class="p">)</span>
+        <span class="n">neg_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">train_choices</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">pos_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">train_choices</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">directions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+            <span class="n">H_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+
+            <span class="n">H_pos_mean</span> <span class="o">=</span> <span class="n">H_train</span><span class="p">[</span><span class="n">pos_class</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">H_neg_mean</span> <span class="o">=</span> <span class="n">H_train</span><span class="p">[</span><span class="n">neg_class</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">H_pos_mean</span> <span class="o">-</span> <span class="n">H_neg_mean</span>
+
+        <span class="k">return</span> <span class="n">directions</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RandomRepReader">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.RandomRepReader">[docs]</a>
+<span class="k">class</span> <span class="nc">RandomRepReader</span><span class="p">(</span><span class="n">RepReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get random directions for each hidden layer. Do not use hidden</span>
+<span class="sd">    states or train labels of any kind.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">needs_hiddens</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_hiddens</span> <span class="o">=</span> <span class="n">needs_hiddens</span>
+
+<div class="viewcode-block" id="RandomRepReader.get_rep_directions">
+<a class="viewcode-back" href="../../../../../jailbreakpipe.role.defenses.repe_utils.html#jailbreakpipe.role.defenses.repe_utils.rep_readers.RandomRepReader.get_rep_directions">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_rep_directions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">hidden_layers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">directions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">hidden_layers</span><span class="p">:</span>
+            <span class="n">directions</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">directions</span></div>
+</div>
+
+
+
+<span class="n">DIRECTION_FINDERS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;pca&#39;</span><span class="p">:</span> <span class="n">PCARepReader</span><span class="p">,</span>
+    <span class="s1">&#39;cluster_mean&#39;</span><span class="p">:</span> <span class="n">ClusterMeanRepReader</span><span class="p">,</span>
+    <span class="s1">&#39;random&#39;</span><span class="p">:</span> <span class="n">RandomRepReader</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Floyed Shen, etc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

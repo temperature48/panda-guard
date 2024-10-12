@@ -1,0 +1,1159 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jailbreakpipe.llms package &mdash; Jailbreak-Pipeline v0.0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a801d45e"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Jailbreak-Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">jailbreakpipe.llms package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-jailbreakpipe.llms.base">jailbreakpipe.llms.base module</a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM"><code class="docutils literal notranslate"><span class="pre">BaseLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM.avg_tokens"><code class="docutils literal notranslate"><span class="pre">BaseLLM.avg_tokens</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM.batch_generate"><code class="docutils literal notranslate"><span class="pre">BaseLLM.batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">BaseLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM.generate"><code class="docutils literal notranslate"><span class="pre">BaseLLM.generate()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM.reset"><code class="docutils literal notranslate"><span class="pre">BaseLLM.reset()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM.total_tokens"><code class="docutils literal notranslate"><span class="pre">BaseLLM.total_tokens</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM.update"><code class="docutils literal notranslate"><span class="pre">BaseLLM.update()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig"><code class="docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">BaseLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">BaseLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig.logprobs"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.logprobs</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig.max_n_tokens"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.max_n_tokens</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig.seed"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.seed</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig.temperature"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.temperature</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-jailbreakpipe.llms.hf">jailbreakpipe.llms.hf module</a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLM"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLM.batch_generate"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM.batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLM.generate"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig.device_map"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig.device_map</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-jailbreakpipe.llms.llm_registry">jailbreakpipe.llms.llm_registry module</a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.llm_registry.create_llm"><code class="docutils literal notranslate"><span class="pre">create_llm()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.llm_registry.register_llm"><code class="docutils literal notranslate"><span class="pre">register_llm()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-jailbreakpipe.llms.oai">jailbreakpipe.llms.oai module</a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLM"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLM.generate"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLM.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.api_key"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.api_key</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.base_url"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.base_url</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLM"><code class="docutils literal notranslate"><span class="pre">OpenAiLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">OpenAiLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLM.generate"><code class="docutils literal notranslate"><span class="pre">OpenAiLLM.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.api_key"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.api_key</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.base_url"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.base_url</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-jailbreakpipe.llms">Module contents</a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM"><code class="docutils literal notranslate"><span class="pre">BaseLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM.avg_tokens"><code class="docutils literal notranslate"><span class="pre">BaseLLM.avg_tokens</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM.batch_generate"><code class="docutils literal notranslate"><span class="pre">BaseLLM.batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">BaseLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM.generate"><code class="docutils literal notranslate"><span class="pre">BaseLLM.generate()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM.reset"><code class="docutils literal notranslate"><span class="pre">BaseLLM.reset()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM.total_tokens"><code class="docutils literal notranslate"><span class="pre">BaseLLM.total_tokens</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLM.update"><code class="docutils literal notranslate"><span class="pre">BaseLLM.update()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLMConfig"><code class="docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">BaseLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.BaseLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">BaseLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLM"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLM.batch_generate"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM.batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLM.generate"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLM.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLMConfig"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLMConfig.device_map"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig.device_map</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.HuggingFaceLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">HuggingFaceLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.LLMGenerateConfig"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.LLMGenerateConfig.logprobs"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.logprobs</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.LLMGenerateConfig.max_n_tokens"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.max_n_tokens</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.LLMGenerateConfig.seed"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.seed</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.LLMGenerateConfig.temperature"><code class="docutils literal notranslate"><span class="pre">LLMGenerateConfig.temperature</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLM"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLM.generate"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLM.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLMConfig"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.api_key"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.api_key</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.base_url"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.base_url</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">OpenAiChatLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLM"><code class="docutils literal notranslate"><span class="pre">OpenAiLLM</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLM.evaluate_log_likelihood"><code class="docutils literal notranslate"><span class="pre">OpenAiLLM.evaluate_log_likelihood()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLM.generate"><code class="docutils literal notranslate"><span class="pre">OpenAiLLM.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLMConfig"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLMConfig.api_key"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.api_key</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLMConfig.base_url"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.base_url</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLMConfig.llm_type"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.llm_type</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.OpenAiLLMConfig.model_name"><code class="docutils literal notranslate"><span class="pre">OpenAiLLMConfig.model_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.llms.create_llm"><code class="docutils literal notranslate"><span class="pre">create_llm()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Jailbreak-Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">jailbreakpipe.llms package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/jailbreakpipe.llms.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jailbreakpipe-llms-package">
+<h1>jailbreakpipe.llms package<a class="headerlink" href="#jailbreakpipe-llms-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-jailbreakpipe.llms.base">
+<span id="jailbreakpipe-llms-base-module"></span><h2>jailbreakpipe.llms.base module<a class="headerlink" href="#module-jailbreakpipe.llms.base" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.base.</span></span><span class="sig-name descname"><span class="pre">BaseLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><span class="pre">BaseLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration object for LLM.  LLM的配置对象</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM.avg_tokens">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">avg_tokens</span></span><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM.avg_tokens" title="Link to this definition"></a></dt>
+<dd><p>Get the average number of tokens per request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Average number of tokens.  返回每次请求的词汇平均值</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM.batch_generate">
+<span class="sig-name descname"><span class="pre">batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM.batch_generate" title="Link to this definition"></a></dt>
+<dd><p>Generate responses for a batch of messages concurrently.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_messages</strong> – List of batches of messages.  消息的批量列表</p></li>
+<li><p><strong>config</strong> – Configuration for generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of generated responses.  返回生成的应答列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM.evaluate_log_likelihood">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Abstract method for evaluating log likelihood of messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages to evaluate.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of log likelihoods.  返回的百分比列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM.generate">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Abstract method for generating response from LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for input.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or responses with log probabilities.  返回生成的应答或启用百分比的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the token counts and the number of requests.</p>
+<p>重置词汇计数和请求次数</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM.total_tokens">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_tokens</span></span><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM.total_tokens" title="Link to this definition"></a></dt>
+<dd><p>Get the total number of tokens used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total number of tokens.  返回的词汇总数</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLM.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completion_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_requires</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLM.update" title="Link to this definition"></a></dt>
+<dd><p>Update the token counts and number of requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt_tokens</strong> – Number of tokens in prompt.  提示中的词汇数</p></li>
+<li><p><strong>completion_tokens</strong> – Number of tokens in completion.  完成中的词汇数</p></li>
+<li><p><strong>num_requires</strong> – Number of requests made.  请求次数</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.base.</span></span><span class="sig-name descname"><span class="pre">BaseLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base configuration for LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of the LLM.  LLM的类型</p></li>
+<li><p><strong>model_name</strong> – Name of the model.  模型的名称</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.BaseLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.base.BaseLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.LLMGenerateConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.base.</span></span><span class="sig-name descname"><span class="pre">LLMGenerateConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logprobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#LLMGenerateConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Configuration for LLM generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_n_tokens</strong> – Maximum number of tokens to generate.  最大生成的词汇数量</p></li>
+<li><p><strong>temperature</strong> – Temperature for sampling randomness.  用于样本随机的温度参数</p></li>
+<li><p><strong>logprobs</strong> – Whether to return log probabilities.  是否返回logprobs</p></li>
+<li><p><strong>seed</strong> – Seed for reproducibility.  用于可重复的种子</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.LLMGenerateConfig.logprobs">
+<span class="sig-name descname"><span class="pre">logprobs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#jailbreakpipe.llms.base.LLMGenerateConfig.logprobs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.LLMGenerateConfig.max_n_tokens">
+<span class="sig-name descname"><span class="pre">max_n_tokens</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.base.LLMGenerateConfig.max_n_tokens" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.LLMGenerateConfig.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.base.LLMGenerateConfig.seed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.base.LLMGenerateConfig.temperature">
+<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.base.LLMGenerateConfig.temperature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-jailbreakpipe.llms.hf">
+<span id="jailbreakpipe-llms-hf-module"></span><h2>jailbreakpipe.llms.hf module<a class="headerlink" href="#module-jailbreakpipe.llms.hf" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.hf.</span></span><span class="sig-name descname"><span class="pre">HuggingFaceLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig" title="jailbreakpipe.llms.hf.HuggingFaceLLMConfig"><span class="pre">HuggingFaceLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLM</span></code></a></p>
+<p>Hugging Face Language Model Implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for Hugging Face LLM.  用于模型配置</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLM.batch_generate">
+<span class="sig-name descname"><span class="pre">batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM.batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLM.batch_generate" title="Link to this definition"></a></dt>
+<dd><p>Generate responses for a batch of messages in a single call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_messages</strong> – List of batches of messages.  批量生成的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of generated responses for each batch.  返回每个批量的生成应答列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLM.evaluate_log_likelihood">
+<span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the log likelihood of the given messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for evaluation.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of log likelihood values.  返回的log likelihood值列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLM.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Generate a response for a given input using Hugging Face model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of input messages.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.hf.</span></span><span class="sig-name descname"><span class="pre">HuggingFaceLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'HuggingFaceLLM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typing.Any]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_map:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a></p>
+<p>Hugging Face LLM Configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of LLM, default is “HuggingFaceLLM”.  LLM的类型，默认值为 “HuggingFaceLLM”</p></li>
+<li><p><strong>model_name</strong> – Name of the model or model instance.  模型的名称或模型实例</p></li>
+<li><p><strong>device_map</strong> – Device mapping for model deployment.  用于模型部署的设备对应表</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLMConfig.device_map">
+<span class="sig-name descname"><span class="pre">device_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></em><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig.device_map" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HuggingFaceLLM'</span></em><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.hf.HuggingFaceLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">[&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">typing.Any]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-jailbreakpipe.llms.llm_registry">
+<span id="jailbreakpipe-llms-llm-registry-module"></span><h2>jailbreakpipe.llms.llm_registry module<a class="headerlink" href="#module-jailbreakpipe.llms.llm_registry" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.llm_registry.create_llm">
+<span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.llm_registry.</span></span><span class="sig-name descname"><span class="pre">create_llm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><span class="pre">BaseLLMConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><span class="pre">BaseLLM</span></a></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/llm_registry.html#create_llm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.llm_registry.create_llm" title="Link to this definition"></a></dt>
+<dd><p>Create an LLM instance based on the provided configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for LLM, can be a BaseLLMConfig or a dictionary.  用于LLM的配置，可以是BaseLLMConfig或字典形式</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of the LLM defined by the configuration.  返回配置所定义的LLM实例</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.llm_registry.register_llm">
+<span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.llm_registry.</span></span><span class="sig-name descname"><span class="pre">register_llm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/llm_registry.html#register_llm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.llm_registry.register_llm" title="Link to this definition"></a></dt>
+<dd><p>Register a subclass of BaseLLM with the LLMS registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>llm</strong> – Subclass of BaseLLM to register.  要注册的BaseLLM的子类</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The registered LLM subclass.  返回注册的LLM子类</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jailbreakpipe.llms.oai">
+<span id="jailbreakpipe-llms-oai-module"></span><h2>jailbreakpipe.llms.oai module<a class="headerlink" href="#module-jailbreakpipe.llms.oai" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.oai.</span></span><span class="sig-name descname"><span class="pre">OpenAiChatLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig" title="jailbreakpipe.llms.oai.OpenAiLLMConfig"><span class="pre">OpenAiLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLM</span></code></a></p>
+<p>OpenAI Chat LLM Implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for OpenAI Chat LLM.  用于OpenAI小谱LLM的配置</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLM.evaluate_log_likelihood">
+<span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the log likelihood of the given messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for evaluation.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – OpenAI Chat does not support log likelihood evaluation.  这个LLM属性不支持log likelihood评估</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLM.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Generate a response for a given input using OpenAI Chat API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of input messages.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.oai.</span></span><span class="sig-name descname"><span class="pre">OpenAiChatLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'OpenAiChatLLM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'KEY</span> <span class="pre">HERE'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a></p>
+<p>OpenAI Chat LLM Configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of LLM, default is “OpenAiChatLLM”.  LLM的类型，默认值为 “OpenAiChatLLM”</p></li>
+<li><p><strong>model_name</strong> – Name of the model.  模型的名称</p></li>
+<li><p><strong>base_url</strong> – Base URL for the OpenAI API.  OpenAI API的基础URL</p></li>
+<li><p><strong>api_key</strong> – API key for accessing OpenAI.  访问OpenAI的API密钥</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLMConfig.api_key">
+<span class="sig-name descname"><span class="pre">api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'KEY</span> <span class="pre">HERE'</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.api_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLMConfig.base_url">
+<span class="sig-name descname"><span class="pre">base_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.base_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'OpenAiChatLLM'</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiChatLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiChatLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.oai.</span></span><span class="sig-name descname"><span class="pre">OpenAiLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig" title="jailbreakpipe.llms.oai.OpenAiLLMConfig"><span class="pre">OpenAiLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLM</span></code></a></p>
+<p>OpenAI LLM Implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for OpenAI LLM.  用于OpenAI LLM的配置</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLM.evaluate_log_likelihood">
+<span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the log likelihood of the given messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for evaluation.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of log likelihood values.  返回的log likelihood值列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLM.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Generate a response for a given input using OpenAI API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of input messages.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.oai.</span></span><span class="sig-name descname"><span class="pre">OpenAiLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'OpenAiLLM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'KEY</span> <span class="pre">HERE'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a></p>
+<p>OpenAI LLM Configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of LLM, default is “OpenAiLLM”.  LLM的类型，默认值为 “OpenAiLLM”</p></li>
+<li><p><strong>model_name</strong> – Name of the model.  模型的名称</p></li>
+<li><p><strong>base_url</strong> – Base URL for the OpenAI API.  OpenAI API的基础URL</p></li>
+<li><p><strong>api_key</strong> – API key for accessing OpenAI.  访问OpenAI的API密钥</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLMConfig.api_key">
+<span class="sig-name descname"><span class="pre">api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'KEY</span> <span class="pre">HERE'</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.api_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLMConfig.base_url">
+<span class="sig-name descname"><span class="pre">base_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.base_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'OpenAiLLM'</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.oai.OpenAiLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-jailbreakpipe.llms">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-jailbreakpipe.llms" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">BaseLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><span class="pre">BaseLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration object for LLM.  LLM的配置对象</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM.avg_tokens">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">avg_tokens</span></span><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM.avg_tokens" title="Link to this definition"></a></dt>
+<dd><p>Get the average number of tokens per request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Average number of tokens.  返回每次请求的词汇平均值</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM.batch_generate">
+<span class="sig-name descname"><span class="pre">batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM.batch_generate" title="Link to this definition"></a></dt>
+<dd><p>Generate responses for a batch of messages concurrently.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_messages</strong> – List of batches of messages.  消息的批量列表</p></li>
+<li><p><strong>config</strong> – Configuration for generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of generated responses.  返回生成的应答列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM.evaluate_log_likelihood">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Abstract method for evaluating log likelihood of messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages to evaluate.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of log likelihoods.  返回的百分比列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM.generate">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Abstract method for generating response from LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for input.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or responses with log probabilities.  返回生成的应答或启用百分比的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the token counts and the number of requests.</p>
+<p>重置词汇计数和请求次数</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM.total_tokens">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_tokens</span></span><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM.total_tokens" title="Link to this definition"></a></dt>
+<dd><p>Get the total number of tokens used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total number of tokens.  返回的词汇总数</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLM.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completion_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_requires</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLM.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.BaseLLM.update" title="Link to this definition"></a></dt>
+<dd><p>Update the token counts and number of requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt_tokens</strong> – Number of tokens in prompt.  提示中的词汇数</p></li>
+<li><p><strong>completion_tokens</strong> – Number of tokens in completion.  完成中的词汇数</p></li>
+<li><p><strong>num_requires</strong> – Number of requests made.  请求次数</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">BaseLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#BaseLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.BaseLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base configuration for LLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of the LLM.  LLM的类型</p></li>
+<li><p><strong>model_name</strong> – Name of the model.  模型的名称</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.BaseLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.BaseLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.BaseLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">HuggingFaceLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.hf.HuggingFaceLLMConfig" title="jailbreakpipe.llms.hf.HuggingFaceLLMConfig"><span class="pre">HuggingFaceLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLM</span></code></a></p>
+<p>Hugging Face Language Model Implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for Hugging Face LLM.  用于模型配置</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLM.batch_generate">
+<span class="sig-name descname"><span class="pre">batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM.batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLM.batch_generate" title="Link to this definition"></a></dt>
+<dd><p>Generate responses for a batch of messages in a single call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_messages</strong> – List of batches of messages.  批量生成的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of generated responses for each batch.  返回每个批量的生成应答列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLM.evaluate_log_likelihood">
+<span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the log likelihood of the given messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for evaluation.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of log likelihood values.  返回的log likelihood值列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLM.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Generate a response for a given input using Hugging Face model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of input messages.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">HuggingFaceLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'HuggingFaceLLM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typing.Any]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_map:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/hf.html#HuggingFaceLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a></p>
+<p>Hugging Face LLM Configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of LLM, default is “HuggingFaceLLM”.  LLM的类型，默认值为 “HuggingFaceLLM”</p></li>
+<li><p><strong>model_name</strong> – Name of the model or model instance.  模型的名称或模型实例</p></li>
+<li><p><strong>device_map</strong> – Device mapping for model deployment.  用于模型部署的设备对应表</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLMConfig.device_map">
+<span class="sig-name descname"><span class="pre">device_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></em><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLMConfig.device_map" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HuggingFaceLLM'</span></em><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.HuggingFaceLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">[&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">typing.Any]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.HuggingFaceLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.LLMGenerateConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">LLMGenerateConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logprobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/base.html#LLMGenerateConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.LLMGenerateConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Configuration for LLM generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_n_tokens</strong> – Maximum number of tokens to generate.  最大生成的词汇数量</p></li>
+<li><p><strong>temperature</strong> – Temperature for sampling randomness.  用于样本随机的温度参数</p></li>
+<li><p><strong>logprobs</strong> – Whether to return log probabilities.  是否返回logprobs</p></li>
+<li><p><strong>seed</strong> – Seed for reproducibility.  用于可重复的种子</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.LLMGenerateConfig.logprobs">
+<span class="sig-name descname"><span class="pre">logprobs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#jailbreakpipe.llms.LLMGenerateConfig.logprobs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.LLMGenerateConfig.max_n_tokens">
+<span class="sig-name descname"><span class="pre">max_n_tokens</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.LLMGenerateConfig.max_n_tokens" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.LLMGenerateConfig.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.LLMGenerateConfig.seed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.LLMGenerateConfig.temperature">
+<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.LLMGenerateConfig.temperature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">OpenAiChatLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig" title="jailbreakpipe.llms.oai.OpenAiLLMConfig"><span class="pre">OpenAiLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLM</span></code></a></p>
+<p>OpenAI Chat LLM Implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for OpenAI Chat LLM.  用于OpenAI小谱LLM的配置</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLM.evaluate_log_likelihood">
+<span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the log likelihood of the given messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for evaluation.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – OpenAI Chat does not support log likelihood evaluation.  这个LLM属性不支持log likelihood评估</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLM.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Generate a response for a given input using OpenAI Chat API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of input messages.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">OpenAiChatLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'OpenAiChatLLM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'KEY</span> <span class="pre">HERE'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiChatLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a></p>
+<p>OpenAI Chat LLM Configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of LLM, default is “OpenAiChatLLM”.  LLM的类型，默认值为 “OpenAiChatLLM”</p></li>
+<li><p><strong>model_name</strong> – Name of the model.  模型的名称</p></li>
+<li><p><strong>base_url</strong> – Base URL for the OpenAI API.  OpenAI API的基础URL</p></li>
+<li><p><strong>api_key</strong> – API key for accessing OpenAI.  访问OpenAI的API密钥</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLMConfig.api_key">
+<span class="sig-name descname"><span class="pre">api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'KEY</span> <span class="pre">HERE'</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.api_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLMConfig.base_url">
+<span class="sig-name descname"><span class="pre">base_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.base_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'OpenAiChatLLM'</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiChatLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiChatLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">OpenAiLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.oai.OpenAiLLMConfig" title="jailbreakpipe.llms.oai.OpenAiLLMConfig"><span class="pre">OpenAiLLMConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLM</span></code></a></p>
+<p>OpenAI LLM Implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for OpenAI LLM.  用于OpenAI LLM的配置</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLM.evaluate_log_likelihood">
+<span class="sig-name descname"><span class="pre">evaluate_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLM.evaluate_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLM.evaluate_log_likelihood" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the log likelihood of the given messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of messages for evaluation.  需要评估的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of log likelihood values.  返回的log likelihood值列表</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLM.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.LLMGenerateConfig" title="jailbreakpipe.llms.base.LLMGenerateConfig"><span class="pre">LLMGenerateConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLM.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLM.generate" title="Link to this definition"></a></dt>
+<dd><p>Generate a response for a given input using OpenAI API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – List of input messages.  输入的消息列表</p></li>
+<li><p><strong>config</strong> – Configuration for LLM generation.  生成配置</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLMConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">OpenAiLLMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'OpenAiLLM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'KEY</span> <span class="pre">HERE'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/llms/oai.html#OpenAiLLMConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLMConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMConfig</span></code></a></p>
+<p>OpenAI LLM Configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm_type</strong> – Type of LLM, default is “OpenAiLLM”.  LLM的类型，默认值为 “OpenAiLLM”</p></li>
+<li><p><strong>model_name</strong> – Name of the model.  模型的名称</p></li>
+<li><p><strong>base_url</strong> – Base URL for the OpenAI API.  OpenAI API的基础URL</p></li>
+<li><p><strong>api_key</strong> – API key for accessing OpenAI.  访问OpenAI的API密钥</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLMConfig.api_key">
+<span class="sig-name descname"><span class="pre">api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'KEY</span> <span class="pre">HERE'</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLMConfig.api_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLMConfig.base_url">
+<span class="sig-name descname"><span class="pre">base_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLMConfig.base_url" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLMConfig.llm_type">
+<span class="sig-name descname"><span class="pre">llm_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'OpenAiLLM'</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLMConfig.llm_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.OpenAiLLMConfig.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.llms.OpenAiLLMConfig.model_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jailbreakpipe.llms.create_llm">
+<span class="sig-prename descclassname"><span class="pre">jailbreakpipe.llms.</span></span><span class="sig-name descname"><span class="pre">create_llm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLMConfig" title="jailbreakpipe.llms.base.BaseLLMConfig"><span class="pre">BaseLLMConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><span class="pre">BaseLLM</span></a></span></span><a class="reference internal" href="_modules/jailbreakpipe/llms/llm_registry.html#create_llm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.llms.create_llm" title="Link to this definition"></a></dt>
+<dd><p>Create an LLM instance based on the provided configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – Configuration for LLM, can be a BaseLLMConfig or a dictionary.  用于LLM的配置，可以是BaseLLMConfig或字典形式</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of the LLM defined by the configuration.  返回配置所定义的LLM实例</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Floyed Shen, etc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

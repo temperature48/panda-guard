@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jailbreakpipe.pipelines package &mdash; Jailbreak-Pipeline v0.0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a801d45e"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Jailbreak-Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">jailbreakpipe.pipelines package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-jailbreakpipe.pipelines.inference">jailbreakpipe.pipelines.inference module</a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipeline"><code class="docutils literal notranslate"><span class="pre">InferPipeline</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipeline.calc_tokens"><code class="docutils literal notranslate"><span class="pre">InferPipeline.calc_tokens()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipeline.log"><code class="docutils literal notranslate"><span class="pre">InferPipeline.log()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipeline.parallel_judging"><code class="docutils literal notranslate"><span class="pre">InferPipeline.parallel_judging()</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipeline.reset"><code class="docutils literal notranslate"><span class="pre">InferPipeline.reset()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig"><code class="docutils literal notranslate"><span class="pre">InferPipelineConfig</span></code></a><ul>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig.attacker_config"><code class="docutils literal notranslate"><span class="pre">InferPipelineConfig.attacker_config</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig.defender_config"><code class="docutils literal notranslate"><span class="pre">InferPipelineConfig.defender_config</span></code></a></li>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig.judge_configs"><code class="docutils literal notranslate"><span class="pre">InferPipelineConfig.judge_configs</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#jailbreakpipe.pipelines.inference.llm_register"><code class="docutils literal notranslate"><span class="pre">llm_register()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-jailbreakpipe.pipelines">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Jailbreak-Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">jailbreakpipe.pipelines package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/jailbreakpipe.pipelines.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jailbreakpipe-pipelines-package">
+<h1>jailbreakpipe.pipelines package<a class="headerlink" href="#jailbreakpipe-pipelines-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-jailbreakpipe.pipelines.inference">
+<span id="jailbreakpipe-pipelines-inference-module"></span><h2>jailbreakpipe.pipelines.inference module<a class="headerlink" href="#module-jailbreakpipe.pipelines.inference" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.pipelines.inference.</span></span><span class="sig-name descname"><span class="pre">InferPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig" title="jailbreakpipe.pipelines.inference.InferPipelineConfig"><span class="pre">InferPipelineConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/pipelines/inference.html#InferPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipeline" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Inference pipeline for managing and executing attacks and defenses.</p>
+<p>管理和执行攻击和防御的推理流程。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – Configuration for the inference pipeline, including attacker, defender, and judges.
+推理流程的配置，包括攻击者、防御者和评审者。</p></li>
+<li><p><strong>verbose</strong> – Whether to enable verbose logging for debugging and transparency.
+是否启用详细日志记录，用于调试和透明化。</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipeline.calc_tokens">
+<span class="sig-name descname"><span class="pre">calc_tokens</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/pipelines/inference.html#InferPipeline.calc_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipeline.calc_tokens" title="Link to this definition"></a></dt>
+<dd><p>Calculate the token usage for both the attacker and defender, summarizing prompt and completion tokens.</p>
+<p>计算攻击者和防御者的Token使用量，包括提示和完成Token。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing detailed token usage for both roles.
+包含双方详细Token使用量的字典。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipeline.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/pipelines/inference.html#InferPipeline.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipeline.log" title="Link to this definition"></a></dt>
+<dd><p>Log messages for each stage of the pipeline if verbose logging is enabled.</p>
+<p>如果启用了详细日志记录，则记录流程每个阶段的消息。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – The messages to be logged at the current stage.
+当前阶段要记录的消息。</p></li>
+<li><p><strong>stage</strong> – A label for the current stage of the pipeline.
+流程当前阶段的标签。</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipeline.parallel_judging">
+<span class="sig-name descname"><span class="pre">parallel_judging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">defense</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/pipelines/inference.html#InferPipeline.parallel_judging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipeline.parallel_judging" title="Link to this definition"></a></dt>
+<dd><p>Perform parallel evaluation of the defense using multiple judges.</p>
+<p>使用多个评审者并行评估防御。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>defense</strong> – Messages that have been defended and need evaluation.
+已经防御并需要评估的消息。</p></li>
+<li><p><strong>request</strong> – The original request for context in evaluation.
+评估中使用的原始请求。</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the results from each judge.
+包含每个评审者结果的字典。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipeline.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/pipelines/inference.html#InferPipeline.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipeline.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset the state of all LLMs in the pipeline, preparing them for a new inference run.</p>
+<p>重置流程中所有LLM的状态，准备进行新的推理。</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipelineConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">jailbreakpipe.pipelines.inference.</span></span><span class="sig-name descname"><span class="pre">InferPipelineConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attacker_config:</span> <span class="pre">~jailbreakpipe.role.attacks.base.BaseAttackerConfig</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defender_config:</span> <span class="pre">~jailbreakpipe.role.defenses.base.BaseDefenderConfig</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">judge_configs:</span> <span class="pre">~typing.List[~jailbreakpipe.role.judges.base.BaseJudgeConfig]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jailbreakpipe/pipelines/inference.html#InferPipelineConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Configuration class for the inference pipeline.</p>
+<p>配置类，用于推理流程。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attacker_config</strong> – Configuration for the attacker, detailing its parameters and behavior.
+攻击者的配置，详细描述其参数和行为。</p></li>
+<li><p><strong>defender_config</strong> – Configuration for the defender, detailing its parameters and behavior.
+防御者的配置，详细描述其参数和行为。</p></li>
+<li><p><strong>judge_configs</strong> – List of configurations for any judges used in evaluating the effectiveness of the defense.
+评估防御有效性的评审者配置列表。</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipelineConfig.attacker_config">
+<span class="sig-name descname"><span class="pre">attacker_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="jailbreakpipe.role.attacks.html#jailbreakpipe.role.attacks.base.BaseAttackerConfig" title="jailbreakpipe.role.attacks.base.BaseAttackerConfig"><span class="pre">BaseAttackerConfig</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig.attacker_config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipelineConfig.defender_config">
+<span class="sig-name descname"><span class="pre">defender_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="jailbreakpipe.role.defenses.html#jailbreakpipe.role.defenses.base.BaseDefenderConfig" title="jailbreakpipe.role.defenses.base.BaseDefenderConfig"><span class="pre">BaseDefenderConfig</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig.defender_config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.InferPipelineConfig.judge_configs">
+<span class="sig-name descname"><span class="pre">judge_configs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="jailbreakpipe.role.judges.html#jailbreakpipe.role.judges.base.BaseJudgeConfig" title="jailbreakpipe.role.judges.base.BaseJudgeConfig"><span class="pre">BaseJudgeConfig</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jailbreakpipe.pipelines.inference.InferPipelineConfig.judge_configs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jailbreakpipe.pipelines.inference.llm_register">
+<span class="sig-prename descclassname"><span class="pre">jailbreakpipe.pipelines.inference.</span></span><span class="sig-name descname"><span class="pre">llm_register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="jailbreakpipe.role.attacks.html#jailbreakpipe.role.attacks.base.BaseAttacker" title="jailbreakpipe.role.attacks.base.BaseAttacker"><span class="pre">BaseAttacker</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="jailbreakpipe.role.defenses.html#jailbreakpipe.role.defenses.base.BaseDefender" title="jailbreakpipe.role.defenses.base.BaseDefender"><span class="pre">BaseDefender</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="jailbreakpipe.role.judges.html#jailbreakpipe.role.judges.base.BaseJudge" title="jailbreakpipe.role.judges.base.BaseJudge"><span class="pre">BaseJudge</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="jailbreakpipe.llms.html#jailbreakpipe.llms.base.BaseLLM" title="jailbreakpipe.llms.base.BaseLLM"><span class="pre">BaseLLM</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/jailbreakpipe/pipelines/inference.html#llm_register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jailbreakpipe.pipelines.inference.llm_register" title="Link to this definition"></a></dt>
+<dd><p>Register any LLM instances associated with the given attribute (attacker, defender, or judge).</p>
+<p>为给定属性（攻击者、防御者或评审者）注册任何LLM实例。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr</strong> – An instance of an attacker, defender, or judge.
+攻击者、防御者或评审者的实例。</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of registered LLM instances.
+注册的LLM实例列表。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jailbreakpipe.pipelines">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-jailbreakpipe.pipelines" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Floyed Shen, etc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
