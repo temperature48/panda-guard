@@ -1,55 +1,177 @@
 # encoding: utf-8
 # Author    : Floyed<Floyed_Shen@outlook.com>
-# Datetime  : 2024/10/10 21:56
+# Datetime  : 2024/9/16 19:46
 # User      : yu
 # Product   : PyCharm
 # Project   : jailbreak-pipeline
-# File      : run_all_inference.py.py
-# explain   :
+# File      : run_all_inference.py
+# explain   : Iterate over all attack, defense, and LLM configurations and run inference for each combination.
 
 import os
 import subprocess
 import argparse
+import logging
+from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
+from queue import Queue
 
 
 def parse_args():
     """Parse command line arguments for running all experiments."""
-    parser = argparse.ArgumentParser(description="Run all experiments for different attack and defense configurations.")
-    parser.add_argument('--config', type=str, required=True, help='Path to the main configuration file')
-    parser.add_argument('--llms', type=str, required=True, help='Path to list of available LLMs')
-    parser.add_argument('--target-llm', type=str, required=True, help='Target LLM to use')
-    parser.add_argument('--attack-dir', type=str, required=True, help='Path to attack configurations directory')
-    parser.add_argument('--defense-dir', type=str, required=True, help='Path to defense configurations directory')
-    parser.add_argument('--output-dir', type=str, default="./results", help='Output directory')
-    parser.add_argument('--device', type=str, default='cuda:0', help='Device to run the model on')
-    parser.add_argument('--repeats', type=int, default=1, help='Number of times to repeat the experiment')
+    parser = argparse.ArgumentParser(
+        description="Run all experiments for different attack, defense, and LLM configurations."
+    )
+    parser.add_argument(
+        '--config',
+        type=str,
+        default='../../configs/tasks/jbb.yaml',
+        help='Path to the main configuration file'
+    )
+    parser.add_argument(
+        '--llm',
+        type=str, default="../../configs/defenses/llms/",
+        help='Path to a single LLM configuration file or directory containing multiple LLM configuration files'
+    )
+    parser.add_argument(
+        '--attack',
+        type=str, default="../../configs/attacks/transfer",
+        help='Path to a single attack configuration file or directory containing multiple attack configuration files'
+    )
+    parser.add_argument(
+        '--defense',
+        type=str,
+        default="../../configs/defenses/",
+        help='Path to a single defense configuration file or directory containing multiple defense configuration files'
+    )
+    parser.add_argument(
+        '--output-dir',
+        type=str,
+        default="../../benchmarks/jbb",
+        help='Output directory'
+    )
+    parser.add_argument(
+        '--llm-gen',
+        type=str,
+        default='../../config/defenses/llm_gen/jbb.yaml',
+        help='Path to the LLM generator file'
+    )
+    parser.add_argument(
+        '--device-prefix',
+        type=str,
+        default='cuda:',
+        help='Device prefix for GPUs (e.g., "cuda:")'
+    )
+    parser.add_argument(
+        '--max-parallel',
+        type=int,
+        default=8,
+        help='Maximum number of parallel processes (should not exceed available GPUs)'
+    )
+    parser.add_argument(
+        '--include-reserved',
+        action='store_true',
+        help='Include reserved files from the same directories'
+    )
+    parser.add_argument(
+        '--log-level',
+        type=str,
+        default="WARNING",
+        help="Logging level, e.g., DEBUG, INFO, WARNING, ERROR"
+    )
     return parser.parse_args()
 
 
-def run_all_experiments(args):
-    """Iterate over attack and defense configurations and run inference for each combination."""
-    # List attack and defense configuration files.
-    attack_files = [os.path.join(args.attack_dir, f) for f in os.listdir(args.attack_dir) if f.endswith('.yaml')]
-    defense_files = [os.path.join(args.defense_dir, f) for f in os.listdir(args.defense_dir) if f.endswith('.yaml')]
+def get_config_files(path, include_reserved):
+    """Get a list of .yaml files from a path, handling single files or directories."""
+    if path.endswith('.yaml'):
+        return [path]
+    elif os.path.isdir(path):
+        yaml_files = [os.path.join(path, f) for f in os.listdir(path) if f.endswith('.yaml')]
+        if include_reserved:
+            reserved_path = os.path.join(path, 'reserved')
+            if os.path.exists(reserved_path):
+                yaml_files += [os.path.join(reserved_path, f) for f in os.listdir(reserved_path) if f.endswith('.yaml')]
+        return yaml_files
+    else:
+        raise ValueError(f"Path {path} is neither a .yaml file nor a directory.")
 
-    # Iterate over each combination of attack and defense configurations.
-    for attack_file in tqdm(attack_files, desc="Attacks"):
-        for defense_file in tqdm(defense_files, desc=f"Defenses for {attack_file}"):
-            # Build the command to run `run_inference.py`.
-            command = [
-                "python", "run_inference.py",
-                "--config", args.config,
-                "--llms", args.llms,
-                "--target-llm", args.target_llm,
-                "--attack", attack_file,
-                "--defense", defense_file,
-                "--device", args.device,
-                "--output-dir", args.output_dir,
-                "--repeats", str(args.repeats)
-            ]
-            print(f"Running command: {' '.join(command)}")
+
+def run_all_experiments(args):
+    """Iterate over all LLM, attack, and defense configurations and run inference for each combination."""
+    logging.basicConfig(level=eval(f'logging.{args.log_level}'), format='%(asctime)s - %(levelname)s - %(message)s')
+
+    # Get all LLM, attack, and defense configuration files.
+    llm_files = get_config_files(args.llm, args.include_reserved)
+    attack_files = get_config_files(args.attack, args.include_reserved)
+    defense_files = get_config_files(args.defense, args.include_reserved)
+
+    logging.info(
+        f"Found {len(llm_files)} LLM configurations, {len(attack_files)} attack configurations, and {len(defense_files)} defense configurations.")
+
+    # Validate max parallel jobs against the number of available GPUs.
+    max_parallel = min(args.max_parallel, len(llm_files))
+    device_list = [f"{args.device_prefix}{i}" for i in range(max_parallel)]
+
+    # Prepare a queue with available devices.
+    device_queue = Queue()
+    for device in device_list:
+        device_queue.put(device)
+
+    # Prepare combinations of (llm, attack, defense).
+    tasks = [
+        (llm_file, attack_file, defense_file)
+        for llm_file in llm_files
+        for attack_file in attack_files
+        for defense_file in defense_files
+    ]
+
+    # Function to run inference for a specific combination.
+    def run_task(llm_file, attack_file, defense_file):
+        device = device_queue.get()  # Get an available device from the queue.
+        command = [
+            "python", "jbb_inference.py",
+            "--config", args.config,
+            "--llm", llm_file,
+            "--attack", attack_file,
+            "--defense", defense_file,
+            "--llm-gen", args.llm_gen,
+            "--device", device,
+            "--output-dir", args.output_dir
+        ]
+        try:
+            logging.info(f"Running command: {' '.join(command)} on {device}")
             subprocess.run(command, check=True)
+            return True, command
+        except subprocess.CalledProcessError:
+            logging.error(f"Command failed: {' '.join(command)}")
+            return False, command  # Indicate failure.
+        finally:
+            device_queue.put(device)  # Put the device back into the queue when the task is done.
+
+    # Use ThreadPoolExecutor for parallel execution.
+    successes = []
+    failures = []
+    with ThreadPoolExecutor(max_workers=max_parallel) as executor:
+        futures = [
+            executor.submit(run_task, llm_file, attack_file, defense_file)
+            for llm_file, attack_file, defense_file in tasks
+        ]
+
+        # Display progress using tqdm.
+        for future in tqdm(futures, total=len(tasks), desc="Running experiments"):
+            success, command = future.result()
+            if success:
+                successes.append(" ".join(command))
+            else:
+                failures.append(" ".join(command))
+
+    # Write failures to a file.
+    with open("fails.txt", "w", encoding="utf-8") as f:
+        for command in failures:
+            f.write(f"Failed: {command}\n")
+
+    logging.info(f"All experiments completed. Successes: {len(successes)}, Failures: {len(failures)}.")
+    logging.info("Failed experiments logged in fails.txt.")
 
 
 if __name__ == '__main__':

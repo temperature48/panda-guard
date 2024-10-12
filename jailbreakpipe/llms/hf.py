@@ -46,7 +46,7 @@ class HuggingFaceLLM(BaseLLM):
     ):
         super().__init__(config)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(self._NAME, token=os.getenv("HF_TOKEN"), local_files_only=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(self._NAME, token=os.getenv("HF_TOKEN"))  # , local_files_only=True
         self.tokenizer.padding_side = 'left'
 
         if isinstance(config.model_name, str):
