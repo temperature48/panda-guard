@@ -261,12 +261,18 @@ We need to include more methods and complete more evaluations. The candidates in
 - [ ] [ArtPrompt](https://aclanthology.org/2024.acl-long.809/)
 - [ ] [AdvPrompter](https://arxiv.org/abs/2404.16873)
 - [ ] [RainBow Teaming](https://arxiv.org/abs/2402.16822)
+- [ ] [ICA](http://arxiv.org/abs/2310.06387)
+- [ ] [GPT-4-Cipher](http://arxiv.org/abs/2308.06463)
+- [ ] [Backtranslation](http://arxiv.org/abs/2308.06259)
+- [ ] [Multilingual](http://arxiv.org/abs/2310.06474)
+- [ ] [GPTFUZZER](https://arxiv.org/abs/2309.10253v4)
 
 ### Defenders
 
 - [ ] [GradSafe](https://aclanthology.org/2024.acl-long.30/)
 - [ ] [LLM Self Defense](https://arxiv.org/abs/2308.07308)
 - [ ] [SafeRLHF](https://arxiv.org/abs/2310.12773) ?
+- [ ] [ICD](http://arxiv.org/abs/2310.06387)
 - [ ] [Post-Generation Validation]
 
 ### Judges
