@@ -11,8 +11,8 @@
 ## 安装
 
 ```bash
-git clone https://github.com/JailbreakBench/jailbreakbench.git --recurse-submodules
-cd jailbreakbench
+git clone https://github.com/FloyedShen/jailbreak-pipeline.git --recurse-submodules
+cd jailbreak-pipeline
 pip install -r requirements.txt
 pip install -e .
 ```
