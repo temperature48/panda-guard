@@ -105,6 +105,12 @@ class OpenAiChatLLM(BaseLLM):
 
         return messages
 
+    def continual_generate(
+        self, messages: List[Dict[str, str]], config: LLMGenerateConfig
+    ):
+        raise NotImplementedError("OpenAiChatLLM does not support continual generation, please use OpenAiLLM instead.")
+
+
     def evaluate_log_likelihood(
         self, messages: List[Dict[str, str]], config: LLMGenerateConfig
     ) -> List[float]:

@@ -84,6 +84,7 @@ class BaseLLM(abc.ABC):
         """
         pass
 
+    @abc.abstractmethod
     def continual_generate(
         self, messages: List[Dict[str, str]], config: LLMGenerateConfig
     ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
