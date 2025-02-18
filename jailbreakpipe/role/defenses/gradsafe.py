@@ -286,7 +286,7 @@ class GradSafeDefender(BaseDefender):
         # columns = df[["user_input", "toxicity"]]
         model, tokenizer = self.target_llm.model, self.target_llm.tokenizer
         model.train()
-        assert model.training == True
+        assert model.training == True, "Model should be in training mode."
 
         # Gradient for prompt paired with complaince response Sure
         optimizer = torch.optim.SGD(model.parameters(), lr=0.01)

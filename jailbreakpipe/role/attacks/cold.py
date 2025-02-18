@@ -17,7 +17,6 @@ from jailbreakpipe.llms import (
 import os
 import numpy as np
 import time
-import wandb
 import argparse
 import random
 import sys
@@ -122,6 +121,7 @@ class ColdAttacker(BaseAttacker):
         self.config = config
 
         self.llm = create_llm(config=config.white_box_llm_config)
+        # TOOD: 这里的所有的config, 应该都写到BaseAttackerConfig中, 并能使用 .yaml 文件进行配置 / 读取. 
         self.args = get_fixed_args()
 
     def attack(self, messages: List[Dict[str, str]], **kwargs) -> List[Dict[str, str]]:

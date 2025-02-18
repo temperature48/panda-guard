@@ -528,6 +528,7 @@ class TAPAttacker(BaseAttacker):
                 attack_params=attack_params,
             )
 
+            # TODO @fenglinghao Remove print!
             print(
                 f"Total number of prompts (after pruning phase 1) are {len(adv_prompts)}"
             )

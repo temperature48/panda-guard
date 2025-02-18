@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 import time
-import wandb
+# TODO @hexiang 删掉了 import wandb
 
 from nltk import tokenize
 from nltk.corpus import stopwords
@@ -144,11 +144,6 @@ def decode(model, tokenizer, device, x="", z="", constraints=None, args=None, sy
                  torch.zeros([args.batch_size, length - init_logits.shape[1], tokenizer.vocab_size], device=device)],
                 dim=1)
     text, _, _ = get_text_from_logits(init_logits, tokenizer)
-
-    if args.wandb:
-        wandb.init(
-            project='args.mode' + str(int(round(time.time() * 1000))),
-            config=args)
 
     y_logits = init_logits
 

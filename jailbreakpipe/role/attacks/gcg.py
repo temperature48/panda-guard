@@ -149,7 +149,7 @@ def filter_ids(ids: Tensor, tokenizer: transformers.PreTrainedTokenizer):
     Args:
         ids : Tensor, shape = (search_width, n_optim_ids)
             token ids
-        tokenizer : ~transformers.PreTrainedTokenizer
+        tokenizer : transformers.PreTrainedTokenizer
             the model's tokenizer
 
     Returns:

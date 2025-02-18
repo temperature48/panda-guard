@@ -129,6 +129,7 @@ class ArtPromptAttacker(BaseAttacker):
 
     def ascii_art(self, prompt: str) -> str:
 
+        # TODO @shensicheng: Use jailbreakpipe.llms.create_llm to Create a LLM
         api_key = os.getenv("OPENAI_API_KEY")
         client = OpenAI(
             api_key = api_key,

@@ -97,6 +97,7 @@ class ReNeLLMAttacker(BaseAttacker):
 
         nested_prompt = ""
 
+        # TODO @hexiang: 有可能会出现无限循环的情况，需要加入超时机制
         while True:
             # 1. prompt rewriting
             while True:

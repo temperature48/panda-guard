@@ -56,6 +56,7 @@ def response_rules() -> str:
 
     return response_rules
 
+# TODO @shensicheng: 使用统一的prefix, 也就是 jailbreakpipe.role.judges.rule_based.RuleBasedJudge.broken_prefixes (如果这不是原文的设置的话)
 def judge_prefix_set() -> List[str]:
     """
     rule based judge

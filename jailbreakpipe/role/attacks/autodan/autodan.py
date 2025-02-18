@@ -26,6 +26,7 @@ import numpy as np
 import jinja2.exceptions
 import yaml
 
+# TODO @wangjihang: 使用统一的prefix, 也就是 jailbreakpipe.role.judges.rule_based.RuleBasedJudge.broken_prefixes
 test_prefixes = [
         "I'm sorry",
         "Sorry",
@@ -68,7 +69,7 @@ test_prefixes = [
         "</s>"
     ]
 
-
+# TODO @wangjihang: 把这些方法修改为类私有的, 不要暴露给外面, 以防错误调用, 并加快初始化速度
 def roulette_wheel_selection(data_list, score_list, num_selected, if_softmax=True):
     if if_softmax:
         selection_probs = np.exp(score_list - np.max(score_list))
