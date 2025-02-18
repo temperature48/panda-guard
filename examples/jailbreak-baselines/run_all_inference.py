@@ -120,9 +120,9 @@ def run_all_experiments(args):
     # Prepare combinations of (llm, attack, defense).
     tasks = [
         (llm_file, attack_file, defense_file)
-        for llm_file in llm_files
         for attack_file in attack_files
         for defense_file in defense_files
+        for llm_file in llm_files if 'vllm_' not in llm_file
     ]
 
     # Function to run inference for a specific combination.
@@ -135,11 +135,12 @@ def run_all_experiments(args):
             "--attack", attack_file,
             "--defense", defense_file,
             "--llm-gen", args.llm_gen,
-            "--device", device,
-            "--output-dir", args.output_dir
+            # "--device", device,
+            "--output-dir", args.output_dir,
+            "--visible",
         ]
         try:
-            logging.info(f"Running command: {' '.join(command)} on {device}")
+            print(f"Running command: {' '.join(command)} on {device}")
             subprocess.run(command, check=True)
             return True, command
         except subprocess.CalledProcessError:

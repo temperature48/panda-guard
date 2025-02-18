@@ -197,6 +197,7 @@ class InferPipeline:
                       流程当前阶段的标签。
         """
         if self.verbose:
-            print(stage)
-            print(messages)
-            print()
+            pass
+            # print(stage)
+            # print(messages)
+            # print()

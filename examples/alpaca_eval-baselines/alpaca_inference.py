@@ -69,7 +69,7 @@ def parse_args():
     parser.add_argument(
         '--device',
         type=str,
-        default='cuda:0',
+        default=None,
         help='Device to run the model on'
     )
     parser.add_argument(
@@ -138,12 +138,13 @@ def run_inference(args):
 
     # Load evaluation dataset
     eval_set = load_dataset("/root/.cache/huggingface/datasets/tatsu-lab___alpaca_eval")['test']
+    # eval_set = load_dataset("/home/floyed/.cache/huggingface/datasets/tatsu-lab___alpaca_eval")['test']
 
     # Run inference for each row
     if args.max_queries:
         eval_set = eval_set.select(range(min(len(eval_set), args.max_queries)))
 
-    iterator = tqdm(eval_set, total=len(eval_set)) if args.visible else eval_set
+    iterator = tqdm(eval_set, total=len(eval_set), desc=args.llm.split('/')[-1]) if args.visible else eval_set
     results = []
     for row in iterator:
         result = pipe(

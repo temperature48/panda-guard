@@ -100,7 +100,7 @@ def run_all_experiments(args):
     logging.info(f"Found {len(llm_files)} LLM configurations, {len(defense_files)} defense configurations.")
 
     # Prepare combinations of (llm, defense).
-    tasks = [(llm_file, defense_file) for llm_file in llm_files for defense_file in defense_files]
+    tasks = [(llm_file, defense_file) for llm_file in llm_files if 'vllm_' in llm_file for defense_file in defense_files]
 
     # Prepare a queue with available devices.
     max_parallel = min(args.max_parallel, len(llm_files))
@@ -117,10 +117,11 @@ def run_all_experiments(args):
             "--defense", defense_file,
             "--output-dir", args.output_dir,
             "--llm-gen", args.llm_gen,
-            "--device", device,
+            "--visible",
+            # "--device", device,
         ]
         try:
-            logging.info(f"Running command: {' '.join(command)} on {device}")
+            print(f"Running command: {' '.join(command)} on {device}")
             subprocess.run(command, check=True)
             return True, command
         except subprocess.CalledProcessError:

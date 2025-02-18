@@ -91,7 +91,7 @@ def process_file(json_file, args, attacker_config, defender_config, judge_config
             data = data['results']
 
         # Process data
-        for i, item in enumerate(tqdm(data, desc=os.path.basename(json_file))):
+        for i, item in enumerate(tqdm(data, desc=json_file.split('/')[-4])):
             jailbroken = None
             goal = item['goal']
 

@@ -9,6 +9,7 @@
 
 import abc
 import os
+import time
 from typing import Dict, List, Union, Any, Tuple
 from dataclasses import dataclass, field
 import concurrent.futures
@@ -71,7 +72,7 @@ class OpenAiChatLLM(BaseLLM):
         )
 
     def generate(
-        self, messages: List[Dict[str, str]], config: LLMGenerateConfig
+            self, messages: List[Dict[str, str]], config: LLMGenerateConfig
     ) -> Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List[float]]]:
         """
         Generate a response for a given input using OpenAI Chat API.
@@ -80,30 +81,53 @@ class OpenAiChatLLM(BaseLLM):
         :param config: Configuration for LLM generation.  生成配置
         :return: Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答
         """
-        response = self.client.chat.completions.create(
-            model=self._NAME,
-            messages=messages,
-            max_tokens=config.max_n_tokens,
-            temperature=config.temperature,
-            logprobs=config.logprobs,
-            seed=config.seed,
-        )
-        content = response.choices[0].message.content
-        messages.append({"role": "assistant", "content": content})
+        retry_count = 0
+        max_retries = 100
+        while retry_count < max_retries:
+            try:
+                if 'o1' not in self._NAME and 'o3' not in self._NAME:
+                    response = self.client.chat.completions.create(
+                        model=self._NAME,
+                        messages=messages,
+                        max_tokens=config.max_n_tokens,
+                        temperature=config.temperature,
+                        logprobs=config.logprobs,
+                        seed=config.seed,
+                    )
+                else:
+                    response = self.client.chat.completions.create(
+                        model=self._NAME,
+                        messages=messages,
+                        temperature=config.temperature,
+                        logprobs=config.logprobs,
+                        seed=config.seed,
+                    )
 
-        self.update(
-            response.usage.prompt_tokens,
-            response.usage.completion_tokens,
-            1,
-        )
+                # 如果没有异常，处理响应
+                content = response.choices[0].message.content
+                messages.append({"role": "assistant", "content": content})
 
-        if config.logprobs:
-            logs = []
-            for c in response.choices[0].logprobs.content:
-                logs.append(c.logprob)
-            return messages, logs
+                self.update(
+                    response.usage.prompt_tokens,
+                    response.usage.completion_tokens,
+                    1,
+                )
 
-        return messages
+                if config.logprobs:
+                    logs = [c.logprob for c in response.choices[0].logprobs.content]
+                    return messages, logs
+
+                return messages
+
+            except Exception as e:
+                retry_count += 1
+                if retry_count >= max_retries:
+                    # 达到最大重试次数，抛出异常
+                    raise RuntimeError(f"API request failed when testing model {self._NAME}, tried: {max_retries}, Error: {e}")
+                else:
+                    # 打印重试信息，等待一会儿再重试
+                    print(f"API request failed when testing model {self._NAME}，retrying {retry_count}/{max_retries}... Error: {e}")
+                    time.sleep(retry_count)  # 指数退避策略，延迟时间逐渐增加
 
     def continual_generate(
         self, messages: List[Dict[str, str]], config: LLMGenerateConfig
