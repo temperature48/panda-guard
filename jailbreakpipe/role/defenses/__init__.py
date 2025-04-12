@@ -47,8 +47,6 @@ from jailbreakpipe.role.defenses.defender_registry import create_defender
 
 from jailbreakpipe.role.defenses.repe_utils import repe_pipeline_registry
 
-repe_pipeline_registry()
-
 from jailbreakpipe.role.defenses.gradsafe import (
     GradSafeDefender,
     GradSafeDefenderConfig,
@@ -68,6 +66,8 @@ from jailbreakpipe.role.defenses.rpo import (
     RPODefender,
     RPODefenderConfig,
 )
+
+repe_pipeline_registry()
 
 
 __all__ = [

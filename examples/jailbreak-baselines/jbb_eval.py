@@ -61,64 +61,64 @@ def run_inference(pipe, messages, goal):
 
 
 def process_file(json_file, args, attacker_config, defender_config, judge_configs, config_dict):
-    try:
-        # Construct output file path
-        generation_dict = yaml.safe_load(open(json_file.replace('results.json', 'config.yaml'), 'r'))
-        config_to_save = generation_dict['judges'] = config_dict['judges']
+    # try:
+    # Construct output file path
+    generation_dict = yaml.safe_load(open(json_file.replace('results.json', 'config.yaml'), 'r'))
+    config_to_save = generation_dict['judges'] = config_dict['judges']
 
-        output_file = os.path.join(args.output_dir, os.path.relpath(json_file, args.input_dir))
+    output_file = os.path.join(args.output_dir, os.path.relpath(json_file, args.input_dir))
 
-        # Check if output file exists
-        if os.path.exists(output_file):
-            logging.warning(f"Output file {output_file} already exists, skipping.")
-            return
+    # Check if output file exists
+    if os.path.exists(output_file):
+        logging.warning(f"Output file {output_file} already exists, skipping.")
+        return
 
-        # Load data
-        with open(json_file, 'r') as f:
-            data = json.load(f)
+    # Load data
+    with open(json_file, 'r') as f:
+        data = json.load(f)
 
-        # Initialize pipeline
-        pipe = InferPipeline(
-            InferPipelineConfig(
-                attacker_config=attacker_config,
-                defender_config=defender_config,
-                judge_configs=judge_configs  # Can be 0, 1, or multiple judges
-            ),
-            verbose=False
-        )
+    # Initialize pipeline
+    pipe = InferPipeline(
+        InferPipelineConfig(
+            attacker_config=attacker_config,
+            defender_config=defender_config,
+            judge_configs=judge_configs  # Can be 0, 1, or multiple judges
+        ),
+        verbose=False
+    )
 
-        if 'results' in data:
-            data = data['results']
+    if 'results' in data:
+        data = data['results']
 
-        # Process data
-        for i, item in enumerate(tqdm(data, desc=json_file.split('/')[-4])):
-            jailbroken = None
-            goal = item['goal']
+    # Process data
+    for i, item in enumerate(tqdm(data, desc=json_file.split('/')[-4])):
+        jailbroken = None
+        goal = item['goal']
 
-            for x in item['data']:
-                messages = deepcopy(x['messages'])
-                result = run_inference(pipe, messages, goal)
-                x['judged'] = result
+        for x in item['data']:
+            messages = deepcopy(x['messages'])
+            result = run_inference(pipe, messages, goal)
+            x['judged'] = result
 
-                if jailbroken is None:
-                    jailbroken = deepcopy(result)
-                else:  # Select Max of each judge
-                    jailbroken = {k: max(jailbroken[k], result[k]) for k in jailbroken}
+            if jailbroken is None:
+                jailbroken = deepcopy(result)
+            else:  # Select Max of each judge
+                jailbroken = {k: max(jailbroken[k], result[k]) for k in jailbroken}
 
-            item['jailbroken'] = jailbroken
-            # print(item)
+        item['jailbroken'] = jailbroken
+        # print(item)
 
-        # Save modified data to the output directory with the same relative file path
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
-        yaml.dump(config_to_save, open(output_file.replace('results.json', 'config.yaml'), 'w'))
-        with open(output_file, 'w') as f:
-            json.dump({
-                "config": config_to_save,
-                "results": data
-            }, f, indent=4)
+    # Save modified data to the output directory with the same relative file path
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    yaml.dump(config_to_save, open(output_file.replace('results.json', 'config.yaml'), 'w'))
+    with open(output_file, 'w') as f:
+        json.dump({
+            "config": config_to_save,
+            "results": data
+        }, f, indent=4)
 
-    except Exception as e:
-        logging.error(f"Error processing file {json_file}: {e}")
+    # except Exception as e:
+    #     logging.error(f"Error processing file {json_file}: {e}")
 
 
 def load_json_files_from_yaml(yaml_file):
@@ -150,6 +150,9 @@ if __name__ == '__main__':
 
     # Get input files (from a directory or a YAML file)
     json_files = get_input_files(args.input_dir)
+
+    # json_files = [f for f in json_files if 'NoneDefender' in f]
+    # print(json_files)
 
     # Use ThreadPoolExecutor to process files concurrently
     with ThreadPoolExecutor(max_workers=args.num_workers) as executor:

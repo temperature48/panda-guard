@@ -187,6 +187,26 @@ if __name__ == '__main__':
     prompts = [ANTI_GPT_V2.format(content=c) for c in df["Goal"]]
     df["ANTI_GPT_V2"] = prompts
 
-    print(df)
+    ATTACK_DIR = "./AttackResults/prompts"
+    for root, dirs, files in os.walk(ATTACK_DIR):
+        for file in files:
+            if not file.endswith('.csv') or 'template' in file:
+                print(f"Skipping {file}")
+                continue
+            print(f"Processing {file}")
+            attack_method = file.split('.')[0]
+            attack_df = pd.read_csv(os.path.join(root, file), encoding="utf-8")
 
-    df.to_csv("jbb_expanded.csv", index=False)
+            # find colum name with llama-3.1-8
+            col_name = [col for col in attack_df.columns if "llama-3.1-8" in col.lower()]
+            if len(col_name) == 0:
+                print(f"{root}/{file} has no llama-3.1-8")
+                print(attack_df.columns)
+            col_name = col_name[0]
+
+            prompts = [p for p in attack_df[col_name]]
+            df[f'new_{attack_method}'] = prompts
+
+    print(df.columns)
+
+    df.to_csv("jbb_expanded.csv", index=False, encoding="utf-8")

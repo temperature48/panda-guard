@@ -1,0 +1,26 @@
+
+defender_cls: SelfDefenseDefender
+defender_name: SelfDefense
+target_llm_config: 
+  model_name: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+  llm_type: "OpenAiLLM"
+  base_url: "http://172.18.131.18:8000/v1"
+target_llm_gen_config: 
+  max_n_tokens: 4096
+  temperature: 1.0
+  logprobs: false
+  seed: 42
+
+judge_config:
+  judge_cls: PairLLMJudge
+  judge_name: PAIR
+  judge_llm_config:
+    model_name: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    llm_type: "OpenAiLLM"
+    base_url: "http://172.18.131.18:8000/v1"
+  judge_llm_gen_config:
+    max_n_tokens: 4096
+    temperature: 1.0
+    logprobs: false
+    seed: 42
+judge_score_threshold: 5

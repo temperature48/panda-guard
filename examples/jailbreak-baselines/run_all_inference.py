@@ -12,8 +12,19 @@ import subprocess
 import argparse
 import logging
 from concurrent.futures import ThreadPoolExecutor
+from typing import Dict, Any
+
+import yaml
 from tqdm import tqdm
 from queue import Queue
+
+
+def load_yaml(yaml_file) -> Dict[str, Any]:
+    """Load a YAML file."""
+    if yaml_file is None or not os.path.exists(yaml_file):
+        return {}
+    with open(yaml_file, "r") as file:
+        return yaml.safe_load(file)
 
 
 def parse_args():
@@ -109,8 +120,10 @@ def run_all_experiments(args):
         f"Found {len(llm_files)} LLM configurations, {len(attack_files)} attack configurations, and {len(defense_files)} defense configurations.")
 
     # Validate max parallel jobs against the number of available GPUs.
-    max_parallel = min(args.max_parallel, len(llm_files))
+    max_parallel = args.max_parallel
     device_list = [f"{args.device_prefix}{i}" for i in range(max_parallel)]
+
+    print(f"Found {len(device_list)} devices: {device_list}")
 
     # Prepare a queue with available devices.
     device_queue = Queue()
@@ -118,12 +131,45 @@ def run_all_experiments(args):
         device_queue.put(device)
 
     # Prepare combinations of (llm, attack, defense).
-    tasks = [
+    tasks_initial = [
         (llm_file, attack_file, defense_file)
         for attack_file in attack_files
         for defense_file in defense_files
-        for llm_file in llm_files if 'vllm_' not in llm_file
+        for llm_file in llm_files #if 'vllm_' not in llm_file
     ]
+
+    tasks = []
+    for llm_file, attack_file, defense_file in tasks_initial:
+        llm_dict = load_yaml(llm_file)
+        llm_gen_dict = load_yaml(args.llm_gen)
+
+        config_dict = load_yaml(args.config)
+        config_dict["attacker"] = load_yaml(attack_file)
+        config_dict["defender"] = load_yaml(defense_file)
+
+        if llm_dict:
+            config_dict["defender"]["target_llm_config"] = llm_dict
+        else:
+            llm_dict = config_dict["defender"]["target_llm_config"]
+
+        if llm_gen_dict:
+            config_dict["defender"]["target_llm_gen_config"].update(llm_gen_dict)
+
+        output_file = os.path.join(
+            args.output_dir,
+            llm_dict["model_name"].replace("/", "_"),
+            f'{config_dict["attacker"]["attacker_cls"]}_{config_dict["attacker"]["attacker_name"]}',
+            f'{config_dict["defender"]["defender_cls"]}',
+            "results.json",
+        )
+
+        if not os.path.exists(output_file):
+            tasks.append((llm_file, attack_file, defense_file))
+
+        else:
+            logging.warning(f"Output file {output_file} already exists. Skipping.")
+
+    print(f"Total {len(tasks_initial)} Tasks, {len(tasks)} to run.")
 
     # Function to run inference for a specific combination.
     def run_task(llm_file, attack_file, defense_file):
@@ -139,6 +185,7 @@ def run_all_experiments(args):
             "--output-dir", args.output_dir,
             "--visible",
         ]
+
         try:
             print(f"Running command: {' '.join(command)} on {device}")
             subprocess.run(command, check=True)

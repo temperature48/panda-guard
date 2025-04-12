@@ -95,7 +95,10 @@ class SmoothLLMDefender(BaseDefender):
                     perturbed_messages,
                     self.target_llm_gen_config
                 )
-                perturbed_outputs.append(generated_responses[-1]['content'])
+                response = generated_responses[-1]['content']
+                if response is None:
+                    response = ""
+                perturbed_outputs.append(response)
 
         # Analyze outputs and determine if the LLM was jailbroken
         are_jailbroken = [self._is_jailbroken(output) for output in perturbed_outputs]

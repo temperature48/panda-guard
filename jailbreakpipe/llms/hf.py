@@ -8,6 +8,7 @@
 # explain   :
 
 import os
+import warnings
 from typing import Dict, List, Union, Any, Tuple
 from dataclasses import dataclass, field
 import torch
@@ -85,6 +86,16 @@ class HuggingFaceLLM(BaseLLM):
         :param config: Configuration for LLM generation.  生成配置
         :return: Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答
         """
+
+        if ('4k' in self._NAME or 'gemma-2-2b-it' in self._NAME) and config.max_n_tokens > 2048:
+            config.max_n_tokens = min(config.max_n_tokens, 2048)
+            warnings.warn(f"Model {self._NAME} only supports max_n_tokens up to 4096, setting response tokens to 2048.")
+
+        if "gemma" in self._NAME.lower() and messages[0]["role"] == "system":
+            system_prompt = messages[0]["content"]
+            messages = messages[1:]
+            messages[0]["content"] = system_prompt + "\n\n" + messages[0]["content"]
+
         # Prepare the prompt
         prompt_formatted = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True

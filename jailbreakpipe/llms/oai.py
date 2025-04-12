@@ -10,6 +10,7 @@
 import abc
 import os
 import time
+import warnings
 from typing import Dict, List, Union, Any, Tuple
 from dataclasses import dataclass, field
 import concurrent.futures
@@ -66,6 +67,7 @@ class OpenAiChatLLM(BaseLLM):
 
     def __init__(self, config: OpenAiLLMConfig):
         super().__init__(config)
+
         self.client = openai.OpenAI(
             base_url=config.base_url,
             api_key=config.api_key,
@@ -81,13 +83,25 @@ class OpenAiChatLLM(BaseLLM):
         :param config: Configuration for LLM generation.  生成配置
         :return: Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答
         """
+
+        if ('4k' in self._NAME or 'gemma-2-2b-it' in self._NAME) and config.max_n_tokens > 2048:
+            config.max_n_tokens = min(config.max_n_tokens, 2048)
+            warnings.warn(f"Model {self._NAME} only supports max_n_tokens up to 4096, setting response tokens to 2048.")
+
+        if "gemma" in self._NAME.lower() and messages[0]["role"] == "system":
+            system_prompt = messages[0]["content"]
+            messages = messages[1:]
+            messages[0]["content"] = system_prompt + "\n\n" + messages[0]["content"]
+
         retry_count = 0
         max_retries = 100
         while retry_count < max_retries:
+            model_name = 'DeepSeek-R1' if self._NAME == 'deepseek-reasoner' else self._NAME
+            model_name = 'DeepSeek-V3' if self._NAME == 'deepseek-ai/DeepSeek-V3' else model_name
             try:
                 if 'o1' not in self._NAME and 'o3' not in self._NAME:
                     response = self.client.chat.completions.create(
-                        model=self._NAME,
+                        model=model_name,
                         messages=messages,
                         max_tokens=config.max_n_tokens,
                         temperature=config.temperature,
@@ -96,7 +110,7 @@ class OpenAiChatLLM(BaseLLM):
                     )
                 else:
                     response = self.client.chat.completions.create(
-                        model=self._NAME,
+                        model=model_name,
                         messages=messages,
                         temperature=config.temperature,
                         logprobs=config.logprobs,
@@ -120,6 +134,12 @@ class OpenAiChatLLM(BaseLLM):
                 return messages
 
             except Exception as e:
+                if "安全" in str(e) or "敏感" in str(e):
+                    messages.append({"role": "assistant", "content": "I'm sorry, I can't help with that."})
+                    # print safety issue
+                    print(f"API request Safety Issue, {self._NAME}, Error: {e}, returning safety message.")
+                    return messages
+
                 retry_count += 1
                 if retry_count >= max_retries:
                     # 达到最大重试次数，抛出异常
@@ -181,6 +201,11 @@ class OpenAiLLM(BaseLLM):
         :param config: Configuration for LLM generation.  生成配置
         :return: Generated response or response with logprobs.  返回生成的应答或启用logprobs的应答
         """
+
+        if ('4k' in self._NAME or 'gemma-2-2b-it' in self._NAME) and config.max_n_tokens > 2048:
+            config.max_n_tokens = min(config.max_n_tokens, 2048)
+            warnings.warn(f"Model {self._NAME} only supports max_n_tokens up to 4096, setting response tokens to 2048.")
+
         if "gemma" in self._NAME.lower() and messages[0]["role"] == "system":
             system_prompt = messages[0]["content"]
             messages = messages[1:]

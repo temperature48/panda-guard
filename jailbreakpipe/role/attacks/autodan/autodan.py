@@ -65,10 +65,10 @@ class AutoDanAttacker(BaseAttacker):
             config: AutoDanAttackerConfig
     ):
         super().__init__(config)
-        nltk.download('stopwords')
-        nltk.download('punkt_tab')
-        nltk.download('punkt')
-        nltk.download('wordnet')
+        # nltk.download('stopwords')
+        # nltk.download('punkt_tab')
+        # nltk.download('punkt')
+        # nltk.download('wordnet')
         for field in fields(config):
             field_name = field.name
             field_value = getattr(config, field_name)
