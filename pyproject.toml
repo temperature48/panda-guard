@@ -1,7 +1,7 @@
 [project]
 name = "jailbreakpipe"
 version = "0.0.1"
-description = " An Open Pipeline for Jailbreaking Language Models"
+description = "An Open Pipeline for Jailbreaking Language Models"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">= 3.10"
@@ -27,25 +27,21 @@ keywords = [
 ]
 
 dependencies = [
-    "torch>=2.0.0,<3.0.0",
+    "torch>=2.0.0",
 ]
 
-#[project.optional-dependencies]
-#vllm = ["click>=8.1.7,<9.0.0", "accelerate>=0.27.2,<1.0.0", "vllm~=0.3.2"]
+[project.optional-dependencies]
+dev = ["ruff>=0.2.1", "mypy>=1.8.0", "pytest>=8.1.1"]
+vllm = ["click>=8.1.7,<9.0.0", "accelerate>=0.27.2", "vllm"]
 
 [project.urls]
 Homepage = "https://jailbreak-pipeline.github.io"
 Repository = "https://github.com/FloyedShen/jailbreak-pipeline.git"
 Issues = "https://github.com/FloyedShen/jailbreak-pipeline/issues"
 
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-#[tool.rye]
-#managed = true
-#dev-dependencies = ["ruff>=0.2.1,<1.0.0", "mypy>=1.8.0,<2.0.0", "pytest>=8.1.1"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -62,16 +58,16 @@ exclude = ["./data/"]
 ignore = [
     "E731",
     "E402",
-    "N812", # Uppercase import (for nn.functional as F)
+    "N812",
 ]
 select = [
-    "F",   # pyflakes
-    "UP",  # pyupgrade
-    "I",   # isort
-    "ERA", # eradicate
-    "NPY", # numpy
-    "N",   # pep8-naming
-    "UP",  # pyupgrade
+    "F",
+    "UP",
+    "I",
+    "ERA",
+    "NPY",
+    "N",
+    "UP",
 ]
 
 [tool.ruff.format]
@@ -79,7 +75,7 @@ docstring-code-format = true
 
 [tool.mypy]
 ignore_missing_imports = true
-exclude = ["./data/"]
+exclude = ["./data/", "tests/"]
 
 [tool.pytest.ini_options]
 markers = [

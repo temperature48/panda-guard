@@ -65,10 +65,16 @@ def process_directory(input_root, output_root, threads):
 
         for d in dirs:
             file = os.path.join(d, 'results.json')
-            if file == 'NoneDefender/results.json' or '0.000' in file:
+            # print(file)
+            if 'NoneDefender/results.json' in file or '0.000' in file:
                 reference_output = os.path.join(root, file)
-            elif file.endswith(".json") and file != 'NoneDefender/results.json':
-                model_outputs.append(os.path.join(root, file))
+                if not os.path.exists(reference_output):
+                    logging.warning(f"Reference output not found: {reference_output}")
+                    reference_output = None
+            elif file.endswith(".json") and 'NoneDefender/results.json' not in file:
+                model_output = os.path.join(root, file)
+                if os.path.exists(model_output):
+                    model_outputs.append(os.path.join(root, file))
 
         if model_outputs and not reference_output:
             logging.warning(f"Reference output not found in {root}.")

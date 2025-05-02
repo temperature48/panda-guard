@@ -100,10 +100,11 @@ def run_all_experiments(args):
     logging.info(f"Found {len(llm_files)} LLM configurations, {len(defense_files)} defense configurations.")
 
     # Prepare combinations of (llm, defense).
-    tasks = [(llm_file, defense_file) for llm_file in llm_files if 'vllm_' in llm_file for defense_file in defense_files]
-
+    tasks = [(llm_file, defense_file) for defense_file in defense_files for llm_file in llm_files if 'vllm_' not in llm_file]
+    tasks = reversed(tasks)
     # Prepare a queue with available devices.
-    max_parallel = min(args.max_parallel, len(llm_files))
+    # max_parallel = min(args.max_parallel, len(llm_files))
+    max_parallel = args.max_parallel
     device_queue = Queue()
     for i in range(max_parallel):
         device_queue.put(f"{args.device_prefix}{i}")

@@ -94,7 +94,7 @@ class OpenAiChatLLM(BaseLLM):
             messages[0]["content"] = system_prompt + "\n\n" + messages[0]["content"]
 
         retry_count = 0
-        max_retries = 100
+        max_retries = 10
         while retry_count < max_retries:
             model_name = 'DeepSeek-R1' if self._NAME == 'deepseek-reasoner' else self._NAME
             model_name = 'DeepSeek-V3' if self._NAME == 'deepseek-ai/DeepSeek-V3' else model_name
