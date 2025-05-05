@@ -1,7 +1,7 @@
-jailbreakpipe
-=============
+panda_guard
+===========
 
 .. toctree::
    :maxdepth: 4
 
-   jailbreakpipe
+   panda_guard
