@@ -121,7 +121,7 @@ git lfs pull
 
 ```bash
 cd docs
-sphinx-apidoc -o source/ ../jailbreakpipe/
+sphinx-apidoc -o source/ ../panda_guard/
 make html
 ```
 
@@ -129,10 +129,10 @@ make html
 
 ### 项目结构
 
-源代码位于 `jailbreakpipe` 文件夹下。以下是其结构的简要概述：
+源代码位于 `panda_guard` 文件夹下。以下是其结构的简要概述：
 
 ```
-jailbreakpipe
+panda_guard
 ├── __init__.py
 ├── llms
 │   ├── __init__.py

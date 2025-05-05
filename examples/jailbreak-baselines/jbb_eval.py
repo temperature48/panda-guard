@@ -18,8 +18,8 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 
-from jailbreakpipe.pipelines.inference import InferPipeline, InferPipelineConfig
-from jailbreakpipe.utils import parse_configs_from_dict
+from panda_guard.pipelines.inference import InferPipeline, InferPipelineConfig
+from panda_guard.utils import parse_configs_from_dict
 
 
 # Load the YAML configuration file

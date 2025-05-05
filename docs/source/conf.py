@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-informatione
 
-project = 'Jailbreak-Pipeline'
+project = 'Panda-Guard'
 copyright = '2024, Floyed Shen, etc.'
 author = 'Floyed Shen, etc.'
 release = 'v0.0.8'

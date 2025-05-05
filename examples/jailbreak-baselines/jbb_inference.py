@@ -17,9 +17,9 @@ import argparse
 import logging
 from tqdm import tqdm
 
-from jailbreakpipe.llms import create_llm, HuggingFaceLLMConfig
-from jailbreakpipe.pipelines.inference import InferPipeline, InferPipelineConfig
-from jailbreakpipe.utils import parse_configs_from_dict
+from panda_guard.llms import create_llm, HuggingFaceLLMConfig
+from panda_guard.pipelines.inference import InferPipeline, InferPipelineConfig
+from panda_guard.utils import parse_configs_from_dict
 
 
 def load_yaml(yaml_file) -> Dict[str, Any]:

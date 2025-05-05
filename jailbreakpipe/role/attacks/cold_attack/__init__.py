@@ -1,1 +1,0 @@
-from jailbreakpipe.role.attacks.cold_attack.cold import ColdAttacker, ColdAttackerConfig

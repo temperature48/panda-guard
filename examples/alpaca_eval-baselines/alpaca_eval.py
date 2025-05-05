@@ -58,7 +58,6 @@ def validate_json(json_file):
 
 
 def process_directory(input_root, output_root, threads):
-    # 遍历目录，查找包含 NoneDefender.json 的路径，并进行评测
     for root, dirs, files in os.walk(input_root):
         reference_output = None
         model_outputs = []
@@ -88,17 +87,15 @@ def process_directory(input_root, output_root, threads):
                     relative_path = os.path.relpath(root, input_root)
                     output_directory = os.path.join(output_root, relative_path, model_output.split('/')[-2])
 
-                    # 创建输出目录
                     os.makedirs(output_directory, exist_ok=True)
 
-                    # 使用线程池并行执行
                     executor.submit(execute_command, model_output, reference_output, output_directory)
+
 
     logging.info("All commands completed.")
 
 
-# python alpaca_eval_leaderboard.py ../results/alpaca_eval/repe_.9 ../results/alpaca_eval_leaderboard/repe_.9  --threads 4
-# python alpaca_eval_leaderboard.py ../results/alpaca_eval/1 ../results/alpaca_eval_leaderboard/1  --threads 4
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Execute alpaca_eval on JSON files in a directory.")
     parser.add_argument('--input-dir', type=str, default="../../benchmarks/alpaca_eval/", help='Input directory containing JSON files or YAML file containing list of files')
@@ -114,6 +111,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     logging.basicConfig(level=eval(f'logging.{args.log_level}'), format='%(asctime)s - %(levelname)s - %(message)s')
-    # 执行目录处理
     process_directory(args.input_dir, args.output_dir, args.threads)
 

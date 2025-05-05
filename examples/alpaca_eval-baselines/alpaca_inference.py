@@ -17,9 +17,9 @@ import logging
 
 from tqdm import tqdm
 
-from jailbreakpipe.llms import HuggingFaceLLMConfig, create_llm
-from jailbreakpipe.pipelines.inference import InferPipeline, InferPipelineConfig
-from jailbreakpipe.utils import parse_configs_from_dict, wait_for_gpu_memory
+from panda_guard.llms import HuggingFaceLLMConfig, create_llm
+from panda_guard.pipelines.inference import InferPipeline, InferPipelineConfig
+from panda_guard.utils import parse_configs_from_dict, wait_for_gpu_memory
 
 from datasets import load_dataset
 

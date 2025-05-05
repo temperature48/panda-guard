@@ -121,7 +121,7 @@ We use `sphinx` to generate documentation. You can generate documentation with t
 
 ```bash
 cd docs
-sphinx-apidoc -o source/ ../jailbreakpipe/
+sphinx-apidoc -o source/ ../panda_guard/
 make html
 ```
 
@@ -129,10 +129,10 @@ The generated documentation will be found under `docs/build/html`.
 
 ### Project Structure
 
-The source code is located under the `jailbreakpipe` folder. Here is a brief overview of the structure:
+The source code is located under the `panda_guard` folder. Here is a brief overview of the structure:
 
 ```
-jailbreakpipe
+panda_guard
 ├── __init__.py
 ├── llms
 │   ├── __init__.py
