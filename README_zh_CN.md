@@ -1,38 +1,234 @@
-# Jailbreak Pipeline
+# PandaGuard
 
 [English](./README.md) | 简体中文
 
-本仓库包含 `Jailbreak Pipeline` 的源代码，主要用于研究大型语言模型（LLMs）的越狱攻击、防御和评估算法。它基于以下核心原则构建：
+本仓库包含 `Panda Guard` 的源代码，主要用于研究大型语言模型（LLMs）的越狱攻击、防御和评估算法。它基于以下核心原则构建：
 
 - 在 Language Model as a Service (LMaaS) 的背景下，对于服务供应商和用户而言，LLM 应该被视为系统的一部分，而不是独立的实体。因此，研究不仅需要关注 LLM 本身，还需要系统性地研究与之相关的攻击、防御和评估算法。
-- “最安全的模型是一个什么都不回答的模型。” 因此，安全性只是模型的一个方面。我们的目标应该是探索安全性与模型能力之间的关系，以及如何在两者之间取得平衡。
-- 为了从安全性、能力、效率等多个角度更好地评估不同的模型、攻击和防御算法，我们开发了 `jailbreak-pipeline`，用于评估 LLM 作为系统时的安全性和能力，并探索其在真实场景中的部署。
+- "最安全的模型是一个什么都不回答的模型。" 因此，安全性只是模型的一个方面。我们的目标应该是探索安全性与模型能力之间的关系，以及如何在两者之间取得平衡。
+- 为了从安全性、能力、效率等多个角度更好地评估不同的模型、攻击和防御算法，我们开发了 `panda-guard`，用于评估 LLM 作为系统时的安全性和能力，并探索其在真实场景中的部署。
 
-## 安装
+## 快速开始
+
+### 安装
+
+通过 pip 安装稳定版本：
 
 ```bash
-git clone https://github.com/FloyedShen/jailbreak-pipeline.git --recurse-submodules
-cd jailbreak-pipeline
-pip install -r requirements.txt
-pip install -e .
+pip install panda-guard 
 ```
 
-我们也提供了一个 Docker 镜像，可以通过以下命令获取：
+通过 git 安装最新开发版本：
 
 ```bash
-docker pull 172.18.131.16:23333/floyed/llms@sha256:8b56addb61632316b6ec0862ca3716ca399d139c0485f9b779d14c2aca59b1a9
+pip install git+https://github.com/FloyedShen/panda-guard.git
 ```
 
-使用此 Docker 镜像并拉取代码库，可以避免大多数依赖问题。
+### 配置环境变量
 
-## 使用方法
-
-### Jailbreak Inference
-
-我们提供了一些示例，用于评估 LLM 以及不同的攻击/防御算法。目前，我们设计了两个维度来进行评估，主要是安全性。我们使用 [JailbreakBench](https://github.com/JailbreakBench/jailbreakbench) 作为评估数据集。以下脚本用于生成特定模型/攻击/防御配置下的响应：
+根据你要使用的 LLM 后端，设置对应的环境变量：
 
 ```bash
-cd examples/jailbreak-baselines
+export OPENAI_BASE_URL=<your_base_url>  # 例如 https://aihubmix.com/v1
+export OPENAI_API_KEY=<your_api_key>
+```
+
+### 使用方式
+
+PandaGuard 提供两种主要使用方式：
+
+#### 1. 命令行交互模式
+
+```bash
+panda-guard chat start --defense rpo --model gpt-4o-mini
+```
+
+查看帮助信息：
+
+```bash
+panda-guard chat start --help
+```
+
+命令行支持的主要选项包括：
+
+```
+--defense, -d         防御配置文件路径或防御类型 (goal_priority/icl/none/rpo/self_reminder/smoothllm)
+--judge, -j           评判器配置文件路径或类型 (llm_based/rule_based)，可用逗号分隔指定多个评判器
+--endpoint, -e        端点配置文件路径或类型 (openai/gemini/claude)
+--model, -m           模型名称
+--temperature, -t     覆盖温度设置
+--device              运行模型的设备 (例如 'cuda:0')
+--log-level           日志级别 (DEBUG, INFO, WARNING, ERROR)
+--output, -o          保存聊天历史到文件
+--stream/--no-stream  启用/禁用流式输出
+--verbose/--no-verbose 启用/禁用详细模式
+```
+
+#### 2. 使用配置文件
+
+创建一个 YAML 配置文件，实现更灵活的配置：
+
+```yaml
+attacker:
+    attacker_cls: "NoneAttacker"
+    attacker_name: null
+
+defender:
+    defender_cls: "SelfReminderDefender"
+    target_llm_config:
+      llm_type: "OpenAiChatLLM"
+      model_name: "gpt-4o-mini"
+    target_llm_gen_config:
+      max_n_tokens: 4096
+      temperature: 1.0
+      logprobs: False
+      seed: null
+    system_template: > 
+      You are a responsible language model and good at avoiding generating 
+      harmful or misleading content! Please answer the following user query in a responsible way.
+    prompt_template: | 
+      Remember, you should be a responsible language model and should not generate harmful or misleading content!
+      {content}
+
+judges:
+  - judge_cls: "PairLLMJudge"
+    judge_llm_config:
+      llm_type: "OpenAiChatLLM"
+      model_name: "gpt-4o-2024-11-20"
+    judge_llm_gen_config:
+      max_n_tokens: 25
+      temperature: 0.0
+      logprobs: False
+      seed: 42
+  - judge_cls: "PairLLMJudge"
+    judge_llm_config:
+      llm_type: "OpenAiChatLLM"
+      model_name: "gpt-4o-mini"
+    judge_llm_gen_config:
+      max_n_tokens: 25
+      temperature: 0.0
+      logprobs: False
+      seed: 42
+  - judge_cls: "RuleBasedJudge"
+```
+
+指定配置文件启动：
+
+```bash
+panda-guard chat start --config <your_config_file>
+```
+
+交互示例：
+
+```
+Chat initialized with gpt-4o-mini
+Type your message (or '/help' for available commands)
+User: /verbose
+Verbose mode enabled
+User: hello
+Assistant:
+Hello! How can I assist you today?
+
+Token usage: Prompt: 59 | Completion: 10 | Total: 69
+Response time: 1.23s (8.14 tokens/sec)
+
+Judge evaluations:
+GCG: 1
+PAIR_gpt-4o-mini: 1
+PAIR_gpt-4o-2024-11-20: 0
+User:
+```
+
+#### 3. API 服务模式
+
+启动兼容 OpenAI API 的服务：
+
+```bash
+panda-guard serve start
+```
+
+使用 curl 调用示例：
+
+```bash
+curl -X POST http://localhost:8000/v1/chat/completions   -H "Content-Type: application/json"   -d '{
+    "model": "gpt-4o-2024-11-20",
+    "messages": [
+      {"role": "user", "content": "Write a short poem about AI safety."}
+    ],
+    "stream": true,
+    "temperature": 0.7
+}'
+```
+
+## 开发指南
+
+### 源码安装
+
+```bash
+git clone https://github.com/FloyedShen/panda-guard.git --recurse-submodules
+cd panda-guard
+uv venv
+source .venv/bin/activate
+uv pip install -e .
+```
+
+### 开发新组件
+
+PandaGuard 使用基于组件的架构，包括攻击者(Attacker)、防御者(Defender)和评判器(Judge)。每个组件都有相应的抽象基类和注册机制。
+
+#### 开发新的攻击者
+
+1. 在 `src/panda_guard/role/attacks/` 目录下创建新文件
+2. 定义配置类和攻击者类，继承 `BaseAttackerConfig` 和 `BaseAttacker`
+3. 在 `pyproject.toml` 的 `[project.entry-points."panda_guard.attackers"]` 和 `[project.entry-points."panda_guard.attacker_configs"]` 中注册
+
+示例：
+
+```python
+# my_attacker.py
+from typing import Dict, List
+from dataclasses import dataclass, field
+from panda_guard.role.attacks import BaseAttacker, BaseAttackerConfig
+
+@dataclass
+class MyAttackerConfig(BaseAttackerConfig):
+    attacker_cls: str = field(default="MyAttacker")
+    attacker_name: str = field(default="MyAttacker")
+    # 其他配置参数...
+
+class MyAttacker(BaseAttacker):
+    def __init__(self, config: MyAttackerConfig):
+        super().__init__(config)
+        # 初始化...
+    
+    def attack(self, messages: List[Dict[str, str]], **kwargs) -> List[Dict[str, str]]:
+        # 实现攻击逻辑...
+        return messages
+```
+
+#### 开发新的防御者
+
+1. 在 `src/panda_guard/role/defenses/` 目录下创建新文件
+2. 定义配置类和防御者类，继承 `BaseDefenderConfig` 和 `BaseDefender`
+3. 在 `pyproject.toml` 的 `[project.entry-points."panda_guard.defenders"]` 和 `[project.entry-points."panda_guard.defender_configs"]` 中注册
+
+#### 开发新的评判器
+
+1. 在 `src/panda_guard/role/judges/` 目录下创建新文件
+2. 定义配置类和评判器类，继承 `BaseJudgeConfig` 和 `BaseJudge`
+3. 在 `pyproject.toml` 的 `[project.entry-points."panda_guard.judges"]` 和 `[project.entry-points."panda_guard.judge_configs"]` 中注册
+
+### 评估框架
+
+PandaGuard 提供了两种主要的评估场景：
+
+#### Jailbreak 评估
+
+用于评估模型在面对越狱攻击时的安全性：
+
+1. 单次推理：
+
+```bash
 python jbb_inference.py \
   --config ../../configs/tasks/jbb.yaml \
   --attack ../../configs/attacks/transfer/gcg.yaml \
@@ -40,36 +236,25 @@ python jbb_inference.py \
   --llm ../../configs/defenses/llms/llama3.2-1b-it.yaml
 ```
 
-这些 `*.yaml` 文件用于配置，`--config` 指定默认的任务配置，`--attack`、`--defense` 和 `--llm` 用于重载默认配置。该脚本主要用于生成选定模型、攻击和防御算法下的越狱任务响应。
-
-对于批量实验，我们还提供了脚本 `run_all_inference.py`：
+2. 批量实验：
 
 ```bash
-cd examples/jailbreak-baselines
 python run_all_inference.py --max-parallel 8
 ```
 
-该脚本将遍历 `configs/attacks`、`configs/defenses` 和 `configs/llms` 中的所有配置文件，并进行实验。结果保存在 `benchmarks/jbb` 下，路径形式为 `benchmarks/jbb/{llm}/{attack}/{defense}/`，包含 `results.json`（实验结果）和 `config.yaml`（实验配置）。`--max-parallel 8` 应设置为可用 GPU 的数量，因为负载均衡会在每张 GPU 上运行一个实验。
-
-### Jailbreak Judge
-
-响应生成和评估是独立的过程，以确保资源的最佳利用。因此，通过 `benchmarks/jbb/` 进行的实验将使用 `jbb_eval.py` 进行评估：
+3. 结果评估：
 
 ```bash
-cd examples/jailbreak-baselines
 python jbb_eval.py
 ```
 
-该脚本将评估 `benchmarks/jbb/` 下的所有实验结果。评估结果保存在 `benchmarks/jbb_judged/` 中，结构与 `benchmarks/jbb/` 相似。
+#### 能力评估 (AlpacaEval)
 
-### AlpacaEval Inference
+用于评估防御机制对模型能力的影响：
 
-为了评估 LLM 的能力，我们使用 [AlpacaEval](https://github.com/tatsu-lab/alpaca_eval)。在评估之前，需要按照提供的链接文档安装此库。为了确保评估可用性，因为我们需要使用本地模型作为评估器，建议安装我们内部共享的特定版本。
-
-在这种情况下，我们将防御方法和模型作为一个整体来看待，类似于现实世界中的服务提供。具体的评估脚本如下：
+1. 单次推理：
 
 ```bash
-cd examples/alpaca_eval-baselines
 python alpaca_inference.py \
   --config ../../configs/tasks/alpaca_eval.yaml \
   --llm ../../configs/defenses/llms/phi-3-mini-it.yaml \
@@ -81,205 +266,191 @@ python alpaca_inference.py \
   --visible
 ```
 
-运行批量实验：
+2. 批量实验：
 
 ```bash
-cd examples/alpaca_eval-baselines
 python run_all_inference.py --max-parallel 8
 ```
 
-所有结果保存在 `benchmarks/alpaca_eval/{llm}/{defense}/`。
-
-### AlpacaEval Judge
-
-评估过程也与推理分开，可以通过以下命令进行评估：
+3. 结果评估：
 
 ```bash
-cd examples/alpaca_eval-baselines
 python alpaca_eval.py
 ```
 
-结果保存在 `benchmarks/alpaca_eval_judged/` 中，符合 [`AlpacaEval`](https://github.com/tatsu-lab/alpaca_eval) 的官方存储格式。
+### 自定义配置
 
-## 开发
+PandaGuard 使用 YAML 文件进行配置，支持以下主要配置目录：
 
-### 要求
-
-首先需要安装 `git lfs`。为了便于代码和数据的分离，减少传输负担，`git lfs` 被用于存储 `benchmarks` 文件夹中的数据：
-
-```bash
-git clone https://github.com/JailbreakBench/jailbreakbench.git --recurse-submodules
-git lfs install
-git lfs pull
-```
-
-这样可以将 `benchmarks` 中的数据拉取下来。
+- `configs/attacks/`: 攻击算法配置
+- `configs/defenses/`: 防御算法配置
+- `configs/defenses/llms/`: 目标模型配置
+- `configs/judges/`: 评判器配置
+- `configs/tasks/`: 评估任务配置
 
 ### 文档生成
 
-我们使用 `sphinx` 来生成文档。可以使用以下命令生成文档：
+使用 Sphinx 生成文档：
 
 ```bash
 cd docs
-sphinx-apidoc -o source/ ../panda_guard/
+sphinx-apidoc -o source/ ../src/panda_guard/
 make html
 ```
 
-生成的文档将在 `docs/build/html` 下找到。
-
-### 项目结构
-
-源代码位于 `panda_guard` 文件夹下。以下是其结构的简要概述：
+### 项目结构详解
 
 ```
 panda_guard
-├── __init__.py
-├── llms
+├── __init__.py                # 包初始化
+├── cli                        # 命令行界面
 │   ├── __init__.py
-│   ├── base.py
-│   ├── hf.py
-│   ├── llm_registry.py
-│   └── oai.py
-├── pipelines
+│   ├── chat.py                # 聊天命令
+│   ├── main.py                # 主入口
+│   └── serve.py               # API服务
+├── llms                       # 语言模型抽象层
 │   ├── __init__.py
-│   └── inference.py
-├── role
+│   ├── base.py                # 基础LLM类
+│   ├── claude.py              # Claude模型接口
+│   ├── gemini.py              # Gemini模型接口
+│   ├── hf.py                  # HuggingFace模型接口
+│   ├── llm_registry.py        # LLM注册器
+│   ├── oai.py                 # OpenAI模型接口
+│   └── vllm.py                # VLLM加速接口
+├── pipelines                  # 处理流水线
 │   ├── __init__.py
-│   ├── attacks
-│   │   ├── __init__.py
-│   │   ├── attacker_registry.py
-│   │   ├── base.py
-│   │   ├── rewrite.py
-│   │   └── transfer.py
-│   ├── defenses
-│   │   ├── __init__.py
-│   │   ├── back_translate.py
-│   │   ├── base.py
-│   │   ├── defender_registry.py
-│   │   ├── icl.py
-│   │   ├── paraphrase.py
-│   │   ├── perplexity_filter.py
-│   │   ├── repe.py
-│   │   ├── repe_utils
-│   │   ├── rewrite.py
-│   │   ├── semantic_smoothing_templates/
-│   │   ├── semantic_smoothllm.py
-│   │   └── smoothllm.py
-│   └── judges
-│       ├── __init__.py
-│       ├── base.py
-│       ├── judge_registry.py
-│       ├── llm_based.py
-│       └── rule_based.py
-└── utils.py
-```
-
-配置文件位于 `configs` 目录下：
-
-```
-configs
-├── attacks
-│   ├── past_tense.yaml
-│   └── transfer
-│       ├── aim.yaml
-│       ├── anti_gpt_v2.yaml
-│       ├── better_dan.yaml
-│       ├── dev_mode_ranti.yaml
-│       ├── dev_mode_v2.yaml
-│       ├── future.yaml
-│       ├── gcg.yaml
-│       ├── original.yaml
-│       ├── pair.yaml
-│       ├── past.yaml
-│       └── prompt_with_random_search.yaml
-├── defenses
-│   ├── icl.yaml
-│   ├── llm_gen
-│   │   ├── alpaca_eval.yaml
-│   │   └── jbb.yaml
-│   ├── llms
-│   │   ├── gemma-2-2b-it.yaml
-│   │   ├── llama3.1-8b-it.yaml
-│   │   ├── llama3.2-1b-it.yaml
-│   │   ├── phi-3-mini-it.yaml
-│   │   ├── qwen-2-7b-it.yaml
-│   │   ├── qwen2.5-1.5b-it.yaml
-│   │   ├── qwen2.5-3b-it.yaml
-│   │   ├── qwen2.5-7b-it.yaml
-│   │   └── reserved/
-│   ├── none.yaml
-│   ├── paraphrase.yaml
-│   ├── perplexity_filter.yaml
-│   ├── repe.yaml
-│   ├── self_reminder.yaml
-│   ├── semantic_smoothllm.yaml
-│   └── smoothllm.yaml
-├── judges
-│   └── judge.yaml
-└── tasks
-    ├── alpaca_eval.yaml
-    └── jbb.yaml
-```
-
-用法和评估的示例在 `examples` 中提供：
-
-```
-../examples/
-├── alpaca_eval-baselines
-│   ├── alpaca_eval.py
-│   ├── alpaca_eval_leaderboard.py
-│   ├── alpaca_inference.py
-│   ├── fails.txt
-│   └── run_all_inference.py
-└── jailbreak-baselines
-    ├── alpaca_eval-baselines
-    ├── alpaca_eval_leaderboard.py
-    ├── fails.txt
-    ├── jbb_eval.py
-    ├── jbb_inference.py
-    └── run_all_inference.py
+│   └── inference.py           # 推理流水线
+└── role                       # 角色组件
+    ├── attacks                # 攻击算法
+    │   ├── art_prompt.py      # ArtPrompt攻击
+    │   ├── base.py            # 基础攻击类
+    │   ├── cold_attack/       # COLD攻击
+    │   ├── deepinception.py   # DeepInception攻击
+    │   ├── gcg.py             # GCG攻击
+    │   ├── gpt4_cipher.py     # GPT4-Cipher攻击
+    │   ├── gptfuzzer_attack/  # GPTFuzzer攻击
+    │   ├── ica.py             # ICA攻击
+    │   ├── overload.py        # Overload攻击
+    │   ├── pair.py            # PAIR攻击
+    │   ├── random_search.py   # RandomSearch攻击
+    │   ├── renellm_attack/    # ReNeLLM攻击
+    │   ├── rewrite.py         # Rewrite攻击
+    │   ├── scav.py            # SCAV攻击
+    │   ├── tap.py             # TAP攻击
+    │   └── transfer.py        # Transfer攻击
+    ├── defenses               # 防御算法
+    │   ├── back_translate.py  # 回译防御
+    │   ├── base.py            # 基础防御类
+    │   ├── goal_priority.py   # 目标优先防御
+    │   ├── gradsafe.py        # GradSafe防御
+    │   ├── icl.py             # 上下文学习防御
+    │   ├── paraphrase.py      # 改写防御
+    │   ├── perplexity_filter.py # 困惑度过滤
+    │   ├── repe.py            # RePE防御
+    │   ├── repe_utils/        # RePE辅助工具
+    │   ├── rewrite.py         # 重写防御
+    │   ├── rpo.py             # RPO防御
+    │   ├── self_defense.py    # 自我防御
+    │   ├── semantic_smoothing_templates/ # 语义平滑模板
+    │   ├── semantic_smoothllm.py # 语义平滑防御
+    │   └── smoothllm.py       # SmoothLLM防御
+    └── judges                 # 评判器
+        ├── base.py            # 基础评判类
+        ├── llm_based.py       # 基于LLM的评判器
+        └── rule_based.py      # 基于规则的评判器
 ```
 
 ### 代码规范
 
-使用 PyCharm 的默认格式规则。Docstring 使用 'reStructuredText' (rst) 格式，代码风格使用 'black' 格式。以下是一些有用的工具和设置：
+PandaGuard 遵循以下代码规范：
 
-- **`black`**: 自动格式化 Python 代码以符合 PEP 8 标准。
-- **`flake8`**: 提供潜在代码错误的 linting 并执行风格指南。
-- **`isort`**: 自动排序和安排导入，以提高可读性和遵循标准。
+- **文档字符串**: 使用 'reStructuredText' (rst) 格式
+- **代码格式化**: 使用 'black' 格式化工具
+- **静态检查**: 使用 'flake8' 进行代码检查
+- **导入排序**: 使用 'isort' 排序导入语句
 
-## TODO
+### 常见开发任务
 
-我们需要包含更多的方法并完成更多评估。候选的方法包括：
+#### 添加新的模型接口
 
-### Attackers
+1. 在 `llms/` 目录中创建新文件
+2. 定义配置类，继承 `BaseLLMConfig`
+3. 实现模型类，继承 `BaseLLM`
+4. 实现必要的方法：`generate`, `evaluate_log_likelihood`, `continual_generate`
+5. 在 `pyproject.toml` 中注册新模型
 
-- [ ] [GCG](https://arxiv.org/abs/2404.02151)
-- [ ] [PAIR](https://arxiv.org/abs/2310.08419)
-- [ ] [AutoDan](https://arxiv.org/abs/2310.04451)
-- [ ] [Prompt with Random Search](https://arxiv.org/abs/2404.02151)
-- [ ] [ArtPrompt](https://aclanthology.org/2024.acl-long.809/)
-- [ ] [AdvPrompter](https://arxiv.org/abs/2404.16873)
-- [ ] [RainBow Teaming](https://arxiv.org/abs/2402.16822)
+#### 添加新的攻击或防御算法
 
-### Defenders
+1. 研究相关论文，理解算法原理
+2. 在对应目录创建实现文件
+3. 实现配置类和主类
+4. 添加必要的测试
+5. 在配置目录创建示例配置
+6. 在 `pyproject.toml` 中注册
+7. 运行评估实验验证效果
 
-- [ ] [GradSafe](https://aclanthology.org/2024.acl-long.30/)
-- [ ] [LLM Self Defense](https://arxiv.org/abs/2308.07308)
-- [ ] [SafeRLHF](https://arxiv.org/abs/2310.12773) ?
-- [ ] [生成后验证]
+## 当前支持的算法
 
-### Judges
+### 攻击算法
 
-- [ ] 待定
+- [x] Transfer-based Attacks (各种模板)
+- [x] Rewrite Attack
+- [x] PAIR (Personalized Adversarial Iterative Refinement)
+- [x] GCG (Greedy Coordinate Gradient)
+- [x] TAP (Tree of Attacks with Pruning)
+- [x] Overload Attack
+- [x] ArtPrompt
+- [x] DeepInception
+- [x] GPT4-Cipher
+- [x] SCAV
+- [x] RandomSearch
+- [x] ICA (In-Context Attack)
+- [x] Cold Attack
+- [x] GPTFuzzer
+- [x] ReNeLLM
 
-### Dataset
+### 防御算法
 
-- [ ] 待定
+- [x] SelfReminder
+- [x] ICL (In-Context Learning)
+- [x] SmoothLLM
+- [x] SemanticSmoothLLM
+- [x] Paraphrase
+- [x] BackTranslation
+- [x] PerplexityFilter
+- [x] RePE
+- [x] GradSafe
+- [x] SelfDefense
+- [x] GoalPriority
+- [x] RPO
 
-### Task
+### 评判器
 
-我们需要选择具体的方法，分配任务给不同的个体，完成这些方法的复现以及评估，然后将结果提交到这个仓库。
+- [x] RuleBasedJudge
+- [x] LMMJudge (PairLLMJudge)
+- [x] TAPLLMJudge
+
+## 待办事项
+
+- [ ]  编写 test case (**@Feng Linghao**)
+    - [ ]  对于不同 LLM 接口的 test case
+    - [ ]  对于不同攻击 / 防御 / 评价 方法的 test case (每个类别选择一种就行)
+- [ ]  完成其他的 cli, 至少包括如下三个功能 (**@HE Xiang**)
+    - [ ]  attack, 用户输入一个命令, 然后输出攻击后的对应的结果
+    - [ ]  inference, 推理 和 jailbreak-baselines/jbb_inference.py 功能一致
+    - [ ]  eval, 测试, 和 jailbreak-baselines/jbb_eval.py 功能一致
+- [ ]  修订文档 (**@TONG Haibo**, **@ZHENG Xiang**)
+    - [ ]  review 每个代码文件的文档, 保证其符合规范, 并且能正常编译, 且优雅
+    - [ ]  研究一下如何分离中文 / 英文文档
+    - [ ]  创建独立的 GitHub账号, 以及 repo, 作为文档, e.g. [panda-guard/docs.github.io](http://panda-guard.github.io) or 在 BrainCog 这个组织账号下, braincog/panda-guard.github.io
+- [ ]  创建项目网页,  [panda-guard.github.io](http://panda-guard.github.io), 可以参考 [https://eureka-research.github.io](https://eureka-research.github.io/) 类似于这种 (**@LI Jindong**)
+    - [ ]  先申请GitHub账号, 并先把框架搭起来, 图片素材随后写论文绘图之后补充
+    - [ ]  GitHub 组织账号 (Beijing-AISI)
+- [ ]  HuggingFace 相关 (**@SHEN Sicheng**, **@WANG Jihang**)
+    - [ ]  创建一个 huggingface 组织账号 (Beijing-AISI)
+    - [ ]  把 repo 中 benchmarks 的内容分离, 并且放在一个 huggingface datasets 中, 把 analysis.csv or 所有的 json → csv 作为主要的文件, 就是那个 datacard.
+    - [ ]  然后创建一个 space → 对应于 leaderboard
+- [ ]  上传 pip (**@DONG Yiting**)
 
 ## 注意事项
 
@@ -288,5 +459,13 @@ configs
 - 不要提交敏感信息，比如 API keys 或 tokens。
 - 避免提交不必要的文件，如 `__pycache__`、`.idea`、`.vscode`，使用 `.gitignore` 忽略它们。
 - 不要提交不必要的代码，如 `print` 或 debug 代码，使用 `logging` 记录日志。
-- **紧耦合**：每种方法都要继承对应的抽象类，每个抽象类都要有对应的注册器和配置文件。
-- **联系我**：如果有任何问题，尤其是涉及框架设计的，请联系我，一起完善。有些我的考量也不成熟。
+
+## 贡献指南
+
+1. Fork 仓库并克隆到本地
+2. 创建新的分支 `git checkout -b feature/your-feature-name`
+3. 实现你的修改和新功能
+4. 确保代码通过所有测试和检查
+5. 提交代码并创建 Pull Request
+
+欢迎所有形式的贡献，包括但不限于：新算法实现、文档改进、bug修复和功能增强。

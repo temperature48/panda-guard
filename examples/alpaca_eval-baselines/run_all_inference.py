@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/16 20:37
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : run_all_inference.py
 # explain   : Iterate over all LLM and defense configurations and run Alpaca evaluation inference for each combination.
 

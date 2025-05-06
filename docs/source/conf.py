@@ -9,7 +9,7 @@
 project = 'Panda-Guard'
 copyright = '2024, Floyed Shen, etc.'
 author = 'Floyed Shen, etc.'
-release = 'v0.0.8'
+release = 'v0.1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

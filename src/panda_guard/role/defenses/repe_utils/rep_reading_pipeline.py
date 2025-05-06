@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/9 16:33
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : rep_reading_pipeline.py
 # explain   : Adapted from https://github.com/andyzoujm/representation-engineering.git
 

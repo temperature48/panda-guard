@@ -3,9 +3,9 @@
 # Datetime  : 2024/9/1 17:34
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : utils.py
-# explain   : Utility functions for the jailbreak-pipeline.
+# explain   : Utility functions for the panda-guard.
 
 import abc
 import subprocess

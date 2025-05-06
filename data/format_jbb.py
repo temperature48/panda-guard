@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/4 11:32
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : format_jbb.py
 # explain   :
 import json

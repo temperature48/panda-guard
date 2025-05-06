@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/16 19:46
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : run_all_inference.py
 # explain   : Iterate over all attack, defense, and LLM configurations and run inference for each combination.
 

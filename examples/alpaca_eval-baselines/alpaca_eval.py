@@ -3,7 +3,7 @@
 # Datetime  : 2024/10/12 15:21
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : alpaca_eval.py
 # explain   :
 import logging

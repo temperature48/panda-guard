@@ -3,7 +3,7 @@
 # Datetime  : 2024/12/02 16:30
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : scav.py
 # Explain   : scav: https://arxiv.org/abs/2404.12038 NeurIPS 2024
 

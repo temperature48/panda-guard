@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/3 12:19
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : paraphrase.py
 # explain   :
 from dataclasses import dataclass, field

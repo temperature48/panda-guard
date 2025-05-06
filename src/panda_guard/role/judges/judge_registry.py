@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/4 15:04
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : attacker_registry.py
 # explain   :
 

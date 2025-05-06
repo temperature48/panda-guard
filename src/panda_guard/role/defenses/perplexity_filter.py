@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/3 22:39
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : perplexity_filter.py
 # explain   :
 from dataclasses import dataclass, field

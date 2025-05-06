@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/4 14:37
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : inference.py
 # explain   : Inference pipeline for executing attack and defense phases.
 

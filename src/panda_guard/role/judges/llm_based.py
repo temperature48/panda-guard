@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/3 20:15
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : llm_judge.py
 # explain   :
 

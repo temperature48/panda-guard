@@ -39,7 +39,7 @@ plt.xlabel('角度值 (弧度)')
 plt.ylabel('振幅')
 plt.show()
 #%%
-ROOT_DIR = "/Users/floyed/Documents/workplace/jailbreak-pipeline"
+ROOT_DIR = "/Users/floyed/Documents/workplace/panda-guard"
 JBB_DIR = os.path.join(ROOT_DIR, "benchmarks", "jbb_judged")
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 #%%

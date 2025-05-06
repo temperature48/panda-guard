@@ -3,7 +3,7 @@
 # Datetime  : 2024/10/11 21:47
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : alpaca_inference.py
 # explain   :  Run inference for alpaca evaluation using a specific LLM and defense configuration.
 

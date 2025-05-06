@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/2 21:05
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : semantic_smoothllm.py
 # explain   :
 import os

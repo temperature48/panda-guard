@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/3 14:27
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : backtranslate.py
 # explain   :
 

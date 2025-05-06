@@ -3,7 +3,7 @@
 # Datetime  : 2024/12/02 16:30
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : gpt4_cipher.py
 # explain   : gpt4_cipher: https://arxiv.org/abs/2308.06463 ICLR 2024
 

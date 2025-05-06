@@ -3,7 +3,7 @@
 # Datetime  : 2024/12/02 16:30
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : random_research.py
 # Explain   : random research: https://arxiv.org/abs/2404.02151 ICLR 2025
 

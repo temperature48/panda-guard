@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/2 20:13
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : smoothllm.py
 # explain   :
 

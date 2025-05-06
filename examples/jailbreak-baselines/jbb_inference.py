@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/16 19:46
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : jbb_inference.py
 # explain   : Run inference using a specific attack and defense configuration.
 

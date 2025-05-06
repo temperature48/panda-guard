@@ -3,7 +3,7 @@
 # Datetime  : 2024/9/3 18:45
 # User      : yu
 # Product   : PyCharm
-# Project   : jailbreak-pipeline
+# Project   : panda-guard
 # File      : base.py
 # explain   : False -> Safe,
 
