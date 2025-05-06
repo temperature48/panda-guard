@@ -1,6 +1,6 @@
 # PandaGuard
 
-English | [简体中文](./README_zh.md)
+English | [简体中文](./README_zh_CN.md)
 
 This repository contains the source code for `Panda Guard`, designed for researching jailbreak attacks, defenses, and evaluation algorithms for large language models (LLMs). It is built on the following core principles:
 
