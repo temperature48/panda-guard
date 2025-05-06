@@ -1,5 +1,3 @@
-I'll create an English version of the markdown document based on the content provided.
-
 # PandaGuard
 
 English | [简体中文](./README_zh.md)
