@@ -23,17 +23,17 @@ class LMMJudgeConfig(BaseJudgeConfig):
     """
     Configuration class for LMM Judge.
 
-    :param judge_cls: Judge class name. Judge 类名
+    :param judge_cls: Judge class name.
     :type judge_cls: str
-    :param judge_name: Judge name. Judge 名称
+    :param judge_name: Judge name.
     :type judge_name: str
-    :param judge_llm_config: Configuration for Judge LLM. Judge LLM 的配置
+    :param judge_llm_config: Configuration for Judge LLM.
     :type judge_llm_config: BaseLLMConfig
-    :param judge_llm_gen_config: Generation configuration for Judge LLM. Judge LLM 的生成配置
+    :param judge_llm_gen_config: Generation configuration for Judge LLM.
     :type judge_llm_gen_config: LLMGenerateConfig
-    :param system_template: System template. 系统模板
+    :param system_template: System template.
     :type system_template: str
-    :param user_template: User template. 用户模板
+    :param user_template: User template.
     :type user_template: str
     """
 
@@ -52,11 +52,11 @@ class PairLLMJudgeConfig(LMMJudgeConfig):
     Configuration class for PAIR Judge.
     https://github.com/patrickrchao/JailbreakingLLMs
 
-    :param judge_name: Judge name. Judge 名称
+    :param judge_name: Judge name.
     :type judge_name: str
-    :param system_template: System template with evaluation instructions. 系统模板，包含评估请求的说明
+    :param system_template: System template with evaluation instructions.
     :type system_template: str
-    :param user_template: User template for formatting user requests and AI assistant responses. 用户模板，用于格式化用户请求和 AI 助手的响应
+    :param user_template: User template for formatting user requests and AI assistant responses.
     :type user_template: str
     """
 
@@ -83,7 +83,24 @@ class PairLLMJudgeConfig(LMMJudgeConfig):
 @dataclass
 class TAPLLMJudgeConfig(BaseJudgeConfig):
     """
-    TAP eval Judge config
+    Configuration class for TAP Judge.
+
+    :param judge_cls: Judge class name.
+    :type judge_cls: str
+    :param judge_name: Judge name.
+    :type judge_name: str
+    :param judge_llm_config: Configuration for Judge LLM.
+    :type judge_llm_config: BaseLLMConfig
+    :param judge_llm_gen_config: Generation configuration for Judge LLM.
+    :type judge_llm_gen_config: LLMGenerateConfig
+    :param system_template_score: System prompt template for scoring evaluations.
+    :type system_template_score: str
+    :param system_template_topic: System prompt template for topic similarity evaluations.
+    :type system_template_topic: str
+    :param user_template_score: User template for scoring.
+    :type user_template_score: str
+    :param user_template_topic: User template for topic similarity.
+    :type user_template_topic: str
     """
 
     judge_cls: str = field(default="TAPLLMJudge")
@@ -116,14 +133,8 @@ class LMMJudge(BaseJudge):
     """
     LMM Judge class for evaluating whether LLM responses have ethical, legal, or safety issues.
 
-    :param judge_llm: Instance of Judge LLM used for evaluation. 用于评估响应的 Judge LLM 实例
-    :type judge_llm: BaseLLM
-    :param judge_llm_gen_config: Generation configuration for Judge LLM. Judge LLM 的生成配置
-    :type judge_llm_gen_config: LLMGenerateConfig
-    :param system_template: System prompt template. 系统提示模板
-    :type system_template: str
-    :param user_template: User prompt template. 用户提示模板
-    :type user_template: str
+    :param config: Configuration object for the LMMJudge, including model and generation settings, and prompt templates.
+    :type config: LMMJudgeConfig
     """
 
     def __init__(self, config: LMMJudgeConfig):
@@ -140,11 +151,11 @@ class LMMJudge(BaseJudge):
         """
         Evaluate the response provided by the AI assistant.
 
-        :param messages: List of message dictionaries containing the conversation. 包含对话的消息字典列表
+        :param messages: List of message dictionaries containing the conversation.
         :type messages: List[Dict[str, str]]
-        :param request: Original request from the user. 用户的原始请求
+        :param request: Original request from the user.
         :type request: str
-        :return: Integer rating from 1 to 10 indicating the extent of jailbreak. 从 1 到 10 的整数评分，表示 jailbreak 的程度
+        :return: Integer rating from 1 to 10 indicating the extent of jailbreak.
         :rtype: int
         """
 
@@ -185,7 +196,10 @@ class LMMJudge(BaseJudge):
 
 class TAPLLMJudge(BaseJudge):
     """
-    TAP LLM Judge
+    TAP LLM Judge class, inherited from LMMJudge.
+
+    :param config: Configuration object for the TAPLMMJudge, including model and generation settings, and prompt templates.
+    :type config: TAPLLMJudgeConfig
     """
 
     def __init__(self, config: TAPLLMJudgeConfig):
@@ -201,6 +215,19 @@ class TAPLLMJudge(BaseJudge):
         self.user_template_score = config.user_template_score
 
     def judge_score(self, request: str, response: str, goal: str):
+        """
+        Evaluate the AI assistant's response and assign a score indicating the degree of jailbreak.
+
+        :param request: The original user prompt that was given to the AI assistant.
+        :type request: str
+        :param response: The AI assistant's response to the prompt.
+        :type response: str
+        :param goal: The task or intent that the response is expected to fulfill.
+        :type goal: str
+
+        :return: Integer rating from 1 to 10 indicating the extent of jailbreak.
+        :rtype: int
+        """
         messages = [
             {"role": "system", "content": self.system_template_score.format(goal=goal)},
             {
@@ -227,6 +254,16 @@ class TAPLLMJudge(BaseJudge):
         return broken
 
     def judge_topic(self, request: str, goal: str):
+        """
+        Evaluate whether the given request is semantically equivalent to the specified goal.
+
+        :param request: The user prompt to evaluate.
+        :type request: str
+        :param goal: The target task or intent the request correspond to.
+        :type goal: str
+        :return: Binary indicator (1 for match, 0 for mismatch).
+        :rtype: int
+        """
         messages = [
             {"role": "system", "content": self.system_template_topic.format(goal=goal)},
             {
