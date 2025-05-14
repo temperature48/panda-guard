@@ -15,6 +15,8 @@ from typing import Tuple, List, Dict, Type, TypeVar, Generic, Optional, Any
 import importlib
 from importlib.metadata import entry_points
 
+import yaml
+
 
 def is_user_turn(messages: List[Dict[str, str]]) -> bool:
     """
@@ -60,6 +62,11 @@ def load_class(config_cls_name: str, role_type: str) -> Any:
     return getattr(module, config_cls_name + "Config")
 
 
+def load_yaml(yaml_file):
+    with open(yaml_file, 'r') as file:
+        return yaml.safe_load(file)
+
+
 def parse_nested_config(config_cls, config_dict: Dict[str, Any]):
     """
     Parse nested configuration dictionaries into objects.
@@ -87,7 +94,7 @@ def parse_nested_config(config_cls, config_dict: Dict[str, Any]):
     return config_cls(**nested_config_dict)
 
 
-def parse_configs_from_dict(config_dict: Dict[str, Any]):
+def parse_configs_from_dict(config_dict: Dict[str, Any], return_dict: bool=False):
     """
     Convert a dictionary into configuration objects for the pipeline.
 
@@ -120,6 +127,12 @@ def parse_configs_from_dict(config_dict: Dict[str, Any]):
             judge_config = parse_nested_config(JudgeClass, judge_config_dict)
             judge_configs.append(judge_config)
 
+    if return_dict:
+        return {
+            "attacker_config": attacker_config,
+            "defender_config": defender_config,
+            "judge_configs": judge_configs,
+        }
     return attacker_config, defender_config, judge_configs
 
 

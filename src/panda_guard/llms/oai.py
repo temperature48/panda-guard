@@ -91,7 +91,7 @@ class OpenAiChatLLM(BaseLLM):
             messages[0]["content"] = system_prompt + "\n\n" + messages[0]["content"]
 
         retry_count = 0
-        max_retries = 10
+        max_retries = 20
         while retry_count < max_retries:
             model_name = 'DeepSeek-R1' if self._NAME == 'deepseek-reasoner' else self._NAME
             model_name = 'DeepSeek-V3' if self._NAME == 'deepseek-ai/DeepSeek-V3' else model_name
@@ -162,14 +162,19 @@ class OpenAiChatLLM(BaseLLM):
                             seed=config.seed,
                         )
 
-                    content = response.choices[0].message.content
-                    messages.append({"role": "assistant", "content": content})
+                    if response.choices is None:
+                        print("Cannot find choices in Response:", response)
+                        messages.append({"role": "assistant", "content": "I'm sorry, but I can't fulfill this request."})
 
-                    self.update(
-                        response.usage.prompt_tokens,
-                        response.usage.completion_tokens,
-                        1,
-                    )
+                    else:
+                        content = response.choices[0].message.content
+                        messages.append({"role": "assistant", "content": content})
+
+                        self.update(
+                            response.usage.prompt_tokens,
+                            response.usage.completion_tokens,
+                            1,
+                        )
 
                     if config.logprobs:
                         logs = [c.logprob for c in response.choices[0].logprobs.content]
@@ -185,13 +190,14 @@ class OpenAiChatLLM(BaseLLM):
 
                 retry_count += 1
                 if retry_count >= max_retries:
-                    raise RuntimeError(
+                    messages.append({"role": "assistant", "content": "I'm sorry, but I can't fulfill this request."})
+                    print(
                         f"API request failed when testing model {self._NAME}, tried: {max_retries}, Error: {e}")
                 else:
                     print(
                         f"API request failed when testing model {self._NAME}，retrying {retry_count}/{max_retries}... Error: {e}")
                     time.sleep(retry_count)
-        return None
+        return messages
 
     def continual_generate(
         self, messages: List[Dict[str, str]], config: LLMGenerateConfig
@@ -416,10 +422,10 @@ class OpenAiLLM(BaseLLM):
         return messages
 
     def evaluate_log_likelihood(
-        self,
-        messages: List[Dict[str, str]],
-        config: LLMGenerateConfig,
-        require_grad=False,
+            self,
+            messages: List[Dict[str, str]],
+            config: LLMGenerateConfig,
+            require_grad=False,
     ) -> List[float]:
         """
         Evaluate the log likelihood of the given messages.
@@ -428,14 +434,20 @@ class OpenAiLLM(BaseLLM):
         :param config: Configuration for LLM generation.  生成配置
         :return: List of log likelihood values.  返回的log likelihood值列表
         """
-
-        # if require grad, model is training mode
         if require_grad:
             raise NotImplementedError
+
+        # Make sure the content exists and is not None
+        if not messages or "content" not in messages[-1] or messages[-1]["content"] is None:
+            print(messages)
+            raise ValueError("Last message must have valid content")
+
+        content = messages[-1]["content"]
 
         prompt = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
+
         response = self.client.completions.create(
             model=self._NAME,
             prompt=prompt,
@@ -444,11 +456,24 @@ class OpenAiLLM(BaseLLM):
             logprobs=1,
             echo=True,
         )
-        logprobs = response.choices[0].logprobs.token_logprobs
 
-        self.update(response.usage.prompt_tokens, 0, 1)
+        # Extract token_logprobs from the response
+        if hasattr(response.choices[0], 'logprobs') and hasattr(response.choices[0].logprobs, 'token_logprobs'):
+            all_logprobs = response.choices[0].logprobs.token_logprobs
 
-        return logprobs[-len(self.tokenizer(messages[-1]["content"]).input_ids) :]
+            # Get token IDs for the content
+            token_ids = self.tokenizer(text=content).input_ids
+            num_tokens = len(token_ids)
+
+            # Take the last N logprobs where N is the number of tokens in the content
+            content_logprobs = all_logprobs[-num_tokens:] if num_tokens <= len(all_logprobs) else all_logprobs
+
+            self.update(response.usage.prompt_tokens, 0, 1)
+
+            return content_logprobs
+        else:
+            # Handle the case where logprobs structure is different
+            raise ValueError("Response does not contain expected logprobs structure")
 
 
 if __name__ == "__main__":
