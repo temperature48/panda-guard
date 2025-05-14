@@ -11,16 +11,10 @@ from panda_guard.llms.base import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 
 from panda_guard.utils import ComponentRegistry
 
-llm_registry = ComponentRegistry[BaseLLM](
-    "llm",
-    BaseLLM,
-    "panda_guard.llms"
-)
+llm_registry = ComponentRegistry[BaseLLM]("llm", BaseLLM, "panda_guard.llms")
 
 config_registry = ComponentRegistry[BaseLLMConfig](
-    "llm_config",
-    BaseLLMConfig,
-    "panda_guard.llm_configs"
+    "llm_config", BaseLLMConfig, "panda_guard.llm_configs"
 )
 
 
@@ -37,7 +31,9 @@ def create_llm(config: BaseLLMConfig) -> BaseLLM:
 
     raise ValueError(f"Cannot Create LLM from Config: {config}")
 
+
 LLMS = {}
+
 
 def __getattr__(name):
     try:
@@ -50,4 +46,3 @@ def __getattr__(name):
             return llm_class
     except ValueError:
         raise AttributeError(f"module 'panda_guard.llms' has no attribute '{name}'")
-
