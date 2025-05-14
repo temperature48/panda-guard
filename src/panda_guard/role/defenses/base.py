@@ -21,10 +21,10 @@ class BaseDefenderConfig(abc.ABC):
     """
     Configuration for the Base Defender.
 
-    :param defender_cls: Class of the defender.  防御者的类型
-    :param defender_name: Name of the defender.  防御者的名称
-    :param target_llm_config: Configuration for the target language model.  目标LLM配置
-    :param target_llm_gen_config: Configuration for generating output with the target LLM.  目标LLM生成配置
+    :param defender_cls: Class of the defender.
+    :param defender_name: Name of the defender.
+    :param target_llm_config: Configuration for the target language model.
+    :param target_llm_gen_config: Configuration for generating output with the target LLM.
     """
     defender_cls: str = field(default=None)
     defender_name: str = field(default=None)
@@ -36,7 +36,7 @@ class BaseDefender(abc.ABC):
     """
     Abstract Base Class for Defender.
 
-    :param config: Configuration for the defender.  用于防御者的配置
+    :param config: Configuration for the defender.
     """
 
     def __init__(
@@ -60,8 +60,8 @@ class BaseDefender(abc.ABC):
         """
         Abstract method to execute defense on a sequence of messages.
 
-        :param messages: List of input messages.  输入的消息列表
-        :return: Modified list of messages after applying the defense strategy.  应用防御策略后返回的更改消息列表
+        :param messages: List of input messages.
+        :return: Modified list of messages after applying the defense strategy.
         """
 
         # print(self._target_llm_gen_config)

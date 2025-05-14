@@ -22,6 +22,7 @@ extensions = [
 ]
 
 language = 'en'
+locale_dirs = ['../locales/']
 gettext_compact = False      # optional
 
 templates_path = ['_templates']

@@ -33,22 +33,22 @@ class RepeDefenderConfig(BaseDefenderConfig):
     """
     Configuration for the Repe Defender.
 
-    :param defender_cls: Class of the defender, default is "Repe". 防御者的类别，默认为 "Repe"
-    :param defender_name: Name of the defender, default is "Repe". 防御者的名称，默认为 "Repe"
-    :param dataset: Dataset name used for the training of Repe. 用于Repe训练的数据集名称
-    :param dataset_args: Additional arguments for the dataset. 数据集的附加参数
-    :param system_template: Template for the system message. 系统消息的模板
-    :param prompt_template: Template for user prompts. 用户提示的模板
-    :param direction_method: Method for determining direction (e.g., "pca"). 用于确定方向的方法 (例如："pca")
-    :param rep_token: Token used for representation. 表示使用的token
-    :param ctrl_method: Method used for controlling representations. 表示控制方法
-    :param ctrl_block_name: Name of the control block in the LLM model. LLM模型中的控制块名称
-    :param ctrl_hidden_layers: Hidden layers for control. 用于控制的隐藏层
-    :param ctrl_hidden_top_p: Top proportion of hidden layers used for control. 控制使用的隐藏层的比例
-    :param ctrl_factor: Control factor affecting the representation. 影响表示的控制因子
-    :param ctrl_batch_size: Batch size used during control operations. 控制操作期间使用的批次大小
-    :param topk: The top k percentage to select activations. 选择激活值的top k百分比
-    :param selector: Method to select the activations, "abs_max" or "random". 选择激活值的方法，"abs_max" 或 "random"
+    :param defender_cls: Class of the defender, default is "Repe".
+    :param defender_name: Name of the defender, default is "Repe".
+    :param dataset: Dataset name used for the training of Repe.
+    :param dataset_args: Additional arguments for the dataset.
+    :param system_template: Template for the system message.
+    :param prompt_template: Template for user prompts.
+    :param direction_method: Method for determining direction (e.g., "pca").
+    :param rep_token: Token used for representation.
+    :param ctrl_method: Method used for controlling representations.
+    :param ctrl_block_name: Name of the control block in the LLM model.
+    :param ctrl_hidden_layers: Hidden layers for control.
+    :param ctrl_hidden_top_p: Top proportion of hidden layers used for control.
+    :param ctrl_factor: Control factor affecting the representation.
+    :param ctrl_batch_size: Batch size used during control operations.
+    :param topk: The top k percentage to select activations.
+    :param selector: Method to select the activations, "abs_max" or "random".
     """
     defender_cls: str = field(default="Repe")
     defender_name: str = field(default="Repe")
@@ -77,7 +77,7 @@ class RepeDefender(BaseDefender):
     """
     Repe Defender class for mitigating harmful content by controlling model representations.
 
-    :param config: Configuration for Repe Defender. Repe防御者的配置
+    :param config: Configuration for Repe Defender.
     """
 
     def __init__(
@@ -124,8 +124,8 @@ class RepeDefender(BaseDefender):
         """
         Apply the defense mechanism using representation control.
 
-        :param messages: Input messages for defense. 输入的防御消息
-        :return: Modified list of messages after applying the defense strategy. 应用防御策略后的消息列表
+        :param messages: Input messages for defense.
+        :return: Modified list of messages after applying the defense strategy.
         """
         return super().defense(messages)
 
@@ -137,9 +137,9 @@ class RepeDefender(BaseDefender):
         """
         Generate responses based on input messages and configurations.
 
-        :param messages: List of input messages. 输入的消息列表
-        :param config: Generation configuration for LLM. LLM的生成配置
-        :return: Generated responses from the model. 由模型生成的响应
+        :param messages: List of input messages.
+        :param config: Generation configuration for LLM.
+        :return: Generated responses from the model.
         """
         return super().target_llm.model.generate(messages, config)
 
@@ -147,7 +147,7 @@ class RepeDefender(BaseDefender):
         """
         Calculate the significance of each hidden layer in the model.
 
-        :return: List of hidden layers and their corresponding significance values. 隐藏层及其对应的重要性值列表
+        :return: List of hidden layers and their corresponding significance values.
         """
         hidden_layers = list(range(-1, -self.target_llm.model.config.num_hidden_layers, -1))
         h_tests = self.rep_reading_pipeline(
@@ -177,8 +177,8 @@ class RepeDefender(BaseDefender):
         """
         Calculate the representation for the given dataset.
 
-        :param dataset: Dataset to be used for representation calculations. 用于表示计算的数据集
-        :return: Representation reading pipeline, reader, and dataset. 表示读取管道、读取器和数据集
+        :param dataset: Dataset to be used for representation calculations.
+        :return: Representation reading pipeline, reader, and dataset.
         """
         dataset = self.preprocess_dataset(dataset)
 
@@ -200,10 +200,10 @@ class RepeDefender(BaseDefender):
         """
         Set the activations for controlling the model.
 
-        :param ctrl_factor: Control factor affecting the representation. 影响表示的控制因子
-        :param topk: The top k percentage to select activations. 选择激活值的top k百分比
-        :param selector: Method to select the activations, "abs_max" or "random". 选择激活值的方法，"abs_max" 或 "random"
-        :param ctrl_hidden_layers: Hidden layers for control. 用于控制的隐藏层
+        :param ctrl_factor: Control factor affecting the representation.
+        :param topk: The top k percentage to select activations.
+        :param selector: Method to select the activations, "abs_max" or "random".
+        :param ctrl_hidden_layers: Hidden layers for control.
         """
         print(ctrl_factor, topk, selector)
         self.ctrl_factor = ctrl_factor
@@ -243,9 +243,9 @@ class RepeDefender(BaseDefender):
         """
         Calculate the top k activations based on the given selector method.
 
-        :param x: Input tensor. 输入张量
-        :param k: Top k percentage to select. 选择的top k百分比
-        :return: Masked tensor with top k activations. 带有top k激活的掩码张量
+        :param x: Input tensor.
+        :param k: Top k percentage to select.
+        :return: Masked tensor with top k activations.
         """
         k = int(k * x.shape[-1])
         if self.selector == 'abs_max':
@@ -268,9 +268,9 @@ class RepeDefender(BaseDefender):
         """
         Get the hidden layers to be used for control based on their significance.
 
-        :param ctrl_hidden_layers: List of specified hidden layers. 指定的隐藏层列表
-        :param ctrl_hidden_top_p: Top proportion of hidden layers to select. 选择的隐藏层比例
-        :return: Selected hidden layers and their significance. 选择的隐藏层及其重要性
+        :param ctrl_hidden_layers: List of specified hidden layers.
+        :param ctrl_hidden_top_p: Top proportion of hidden layers to select.
+        :return: Selected hidden layers and their significance.
         """
         x, y = self.calc_significance()
         x_sorted, y_sorted = zip(*sorted(zip(x, y), key=lambda tp: -tp[1]))
@@ -287,8 +287,8 @@ class RepeDefender(BaseDefender):
         """
         Preprocess the dataset for representation calculations.
 
-        :param dataset: Dataset to be preprocessed. 需要预处理的数据集
-        :return: Preprocessed dataset dictionary. 预处理后的数据集字典
+        :param dataset: Dataset to be preprocessed.
+        :return: Preprocessed dataset dictionary.
         """
         train_data, train_labels = dataset['train']['sentence'], dataset['train']['label']
         test_data, test_labels = dataset['test']['sentence'], dataset['test']['label']
