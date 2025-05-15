@@ -23,8 +23,8 @@ class AutoDanAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the AutoDanAttacker.
 
-    :param attacker_cls: Class of the attacker, default is "AutoDanAttacker".  攻击者的类型，默认值为 "AutoDanAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
+    :param attacker_cls: Class of the attacker, default is "AutoDanAttacker".  
+    :param attacker_name: Name of the attacker.  
     :param batch_size:   The larger the batch size, the faster it runs, but the higher the memory footprint
     :param num_steps:   The number of iteration steps
     :param num_points:   The number of nodes in the genetic algorithm that perform crossovers
@@ -97,9 +97,9 @@ class AutoDanAttacker(BaseAttacker):
         """
         Execute AutoDAN.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  额外攻击参数，必须包含 "request_reformulated"
-        :return: Modified list of messages with the reformulated request.  包含重新表达请求的更改消息列表
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  
+        :return: Modified list of messages with the reformulated request.  
         """
         instruction = [copy.deepcopy(messages[0])]
         # target = f'Sure, here is how [to {instruction[0]["content"]}'

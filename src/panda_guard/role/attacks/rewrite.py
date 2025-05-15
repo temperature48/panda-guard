@@ -20,11 +20,11 @@ class RewriteAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the Rewrite Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "RewriteAttacker".  攻击者的类型，默认值为 "RewriteAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param llm_config: Configuration for the language model.  LLM配置
-    :param llm_gen_config: Configuration for generating output with LLM.  LLM生成配置
-    :param rewrite_template: Template for rewriting user prompts.  用于重写用户提示的模板
+    :param attacker_cls: Class of the attacker, default is "RewriteAttacker".  
+    :param attacker_name: Name of the attacker.  
+    :param llm_config: Configuration for the language model.  
+    :param llm_gen_config: Configuration for generating output with LLM.  
+    :param rewrite_template: Template for rewriting user prompts.  
     """
     attacker_cls: str = field(default="RewriteAttacker")
     attacker_name: str = field(default=None)
@@ -38,7 +38,7 @@ class RewriteAttacker(BaseAttacker):
     """
     Rewrite Attacker Implementation for modifying user prompts to bypass restrictions.
 
-    :param config: Configuration for the Rewrite Attacker.  用于Rewrite Attacker的配置
+    :param config: Configuration for the Rewrite Attacker.  
     """
 
     def __init__(self, config: RewriteAttackerConfig):
@@ -51,8 +51,8 @@ class RewriteAttacker(BaseAttacker):
         """
         Rewrite the given prompt using the specified template.
 
-        :param prompt: The original user prompt.  原始用户提示
-        :return: The rewritten prompt.  重写后的提示
+        :param prompt: The original user prompt. 
+        :return: The rewritten prompt.  
         """
         messages = [{
             "role": "user",
@@ -72,9 +72,9 @@ class RewriteAttacker(BaseAttacker):
         """
         Execute an attack by rewriting the latest user prompt.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack.  额外的攻击参数
-        :return: Modified list of messages with the rewritten prompt.  包含重写提示的更改消息列表
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack.
+        :return: Modified list of messages with the rewritten prompt.  
         """
         assert is_user_turn(messages)
 

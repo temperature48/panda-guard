@@ -23,10 +23,10 @@ class ColdAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the Cold Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "ColdAttacker".  攻击者的类型，默认值为 "ColdAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param white_box_llm_config: Configuration of attacker llm. 白盒攻击时使用的llm配置
-    :param white_box_llm_gen_config: Generation configuration for the attacker's LLM. 白盒攻击者 LLM 的生成配置
+    :param attacker_cls: Class of the attacker, default is "ColdAttacker".  
+    :param attacker_name: Name of the attacker.  
+    :param white_box_llm_config: Configuration of attacker llm. 
+    :param white_box_llm_gen_config: Generation configuration for the attacker's LLM. 
     """
 
     attacker_cls: str = field(default="ColdAttacker")
@@ -40,11 +40,11 @@ class ColdAttacker(BaseAttacker):
     """
     Cold Attacker Implementation that substitutes the user message with a pre-formulated attack prompt.
     Reference：Guo, Xingang and Yu, Fangxu and Zhang, Huan and Qin, Lianhui and Hu, Bin, 2024, Cold-attack: Jailbreaking llms with stealthiness and controllability, ICML 2024
-    实现过程中不同的一些点：
-    1. target 在框架中没有传入，简单使用'Sure, here is'
-    2. 原文中需要使用GPT-4从多个sample中取出合适的一个. 为了不使用GPT-4. 我们将batch size设置为1, 只用第一个.
+    Some different points in the implementation process：
+    1. target is not passed in the frame, simply use 'Sure, here is'
+    2. In the original article, GPT-4 needs to be used to select the appropriate one from multiple samples. In order not to use GPT-4, we set the batch size to 1 and only use the first one.
 
-    :param config: Configuration for the ColdAttacker.  用于ColdAttacker的配置
+    :param config: Configuration for the ColdAttacker.  
     """
 
     def __init__(self, config: ColdAttackerConfig):
@@ -59,9 +59,9 @@ class ColdAttacker(BaseAttacker):
         """
         Execute an attack by transferring a reformulated request into the conversation.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  额外攻击参数
-        :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 含有目标的有害攻击的prompt, 是"role: user, content: xx的形式"
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack, must include "request_reformulated". 
+        :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 
         """
 
         question = messages[0]["content"]

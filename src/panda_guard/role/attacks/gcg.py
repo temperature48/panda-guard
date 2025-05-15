@@ -17,13 +17,13 @@ class GCGAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the GCG Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "GCGAttacker".  攻击者的类型，默认值为 "GCGAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param topk:   每次挑选梯度前k大的one-hot向量的id
-    :param adv_string_init:   初始化对抗后缀
-    :param num_steps:   迭代步数
-    :param use_prefix_cache:   是否缓存对抗后缀前的内容
-    :param early_stop:   是否在判断攻击成功后就停止
+    :param attacker_cls: Class of the attacker, default is "GCGAttacker". 
+    :param attacker_name: Name of the attacker. 
+    :param topk: Each time the ID of the k largest one-hot vector is selected before the gradient.
+    :param adv_string_init: Initialization versus suffix
+    :param num_steps: Number of iteration steps
+    :param use_prefix_cache: Whether to cache content before the suffix
+    :param early_stop: Whether to stop after judging that the attack is successful
     """
     attacker_cls: str = field(default="GCGAttacker")
     attacker_name: str = field(default=None)
@@ -75,7 +75,7 @@ class AttackBuffer:
 class GCGAttacker(BaseAttacker):
     """
     GCG Attacker Implementation
-    Reference:https://arxiv.org/abs/2307.15043
+    Reference: https://arxiv.org/abs/2307.15043
 
     :param config: Configuration for the GCG Attacker.
     """
@@ -84,6 +84,11 @@ class GCGAttacker(BaseAttacker):
             self,
             config: GCGAttackerConfig
     ):
+        """
+        Initializes the GCGAttacker with the provided configuration.
+
+        :param config: Configuration object for the attacker.
+        """
         super().__init__(config)
 
         for field in fields(config):
@@ -95,6 +100,7 @@ class GCGAttacker(BaseAttacker):
                 self.llm = create_llm(config.llm_config)
             else:
                 setattr(self, field_name, field_value)
+
         self.embedding_layer = self.llm.model.get_input_embeddings()
         self.not_allowed_ids = None if config.allow_non_ascii else self.get_nonascii_toks()
         self.prefix_cache = None
@@ -105,10 +111,14 @@ class GCGAttacker(BaseAttacker):
             "w", "x", "y", "z",
         ]
 
-
     def get_nonascii_toks(self):
+        """
+        Returns a list of non-ASCII tokens in the tokenizer's vocabulary.
 
+        :return: Tensor containing the IDs of non-ASCII tokens.
+        """
         device = self.llm.model.device
+
         def is_ascii(s):
             return s.isascii() and s.isprintable()
 
@@ -128,6 +138,7 @@ class GCGAttacker(BaseAttacker):
 
         return torch.tensor(nonascii_toks, device=device)
 
+
     def attack(
             self,
             messages: List[Dict[str, str]],
@@ -136,18 +147,17 @@ class GCGAttacker(BaseAttacker):
         """
         Execute GCG attack.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  额外攻击参数，必须包含 "request_reformulated"
-        :return: Modified list of messages with the reformulated request.  包含重新表达请求的更改消息列表
+        :param messages: List of messages in the conversation.
+        :param kwargs: Additional parameters for the attack, must include "request_reformulated".
+        :return: Modified list of messages with the reformulated request.
         """
-
         instruction = [copy.deepcopy(messages[0])]
         target = 'Sure, here is'
 
         instruction[-1]["content"] = instruction[-1]["content"] + " " + self.adv_string_init
 
         prompt_formatted = self.llm.tokenizer.apply_chat_template(instruction, tokenize=False,
-                                                                      add_generation_prompt=True)
+                                                                  add_generation_prompt=True)
 
         before_str, after_str = prompt_formatted.split(f"{self.adv_string_init}")
 
@@ -156,7 +166,6 @@ class GCGAttacker(BaseAttacker):
         before_ids = self.llm.tokenizer([before_str], padding=False,
                                         return_tensors="pt")["input_ids"].to(self.llm.model.device,
                                                                             torch.int64)
-
 
         after_ids = self.llm.tokenizer([after_str], add_special_tokens=False, return_tensors="pt")["input_ids"].to(
             self.llm.model.device,
@@ -187,10 +196,9 @@ class GCGAttacker(BaseAttacker):
 
         for _ in tqdm(range(self.num_steps)):
             # Compute the token gradient
-            optim_ids_onehot_grad = self.compute_token_gradient(optim_ids) # [1, len(optim_ids), len(embeds)]
+            optim_ids_onehot_grad = self.compute_token_gradient(optim_ids)  # [1, len(optim_ids), len(embeds)]
 
             with torch.no_grad():
-
                 # Sample candidate token sequences based on the token gradient
                 sampled_ids = self.sample_ids_from_grad(
                     optim_ids.squeeze(0),
@@ -228,7 +236,6 @@ class GCGAttacker(BaseAttacker):
 
                 if buffer.size == 0 or current_loss < buffer.get_highest_loss():
                     buffer.add(current_loss, optim_ids)
-
 
             optim_ids = buffer.get_best_ids()
             optim_str = self.llm.tokenizer.batch_decode(optim_ids)[0]
