@@ -18,11 +18,11 @@ class IcaAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the ICA Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "IcaAttacker".  攻击者的类型，默认值为 "IcaAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param rewrite_llm_config: Configuration of rewrite llm. 重写prompt时用到的LLM配置
-    :param target_llm_config: Configuration of target llm. 被攻击的LLM配置
-    :param judge_llm_config: Configuration of judge llm. 判断是否攻击成功的LLM配置
+    :param attacker_cls: Class of the attacker, default is "IcaAttacker".  
+    :param attacker_name: Name of the attacker. 
+    :param rewrite_llm_config: Configuration of rewrite llm. 
+    :param target_llm_config: Configuration of target llm.
+    :param judge_llm_config: Configuration of judge llm. 
     """
 
     attacker_cls: str = field(default="ColdAttacker")
@@ -84,9 +84,9 @@ class IcaAttacker(BaseAttacker):
     def attack(self, messages: List[Dict[str, str]],
                **kwargs) -> List[Dict[str, str]]:
         """
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  额外攻击参数
-        :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 含有目标的有害攻击的prompt, 是"role: user, content: xx的形式"
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack, must include "request_reformulated". 
+        :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 
         """
 
         question = messages[0]["content"]

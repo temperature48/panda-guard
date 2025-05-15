@@ -8,15 +8,15 @@ from panda_guard.utils import is_user_turn
 @dataclass
 class RPODefenderConfig(BaseDefenderConfig):
     """
-    Configuration for the Base Defender. BaseDefender配置
+    Configuration for the Base Defender.
 
-    :param defender_cls: Class of the defender. 防御者的类型
+    :param defender_cls: Class of the defender.
     :type defender_cls: str
-    :param defender_name: Name of the defender. 防御者的名称
+    :param defender_name: Name of the defender.
     :type defender_name: str
-    :param target_llm_config: Configuration for the target language model. 目标LLM配置
+    :param target_llm_config: Configuration for the target language model.
     :type target_llm_config: BaseLLMConfig
-    :param target_llm_gen_config: Configuration for generating output with the target LLM. 目标LLM生成配置
+    :param target_llm_gen_config: Configuration for generating output with the target LLM.
     :type target_llm_gen_config: LLMGenerateConfig
     """
 
@@ -29,11 +29,10 @@ class RPODefenderConfig(BaseDefenderConfig):
 
 class RPODefender(BaseDefender):
     """
-    RPODefender implements the defense mechanism for the attack,
-    generating responses and judging their appropriateness.
+    RPODefender that guards against harmful prompts using defensive suffix.
     Reference:https://arxiv.org/abs/2401.17263
 
-    :param config: Configuration object containing parameters for the defender. 配置对象，包含防御者的参数
+    :param config: Configuration object containing parameters for the defender.
     :type config: RPODefenderConfig
     """
 
@@ -41,7 +40,7 @@ class RPODefender(BaseDefender):
         """
         Initialize the defender with the provided configuration.
 
-        :param config: Configuration for the RPODefender. 防御者配置
+        :param config: Configuration for the RPODefender.
         :type config: RPODefenderConfig
         """
         # create self.target_llm, self.target_llm_gen_config
@@ -51,11 +50,11 @@ class RPODefender(BaseDefender):
 
     def defense(self, messages=List[Dict[str, str]]):
         """
-        Perform defense by generating a response, judging it, and applying defense action.
+        Perform defense by adding defensive suffix.
 
-        :param messages: The input messages that are subject to defense. 输入消息
+        :param messages: The input messages that are subject to defense.
         :type messages: List[Dict[str, str]]
-        :return: The final defense response after evaluating the defense. 防御后的最终响应
+        :return: The final defense response after evaluating the defense.
         :rtype: List[Dict[str, str]]
         """
         assert is_user_turn(messages)

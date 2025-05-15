@@ -24,11 +24,10 @@ class ClaudeLLMConfig(BaseLLMConfig):
     """
     Claude LLM Configuration.
 
-    :param llm_type: Type of LLM, default is "ClaudeLLM".  LLM的类型，默认值为 "ClaudeLLM"
-    :param model_name: Name of the model.  模型的名称
-    :param api_key: API key for accessing Anthropic.  访问Anthropic的API密钥
+    :param llm_type: Type of LLM, default is "ClaudeLLM".
+    :param model_name: Name of the model.
+    :param api_key: API key for accessing Anthropic.
     :param max_tokens_to_sample: Maximum tokens to sample, overrides max_n_tokens if provided.
-        最大采样词汇数，如果提供则覆盖max_n_tokens
     """
 
     llm_type: str = field(default="ClaudeLLM")
@@ -42,7 +41,7 @@ class ClaudeLLM(BaseLLM):
     """
     Claude LLM Implementation.
 
-    :param config: Configuration for Claude LLM.  用于Claude LLM的配置
+    :param config: Configuration for Claude LLM.
     """
 
     def __init__(self, config: ClaudeLLMConfig):
@@ -62,9 +61,9 @@ class ClaudeLLM(BaseLLM):
         """
         Generate a response for a given input using Anthropic Claude API.
 
-        :param messages: List of input messages.  输入的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: Generated response, stream generator, or response with logprobs.  返回生成的应答、流式生成器或启用logprobs的应答
+        :param messages: List of input messages.
+        :param config: Configuration for LLM generation.
+        :return: Generated response, stream generator, or response with logprobs.
         """
         max_tokens = self.max_tokens_to_sample or config.max_n_tokens
 
@@ -200,9 +199,9 @@ class ClaudeLLM(BaseLLM):
         """
         Generate continuation for the last message.
 
-        :param messages: List of messages for input.  输入的消息列表
-        :param config: Configuration for generation.  生成配置
-        :return: Generated response.  返回生成的应答
+        :param messages: List of messages for input.
+        :param config: Configuration for generation.
+        :return: Generated response.
         """
         # Claude doesn't support true "continue generating" functionality like some models
         # Instead, we extract current conversation and generate a continuation
@@ -245,8 +244,8 @@ class ClaudeLLM(BaseLLM):
         """
         Evaluate the log likelihood of the given messages.
 
-        :param messages: List of messages for evaluation.  需要评估的消息列表
-        :param config: Configuration for LLM generation.  生成配置
+        :param messages: List of messages for evaluation.
+        :param config: Configuration for LLM generation.
         :param require_grad: Whether to compute gradients (not supported for API models)
         :raises NotImplementedError: Claude API does not support log likelihood evaluation.
         """

@@ -69,29 +69,29 @@ class TAPAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the Base Attacker.
 
-    :param attacker_cls: Class of the attacker. 攻击者的类型
+    :param attacker_cls: Class of the attacker. 
     :type attacker_cls: str
-    :param attacker_name: Name of the attacker. 攻击者的名称
+    :param attacker_name: Name of the attacker. 
     :type attacker_name: str
-    :param target_str: Target string to be used in the attack. 攻击中使用的目标字符串
+    :param target_str: Target string to be used in the attack. 
     :type target_str: str
-    :param width: The width of the attack tree. 攻击树的宽度
+    :param width: The width of the attack tree. 
     :type width: int
-    :param branching_factor: Factor that determines the branching of the attack. 决定攻击分支的因子
+    :param branching_factor: Factor that determines the branching of the attack. 
     :type branching_factor: int
-    :param depth: The depth of the attack tree. 攻击树的深度
+    :param depth: The depth of the attack tree. 
     :type depth: int
-    :param target_llm_config: Configuration for the target LLM. 目标LLM的配置
+    :param target_llm_config: Configuration for the target LLM. 
     :type target_llm_config: BaseLLMConfig
-    :param target_llm_gen_config: Generation configuration for the target LLM. 目标LLM的生成配置
+    :param target_llm_gen_config: Generation configuration for the target LLM. 
     :type target_llm_gen_config: LLMGenerateConfig
-    :param attack_llm_config: Configuration for the attack LLM. 攻击LLM的配置
+    :param attack_llm_config: Configuration for the attack LLM. 
     :type attack_llm_config: BaseLLMConfig
-    :param attack_llm_gen_config: Generation configuration for the attack LLM. 攻击LLM的生成配置
+    :param attack_llm_gen_config: Generation configuration for the attack LLM. 
     :type attack_llm_gen_config: LLMGenerateConfig
-    :param tap_judge_config: Configuration for the TAP judge. TAP判定器的配置
+    :param tap_judge_config: Configuration for the TAP judge. 
     :type tap_judge_config: BaseJudgeConfig
-    :param attacker_sys_prompt: The system prompt used for the attacker. 攻击者使用的系统提示
+    :param attacker_sys_prompt: The system prompt used for the attacker. 
     :type attacker_sys_prompt: str
     """
 

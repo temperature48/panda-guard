@@ -14,6 +14,9 @@ from .rep_control_pipeline import RepControlPipeline
 
 
 def repe_pipeline_registry():
+    """
+    Register repe-related pipelines to the global pipeline registry for later instantiation by name.
+    """
     PIPELINE_REGISTRY.register_pipeline(
         "rep-reading",
         pipeline_class=RepReadingPipeline,

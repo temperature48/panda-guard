@@ -4,6 +4,7 @@ import logging
 
 stop_words = set(stopwords.words('english'))
 
+
 def decode(model, tokenizer, device, x="", z="", constraints=None, args=None, sys_prompt=None, prefix=None, model_back=None, zz=None):
     '''
     x: left context   (prompt in lexical lexical task)
@@ -152,7 +153,7 @@ def decode(model, tokenizer, device, x="", z="", constraints=None, args=None, sy
         x_model_past = None
     else:
         x_model_outputs = model(x_t[:, :-1], use_cache=True)
-        x_model_past = x_model_outputs.past_key_values  # 这里会有warning, 和transforms版本有关, 但是不是训练模式应该没关系
+        x_model_past = x_model_outputs.past_key_values  # There will be a warning here, which is related to the transforms version, but it should not matter if it is not in training mode.
         # if not isinstance(x_model_past, Cache):
         #     x_model_past = DynamicCache.from_legacy_cache(x_model_past)
 
