@@ -14,7 +14,6 @@ from difflib import SequenceMatcher
 
 from .bleuloss import batch_log_bleulosscnn_ae
 
-
 def embed_inputs(embedding, logits, x_onehot=None, z_onehot=None, device='cuda'):
     '''
     embeds inputs in a dense representation, before passing them to the model

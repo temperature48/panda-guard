@@ -12,7 +12,6 @@ from panda_guard.role.attacks.gptfuzzer_attack.utils.predict import Predictor
 import warnings
 from panda_guard.llms import create_llm, BaseLLMConfig, LLMGenerateConfig, BaseLLM
 
-
 class PromptNode:
     def __init__(
         self,

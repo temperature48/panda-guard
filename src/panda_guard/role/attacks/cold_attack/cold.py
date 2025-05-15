@@ -5,7 +5,6 @@ from typing import Dict, List
 from dataclasses import dataclass, field
 from panda_guard.role.attacks import BaseAttacker, BaseAttackerConfig
 
-
 from panda_guard.llms import (
     create_llm,
     BaseLLMConfig,

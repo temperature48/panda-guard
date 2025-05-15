@@ -16,7 +16,6 @@ import torch
 from panda_guard.llms import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 from panda_guard.utils import process_end_eos
 
-
 @dataclass
 class HuggingFaceLLMConfig(BaseLLMConfig):
     """

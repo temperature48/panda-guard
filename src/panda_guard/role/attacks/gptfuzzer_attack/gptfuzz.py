@@ -20,9 +20,9 @@ from panda_guard.role.attacks.gptfuzzer_attack.fuzzer.mutator import (
     OpenAIMutatorRephrase,
     OpenAIMutatorShorten,
 )
+
 from panda_guard.role.attacks.gptfuzzer_attack.fuzzer.core import GPTFuzzer
 from panda_guard.role.attacks.gptfuzzer_attack.utils.predict import RoBERTaPredictor
-
 
 @dataclass
 class GPTFuzzAttackerConfig(BaseAttackerConfig):

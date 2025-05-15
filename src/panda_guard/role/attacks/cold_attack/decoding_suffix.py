@@ -4,6 +4,7 @@ import logging
 
 stop_words = set(stopwords.words('english'))
 
+
 def decode(model, tokenizer, device, x="", z="", constraints=None, args=None, sys_prompt=None, prefix=None, model_back=None, zz=None):
     '''
     x: left context   (prompt in lexical lexical task)
