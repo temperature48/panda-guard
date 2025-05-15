@@ -79,6 +79,7 @@ class GPTFuzzAttacker(BaseAttacker):
         :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 含有目标的有害攻击的prompt, 是"role: user, content: xx的形式"
         """
 
+
         question = messages[0]["content"]
 
         fuzzer = GPTFuzzer(

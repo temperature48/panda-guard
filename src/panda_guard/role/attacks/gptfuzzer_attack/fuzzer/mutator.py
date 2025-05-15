@@ -96,7 +96,6 @@ class OpenAIMutatorGenerateSimilar(OpenAIMutatorBase):
         return super().mutate_single(self.generate_similar(seed, self.fuzzer.prompt_nodes))
 
 
-
 class OpenAIMutatorCrossOver(OpenAIMutatorBase):
     """
     Mutation strategy that performs crossover between two prompt templates.

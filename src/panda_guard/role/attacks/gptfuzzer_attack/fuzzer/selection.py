@@ -220,6 +220,7 @@ class EXP3SelectPolicy(SelectPolicy):
     :param alpha: Learning rate for updating the weights.
     :param fuzzer: The `GPTFuzzer` instance responsible for managing fuzzing and prompt nodes.
     """
+    
     def __init__(self,
                  gamma: float = 0.05,
                  alpha: float = 25,
