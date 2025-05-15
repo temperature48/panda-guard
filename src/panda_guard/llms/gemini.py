@@ -26,10 +26,10 @@ class GeminiLLMConfig(BaseLLMConfig):
     """
     Gemini LLM Configuration.
 
-    :param llm_type: Type of LLM, default is "GeminiLLM".  LLM的类型，默认值为 "GeminiLLM"
-    :param model_name: Name of the model.  模型的名称
-    :param api_key: API key for accessing Google AI.  访问Google AI的API密钥
-    :param safety_settings: Custom safety settings for the model. 自定义安全设置
+    :param llm_type: Type of LLM, default is "GeminiLLM".
+    :param model_name: Name of the model.
+    :param api_key: API key for accessing Google AI.
+    :param safety_settings: Custom safety settings for the model.
     """
 
     llm_type: str = field(default="GeminiLLM")
@@ -43,7 +43,7 @@ class GeminiLLM(BaseLLM):
     """
     Gemini LLM Implementation.
 
-    :param config: Configuration for Gemini LLM.  用于Gemini LLM的配置
+    :param config: Configuration for Gemini LLM.
     """
 
     def __init__(self, config: GeminiLLMConfig):
@@ -81,9 +81,9 @@ class GeminiLLM(BaseLLM):
         """
         Generate a response for a given input using Google Gemini API.
 
-        :param messages: List of input messages.  输入的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: Generated response, stream generator, or response with logprobs.  返回生成的应答、流式生成器或启用logprobs的应答
+        :param messages: List of input messages.
+        :param config: Configuration for LLM generation.
+        :return: Generated response, stream generator, or response with logprobs.
         """
         retry_count = 0
         max_retries = 10
@@ -222,9 +222,9 @@ class GeminiLLM(BaseLLM):
         """
         Generate continuation for the last message.
 
-        :param messages: List of messages for input.  输入的消息列表
-        :param config: Configuration for generation.  生成配置
-        :return: Generated response.  返回生成的应答
+        :param messages: List of messages for input.
+        :param config: Configuration for generation.
+        :return: Generated response.
         """
         # Similar to Claude, implement continuation by appending to last message
         convo_messages = messages.copy()
@@ -263,8 +263,8 @@ class GeminiLLM(BaseLLM):
         """
         Evaluate the log likelihood of the given messages.
 
-        :param messages: List of messages for evaluation.  需要评估的消息列表
-        :param config: Configuration for LLM generation.  生成配置
+        :param messages: List of messages for evaluation.
+        :param config: Configuration for LLM generation.
         :param require_grad: Whether to compute gradients (not supported for API models)
         :raises NotImplementedError: Gemini API does not support log likelihood evaluation.
         """
