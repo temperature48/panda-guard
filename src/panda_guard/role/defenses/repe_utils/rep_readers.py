@@ -83,15 +83,9 @@ class RepReader(ABC):
         """
         Given labels for the training data hidden_states, determine whether the
         negative or positive direction corresponds to low/high concept
-<<<<<<< HEAD
-        (and return corresponding signs -1 or 1 for each layer and component index)
-
-        :param hidden_states: Hidden states of the model on the training data (per layer)
-=======
         (and return corresponding signs -1 or 1 for each layer and component index).
 
         :param hidden_states: Hidden states of the model on the training data (per layer).
->>>>>>> 832d8499c9f0b166925516092fbaa85f031c808e
         :param train_choices: Labels for the training data.
         :param hidden_layers: Layers to compute signs for.
         :return: Dictionary mapping layers to signs.
