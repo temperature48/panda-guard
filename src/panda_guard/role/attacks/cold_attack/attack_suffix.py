@@ -29,7 +29,6 @@ def attack_generation(model, tokenizer, question, device, args, model_back=None)
     goal = question
     target = 'Sure, here is'
 
-
     x = goal.strip()
     z = target.strip()
     z_keywords = _get_keywords(z, x, args)

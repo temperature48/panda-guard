@@ -43,8 +43,8 @@ class GradSafeDefenderConfig(BaseDefenderConfig):
 
     :param defender_cls: Class of the defender.
     :param defender_name: Name of the defender.
-    :param target_llm_config: 目标LLM配置 / Configuration for the target language model.
-    :param target_llm_gen_config: 目标LLM生成配置 / Configuration for generating output with the target LLM.
+    :param target_llm_config: Configuration for the target language model.
+    :param target_llm_gen_config: Configuration for generating output with the target LLM.
     """
 
     defender_cls: str = field(default="GradSafeDefender")

@@ -14,6 +14,12 @@ import numpy as np
 
 
 class WrappedBlock(torch.nn.Module):
+    """
+    A wrapper around a transformer block or submodule that allows external
+    activation control via injection of custom activation vectors.
+
+    :param block: The transformer block or submodule to wrap.
+    """
     def __init__(self, block):
         super().__init__()
         self.block = block
@@ -24,6 +30,11 @@ class WrappedBlock(torch.nn.Module):
         self.normalize = False
 
     def forward(self, *args, **kwargs):
+        """
+        Forward pass with optional activation control.
+
+        :return: Modified output from the block.
+        """
         output = self.block(*args, **kwargs)
 
         if isinstance(output, tuple):
@@ -89,6 +100,15 @@ class WrappedBlock(torch.nn.Module):
         return output
 
     def set_controller(self, activations, token_pos=None, masks=None, normalize=False, operator='linear_comb'):
+        """
+        Sets the external controller to inject activations.
+
+        :param activations: Activation vector(s) to apply.
+        :param token_pos: Target token positions to apply the activations.
+        :param masks: Optional mask for activation injection.
+        :param normalize: Whether to normalize pre/post activation.
+        :param operator: Operator to apply (e.g. 'linear_comb', 'piecewise_linear').
+        """
         self.normalize = normalize
         self.controller = activations.squeeze()
         self.mask = masks
@@ -108,6 +128,9 @@ class WrappedBlock(torch.nn.Module):
         self.operator = op
 
     def reset(self):
+        """
+        Resets all control variables to remove previously injected activations.
+        """
         self.output = None
         self.controller = None
         self.mask = None
@@ -115,6 +138,11 @@ class WrappedBlock(torch.nn.Module):
         self.operator = None
 
     def set_masks(self, masks):
+        """
+        Sets an external mask to apply during activation injection.
+
+        :param masks: The binary mask for injection.
+        """
         self.mask = masks
 
 
@@ -127,23 +155,52 @@ BLOCK_NAMES = [
 
 
 class WrappedReadingVecModel(torch.nn.Module):
+    """
+    A wrapper for transformer models that enables dynamic injection
+    and extraction of intermediate activations at specified layers and blocks.
+
+    :param model: The pretrained transformer model.
+    :param tokenizer: The tokenizer associated with the model.
+    """
     def __init__(self, model, tokenizer):
         super().__init__()
         self.model = model
         self.tokenizer = tokenizer
 
     def forward(self, *args, **kwargs):
+        """
+        Forwards inputs through the model.
+
+        :return: Model outputs.
+        """
         return self.model(*args, **kwargs)
 
     def generate(self, **kwargs):
+        """
+        Calls the `generate` method on the underlying model.
+
+        :return: Generated output.
+        """
         return self.model.generate(**kwargs)
 
     def get_logits(self, tokens):
+        """
+        Computes logits from the model given input tokens.
+
+        :param tokens: Input token tensor.
+        :return: Logits from the model.
+        """
         with torch.no_grad():
             logits = self.model(tokens.to(self.model.device)).logits
             return logits
 
     def run_prompt(self, prompt, **kwargs):
+        """
+        Tokenizes and runs a prompt through the model without gradients.
+
+        :param prompt: Input prompt string.
+        :return: Model output.
+        """
         with torch.no_grad():
             inputs = self.tokenizer(prompt, return_tensors="pt", padding=True, max_length=512, truncation=True)
             input_ids = inputs.input_ids.to(self.model.device)
@@ -152,6 +209,12 @@ class WrappedReadingVecModel(torch.nn.Module):
             return output
 
     def wrap(self, layer_id, block_name):
+        """
+        Wraps a specific sub-block in a given layer.
+
+        :param layer_id: Index of the transformer layer to wrap.
+        :param block_name: Name of the block to wrap (e.g., 'mlp', 'self_attn').
+        """
         assert block_name in BLOCK_NAMES
         if self.is_wrapped(self.model.model.layers[layer_id]):
             block = getattr(self.model.model.layers[layer_id].block, block_name)
@@ -163,17 +226,31 @@ class WrappedReadingVecModel(torch.nn.Module):
                 setattr(self.model.model.layers[layer_id], block_name, WrappedBlock(block))
 
     def wrap_decoder_block(self, layer_id):
+        """
+        Wraps the entire decoder block for a given layer.
+
+        :param layer_id: Index of the decoder layer to wrap.
+        """
         block = self.model.model.layers[layer_id]
         if not self.is_wrapped(block):
             self.model.model.layers[layer_id] = WrappedBlock(block)
 
     def wrap_all(self):
+        """
+        Wraps all known sub-blocks in every layer.
+        """
         for layer_id, layer in enumerate(self.model.model.layers):
             for block_name in BLOCK_NAMES:
                 self.wrap(layer_id, block_name)
             self.wrap_decoder_block(layer_id)
 
     def wrap_block(self, layer_ids, block_name):
+        """
+        Wraps specified block(s) in the given layer(s).
+
+        :param layer_ids: Single layer ID or list of layer IDs.
+        :param block_name: Block name to wrap.
+        """
         def _wrap_block(layer_id, block_name):
             if block_name in BLOCK_NAMES:
                 self.wrap(layer_id, block_name)
@@ -189,7 +266,13 @@ class WrappedReadingVecModel(torch.nn.Module):
             _wrap_block(layer_ids, block_name)
 
     def get_activations(self, layer_ids, block_name='decoder_block'):
+        """
+        Extracts activations from wrapped blocks.
 
+        :param layer_ids: Layer index or list of indices.
+        :param block_name: Target block name.
+        :return: Dictionary or tensor of activations.
+        """
         def _get_activations(layer_id, block_name):
             current_layer = self.model.model.layers[layer_id]
 
@@ -217,7 +300,17 @@ class WrappedReadingVecModel(torch.nn.Module):
             return _get_activations(layer_ids, block_name)
 
     def set_controller(self, layer_ids, activations, block_name='decoder_block', token_pos=None, masks=None, normalize=False, operator='linear_comb'):
+        """
+        Injects controller activations into specified layers/blocks.
 
+        :param layer_ids: Layer index or list of indices.
+        :param activations: Activation tensor(s) to inject.
+        :param block_name: Block name to apply control to.
+        :param token_pos: Target token positions.
+        :param masks: Optional binary masks.
+        :param normalize: Whether to normalize activations.
+        :param operator: Operator name to apply.
+        """
         def _set_controller(layer_id, activations, block_name, masks, normalize, operator):
             current_layer = self.model.model.layers[layer_id]
 
@@ -244,6 +337,9 @@ class WrappedReadingVecModel(torch.nn.Module):
             _set_controller(layer_ids, activations, block_name, masks, normalize, operator)
 
     def reset(self):
+        """
+        Resets all internal controllers and outputs in wrapped blocks.
+        """
         for layer in self.model.model.layers:
             if self.is_wrapped(layer):
                 layer.reset()
@@ -256,6 +352,11 @@ class WrappedReadingVecModel(torch.nn.Module):
                         getattr(layer, block_name).reset()
 
     def set_masks(self, masks):
+        """
+        Sets masks for all wrapped layers and blocks.
+
+        :param masks: Binary tensor mask.
+        """
         for layer in self.model.model.layers:
             if self.is_wrapped(layer):
                 layer.set_masks(masks)
@@ -268,11 +369,20 @@ class WrappedReadingVecModel(torch.nn.Module):
                         getattr(layer, block_name).set_masks(masks)
 
     def is_wrapped(self, block):
+        """
+        Checks whether a given block has been wrapped.
+
+        :param block: A model sub-block.
+        :return: True if wrapped, else False.
+        """
         if hasattr(block, 'block'):
             return True
         return False
 
     def unwrap(self):
+        """
+        Restores the original model structure by removing all wrappers.
+        """
         for l, layer in enumerate(self.model.model.layers):
             if self.is_wrapped(layer):
                 self.model.model.layers[l] = layer.block

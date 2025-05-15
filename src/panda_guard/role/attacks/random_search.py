@@ -179,18 +179,18 @@ class RandomSearchAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the Rewrite Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "BaseAttacker" 攻击类型
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param llm_gen_config: Configuration for generating output with LLM.  LLM生成配置
+    :param attacker_cls: Class of the attacker, default is "BaseAttacker". 
+    :param attacker_name: Name of the attacker. 
+    :param llm_gen_config: Configuration for generating output with LLM. 
 
-    :param response_rules: RandomSearchAttack rule.  response的规则
-    :param target_str: the str for calculating logprobs.   计算logprobs的词
-    :param adv_suffix：init avd suffix. 初始化对抗后缀
+    :param response_rules: RandomSearchAttack rule. 
+    :param target_str: the str for calculating logprobs.  
+    :param adv_suffix：init avd suffix.
 
-    :param max_iterations: max random search iterations in one setup 最大搜索次数
-    :param max_iterations: random restart limitation 最大随机重启次数
-    :param max_iterations: change token limitations 单次最大修改token数量
-    :param logprob_threshold: early stop threshold. 早停阈值
+    :param max_iterations: max random search iterations in one setup.
+    :param max_iterations: random restart limitation.
+    :param max_iterations: change token limitations.
+    :param logprob_threshold: early stop threshold. 
     """
 
     attacker_cls: str = field(default="RandomSearchAttacker")
@@ -245,9 +245,9 @@ class RandomSearchAttacker(BaseAttacker):
         """
         Fetch the goal for the attack.
         Merged from code of pair attack
-        :param message: External message containing context for the attack. 外部消息，包含攻击上下文
+        :param message: External message containing context for the attack. 
         :type message: Any
-        :return: The goal and target string for the attack. 攻击的目标和目标字符串
+        :return: The goal and target string for the attack. 
         :rtype: Tuple[str, str]
         """
 
@@ -258,10 +258,10 @@ class RandomSearchAttacker(BaseAttacker):
     def _request_content(self, target_str, goal, adv_suffix, response_rules):
         """
          The function is used to substitute corresponding strings in the response rules template with the actual values.
-         制作response的模板
-         :param target_str: the str for calculating logprobs.   计算logprobs的词
-         :param goal: the goal for the attack.  攻击的目标
-         :param response_rules: response template and rules for target LLM.  response的模板和规则
+         
+         :param target_str: the str for calculating logprobs.   
+         :param goal: the goal for the attack.  
+         :param response_rules: response template and rules for target LLM.  
 
          :return: response_rules with target_str, goal and adv_suffix.  response_rules with target_str, goal and adv_suffix
         """
@@ -273,10 +273,10 @@ class RandomSearchAttacker(BaseAttacker):
 
     def _request_message(self, request_content):
         """
-        The request message sent to target llm. target llm的输入格式
-        :param request_content: the content for the request.  请求的内容
+        The request message sent to target llm.
+        :param request_content: the content for the request. 
 
-        :return: formed prompt message. 格式化好的prompt消息
+        :return: formed prompt message. 
         """
         messages = [ ]
         messages.append(
@@ -296,8 +296,8 @@ class RandomSearchAttacker(BaseAttacker):
     def _a_conversation(self, prompt:List[Dict[str,str]]):
         """
             Attack single conversation message with target llm.
-            单次攻击
-            :param: prompt for single attack, 单次攻击的prompt
+            
+            :param: prompt for single attack.
         """
         response = self.target_llm.generate(prompt, self.target_llm_gen_config)
         return response
@@ -305,23 +305,23 @@ class RandomSearchAttacker(BaseAttacker):
     def random_modify_tokens(self,input_string, num_changes=3, replacement_pool=None):
         """
         Randomly substitute some tokens to random unicode char
-        随机替换某些token为随机unicode字符
+        
 
-        :param input_string: 输入字符串
+        :param input_string: input string
         :type input_string: str
-        :param num_changes: 要随机修改的 token 数量，默认为 3
+        :param num_changes: The number of tokens to be randomly modified, the default is 3
         :type num_changes: int
-        :param replacement_pool: 替换的随机值池，默认为 None，将自动生成随机单词
+        :param replacement_pool: Pool of random values ​​to replace, defaults to None, random words will be automatically generated
         :type replacement_pool: list[str] or None
-        :return: 修改后的字符串
+        :return: modified string
         :rtype: str
         """
         if not input_string.strip():
-            return input_string  # 如果输入字符串为空或只有空格，直接返回
+            return input_string  # If the input string is empty or has only spaces, return it directly
 
         tokens = input_string.split()
 
-        # 确保替换数量不超过 token 数量
+        # Make sure the number of replacements does not exceed the number of tokens
         num_changes = min(num_changes, len(tokens))
 
         indices_to_change = random.sample(range(len(tokens)), num_changes)
@@ -385,7 +385,6 @@ class RandomSearchAttacker(BaseAttacker):
                 print("----------------------------------")
 
                 # if prefix not in judge_prefix, then continue
-                # 如果prefix没有命中rule -> 好的prompt，继续
                 if rule_based_judge(prefix, judge_prefix):
                     avg_logprob = sum(logprobs) / len(logprobs)
                     #early stop condition 1

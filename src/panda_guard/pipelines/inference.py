@@ -23,14 +23,9 @@ class InferPipelineConfig:
     """
     Configuration class for the inference pipeline.
 
-    配置类，用于推理流程。
-
     :param attacker_config: Configuration for the attacker, detailing its parameters and behavior.
-                            攻击者的配置，详细描述其参数和行为。
     :param defender_config: Configuration for the defender, detailing its parameters and behavior.
-                            防御者的配置，详细描述其参数和行为。
     :param judge_configs: List of configurations for any judges used in evaluating the effectiveness of the defense.
-                          评估防御有效性的评审者配置列表。
     """
 
     attacker_config: BaseAttackerConfig = field(default=None)
@@ -42,12 +37,8 @@ def llm_register(attr: Union[BaseAttacker, BaseDefender, BaseJudge]) -> List[Bas
     """
     Register any LLM instances associated with the given attribute (attacker, defender, or judge).
 
-    为给定属性（攻击者、防御者或评审者）注册任何LLM实例。
-
     :param attr: An instance of an attacker, defender, or judge.
-                 攻击者、防御者或评审者的实例。
     :return: List of registered LLM instances.
-             注册的LLM实例列表。
     """
     results = []
     for name, value in vars(attr).items():
@@ -60,12 +51,8 @@ class InferPipeline:
     """
     Inference pipeline for managing and executing attacks and defenses.
 
-    管理和执行攻击和防御的推理流程。
-
     :param config: Configuration for the inference pipeline, including attacker, defender, and judges.
-                   推理流程的配置，包括攻击者、防御者和评审者。
     :param verbose: Whether to enable verbose logging for debugging and transparency.
-                    是否启用详细日志记录，用于调试和透明化。
     """
 
     def __init__(self, config: InferPipelineConfig, verbose: bool = False):
@@ -152,14 +139,9 @@ class InferPipeline:
         """
         Perform parallel evaluation of the defense using multiple judges.
 
-        使用多个评审者并行评估防御。
-
         :param defense: Messages that have been defended and need evaluation.
-                        已经防御并需要评估的消息。
         :param request: The original request for context in evaluation.
-                        评估中使用的原始请求。
         :return: A dictionary containing the results from each judge.
-                 包含每个评审者结果的字典。
         """
         judge_results = {}
 
@@ -184,10 +166,7 @@ class InferPipeline:
         """
         Calculate the token usage for both the attacker and defender, summarizing prompt and completion tokens.
 
-        计算攻击者和防御者的Token使用量，包括提示和完成Token。
-
         :return: Dictionary containing detailed token usage for both roles.
-                 包含双方详细Token使用量的字典。
         """
         # Calculate token usage for the attacker.
         # 计算攻击者的Token使用量。
@@ -217,8 +196,6 @@ class InferPipeline:
     def reset(self):
         """
         Reset the state of all LLMs in the pipeline, preparing them for a new inference run.
-
-        重置流程中所有LLM的状态，准备进行新的推理。
         """
         for llm in self.attack_llms + self.defense_llms:
             llm.reset()
@@ -227,12 +204,8 @@ class InferPipeline:
         """
         Log messages for each stage of the pipeline if verbose logging is enabled.
 
-        如果启用了详细日志记录，则记录流程每个阶段的消息。
-
         :param messages: The messages to be logged at the current stage.
-                         当前阶段要记录的消息。
         :param stage: A label for the current stage of the pipeline.
-                      流程当前阶段的标签。
         """
         if self.verbose:
             pass

@@ -17,8 +17,8 @@ class BaseAttackerConfig(abc.ABC):
     """
     Configuration for the Base Attacker.
 
-    :param attacker_cls: Class of the attacker.  攻击者的类型
-    :param attacker_name: Name of the attacker.  攻击者的名称
+    :param attacker_cls: Class of the attacker.  
+    :param attacker_name: Name of the attacker.  
     """
     attacker_cls: str = field(default=None)
     attacker_name: str = field(default=None)
@@ -28,7 +28,7 @@ class BaseAttacker(abc.ABC):
     """
     Abstract Base Class for Attacker.
 
-    :param config: Configuration for the attacker.  攻击者的配置
+    :param config: Configuration for the attacker. 
     """
 
     def __init__(
@@ -47,9 +47,9 @@ class BaseAttacker(abc.ABC):
         """
         Abstract method to execute an attack on a sequence of messages.
 
-        :param messages: List of input messages.  输入的消息列表
-        :param kwargs: Additional parameters for the attack.  攻击的额外参数
-        :return: Modified list of messages after the attack.  攻击后返回的更改消息列表
+        :param messages: List of input messages.  
+        :param kwargs: Additional parameters for the attack.  
+        :return: Modified list of messages after the attack. 
         """
         if messages is None:
             messages = []

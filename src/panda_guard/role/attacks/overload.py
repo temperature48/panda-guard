@@ -21,11 +21,11 @@ class OverloadAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the Overload Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "OverloadAttacker".  攻击者的类型，默认值为 "OverloadAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param llm_config: Configuration for the language model.  LLM配置
-    :param llm_gen_config: Configuration for generating output with LLM.  LLM生成配置
-    :param overload_template: Template for overload task using user prompts.  用于给用户提示添加过载任务的模板
+    :param attacker_cls: Class of the attacker, default is "OverloadAttacker".  
+    :param attacker_name: Name of the attacker.  
+    :param llm_config: Configuration for the language model. 
+    :param llm_gen_config: Configuration for generating output with LLM.  
+    :param overload_template: Template for overload task using user prompts.  
     """
     attacker_cls: str = field(default="overloadAttacker")
     attacker_name: str = field(default=None)
@@ -46,7 +46,7 @@ class OverloadAttacker(BaseAttacker):
     """
     Overload Attacker Implementation for modifying user prompts with overload tasks.
 
-    :param config: Configuration for the Overload Attacker.  用于Overload Attacker的配置
+    :param config: Configuration for the Overload Attacker.  
     """
 
     def __init__(self, config: OverloadAttackerConfig):
@@ -62,9 +62,9 @@ class OverloadAttacker(BaseAttacker):
         
         
         
-    #生成随机字典
+    #Generate random dictionary
     def generate_shuffled_dict(self):
-        # 大写字母、小写字母和数字
+        # Uppercase letters, lowercase letters and numbers
         all_characters=""
         if "uppercase" in self.dict_type:
             all_characters+=string.ascii_uppercase
@@ -75,28 +75,28 @@ class OverloadAttacker(BaseAttacker):
         if "punctuation" in self.dict_type:    
             all_characters+=string.punctuation
         if "all" in self.dict_type:   
-            all_characters=string.printable[:-6]#这里直接等于
+            all_characters=string.printable[:-6]#This is directly equal to
 
-        if self.random_dict>0:#变成一个随机长短的字典 
+        if self.random_dict>0:#Become a dictionary of random lengths
             
             def generate_random_string(letter_list):
-                length = random.randint(self.lenmin, self.lenmax)  # 随机选择字符串长度 1-8
+                length = random.randint(self.lenmin, self.lenmax)  # Randomly select string length 1-8
                 random_string = ''.join(random.choice(letter_list) for _ in range(length))
                 return random_string
             key_list = [generate_random_string(list(all_characters)) for i in range(self.random_dict*2)] 
             value_list = [generate_random_string(list(all_characters)) for i in range(self.random_dict*2)] 
         else:
-            # 生成key，确保每个key包含所有的大写字母、小写字母和数字
+            # Generate key, ensuring that each key contains all uppercase letters, lowercase letters and numbers
             key_list = list(all_characters)
 
-            # 生成value，确保每个value也包含所有的大写字母、小写字母和数字
+            # Generate value, ensuring that each value also contains all uppercase letters, lowercase letters and numbers
             value_list = list(all_characters)
 
-        # 打乱key和value的顺序
+        # Disrupt the order of keys and values
         random.shuffle(key_list)
         random.shuffle(value_list)
 
-        # 生成字典
+        # Generate dictionary
         if self.value_len>0:
             result_dict = {key_list[i]: value_list[i][:self.value_len] for i in range(len(key_list))}
         else:
@@ -112,20 +112,20 @@ class OverloadAttacker(BaseAttacker):
         """
         add overload task to the given prompt using the specified template.
 
-        :param prompt: The original user prompt.  原始用户提示
-        :return: The prompt with overload tasks.  添加过载任务后的提示
+        :param prompt: The original user prompt.  
+        :return: The prompt with overload tasks.  
         """
         
         chardict=self.generate_shuffled_dict()
         map_size =  self.random_dict
-        # 上下文例子
+        # Contextual example
         contextkey = " ".join(list(chardict.keys())[:self.string_len])
         contextkvalue = " ".join(list(chardict.values())[:self.string_len])
 
-        # 词表变为字符串
+        # Vocabulary becomes string
         chardictstring = str(dict(list(chardict.items())[:map_size]))
         
-        # query字符串和value字符串
+        # query string and value string
         random_string = [list(chardict.items())[random.randint(0, map_size-1)]for _ in range(self.string_len)]
         random_key_string = [m[0] for m in random_string]
         keystring = " ".join(random_key_string)
@@ -158,9 +158,9 @@ class OverloadAttacker(BaseAttacker):
         """
         Execute an attack by rewriting the latest user prompt.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack.  额外的攻击参数
-        :return: Modified list of messages with the rewritten prompt.  包含重写提示的更改消息列表
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack.  
+        :return: Modified list of messages with the rewritten prompt.  
         """
         assert is_user_turn(messages)
 

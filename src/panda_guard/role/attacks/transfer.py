@@ -19,8 +19,8 @@ class TransferAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the Transfer Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "TransferAttacker".  攻击者的类型，默认值为 "TransferAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
+    :param attacker_cls: Class of the attacker, default is "TransferAttacker".  
+    :param attacker_name: Name of the attacker.  
     """
     attacker_cls: str = field(default="TransferAttacker")
     attacker_name: str = field(default=None)
@@ -31,7 +31,7 @@ class TransferAttacker(BaseAttacker):
     """
     Transfer Attacker Implementation that substitutes the user message with a pre-formulated attack prompt.
 
-    :param config: Configuration for the Transfer Attacker.  用于Transfer Attacker的配置
+    :param config: Configuration for the Transfer Attacker.  
     """
 
     def __init__(
@@ -48,9 +48,9 @@ class TransferAttacker(BaseAttacker):
         """
         Execute an attack by transferring a reformulated request into the conversation.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  额外攻击参数，必须包含 "request_reformulated"
-        :return: Modified list of messages with the reformulated request.  包含重新表达请求的更改消息列表
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  
+        :return: Modified list of messages with the reformulated request.  
         """
         is_user_turn(messages)
 

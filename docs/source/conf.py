@@ -5,7 +5,9 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-informatione
-
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../../src'))       # 包目录（projectdir/src）
 project = 'Panda-Guard'
 copyright = '2024, Floyed Shen, etc.'
 author = 'Floyed Shen, etc.'
@@ -22,6 +24,7 @@ extensions = [
 ]
 
 language = 'en'
+locale_dirs = ['../locales/']
 gettext_compact = False      # optional
 
 templates_path = ['_templates']

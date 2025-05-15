@@ -20,9 +20,9 @@ from panda_guard.role.attacks.gptfuzzer_attack.fuzzer.mutator import (
     OpenAIMutatorRephrase,
     OpenAIMutatorShorten,
 )
+
 from panda_guard.role.attacks.gptfuzzer_attack.fuzzer.core import GPTFuzzer
 from panda_guard.role.attacks.gptfuzzer_attack.utils.predict import RoBERTaPredictor
-
 
 @dataclass
 class GPTFuzzAttackerConfig(BaseAttackerConfig):
@@ -78,6 +78,7 @@ class GPTFuzzAttacker(BaseAttacker):
         :param kwargs: Additional parameters for the attack, must include "request_reformulated".  额外攻击参数
         :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 含有目标的有害攻击的prompt, 是"role: user, content: xx的形式"
         """
+
 
         question = messages[0]["content"]
 

@@ -20,10 +20,10 @@ class ParaphraseDefenderConfig(BaseDefenderConfig):
     """
     Configuration for the Paraphrase Defender.
 
-    :param defender_cls: Class of the defender, default is "ParaphraseDefender".  防御者的类型，默认值为 "ParaphraseDefender"
-    :param paraphrase_llm_config: Configuration for the paraphrasing language model.  重写语言模型的配置
-    :param paraphrase_llm_gen_config: Configuration for generating output with the paraphrasing LLM.  重写LLM的生成配置
-    :param paraphrase_prompt: Template for generating paraphrasing prompts.  用于生成重写提示的模板
+    :param defender_cls: Class of the defender, default is "ParaphraseDefender".
+    :param paraphrase_llm_config: Configuration for the paraphrasing language model.
+    :param paraphrase_llm_gen_config: Configuration for generating output with the paraphrasing LLM.
+    :param paraphrase_prompt: Template for generating paraphrasing prompts.
     """
     defender_cls: str = field(default="ParaphraseDefender")
     paraphrase_llm_config: BaseLLMConfig = field(default_factory=BaseLLMConfig)
@@ -38,7 +38,7 @@ class ParaphraseDefender(BaseDefender):
 
     Reference: Neel Jain, Avi Schwarzschild, Yuxin Wen, Gowthami Somepalli, John Kirchenbauer, Ping-yeh Chiang, Micah Goldblum, Aniruddha Saha, Jonas Geiping, and Tom Goldstein. 2023. Baseline defenses for adversarial attacks against aligned language models. arXiv preprint arXiv:2309.00614.
 
-    :param config: Configuration for the Paraphrase Defender.  用于Paraphrase Defender的配置
+    :param config: Configuration for the Paraphrase Defender.
     """
 
     def __init__(self, config: ParaphraseDefenderConfig):
@@ -54,8 +54,8 @@ class ParaphraseDefender(BaseDefender):
         """
         Execute the defense mechanism by paraphrasing the latest user input.
 
-        :param messages: List of input messages.  输入的消息列表
-        :return: Modified list of messages after applying the defense strategy.  应用防御策略后的更改消息列表
+        :param messages: List of input messages.
+        :return: Modified list of messages after applying the defense strategy.
         """
         assert messages, "Messages cannot be empty."
 
@@ -75,8 +75,8 @@ class ParaphraseDefender(BaseDefender):
         """
         Generate a paraphrased version of the given prompt.
 
-        :param prompt: The original user prompt.  原始用户提示
-        :return: The paraphrased prompt.  重写后的提示
+        :param prompt: The original user prompt.
+        :return: The paraphrased prompt.
         """
         paraphrase_prompt = self.paraphrase_prompt.format(prompt=prompt)
 
