@@ -15,6 +15,9 @@ from .rep_readers import DIRECTION_FINDERS, RepReader
 
 
 class RepReadingPipeline(Pipeline):
+    """
+    A pipeline for extracting and transforming hidden state representations from transformer models.
+    """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -25,6 +28,15 @@ class RepReadingPipeline(Pipeline):
             rep_token: Union[str, int] = -1,
             hidden_layers: Union[List[int], int] = -1,
             which_hidden_states: Optional[str] = None):
+        """
+        Extract hidden states from model outputs.
+
+        :param outputs: Model output.
+        :param rep_token: Token index from which to extract hidden states.
+        :param hidden_layers: Layer indices to extract hidden states from.
+        :param which_hidden_states: For encoder-decoder models, specifies whether to use 'encoder' or 'decoder'.
+        :return: A dictionary mapping layer indices to hidden state tensors.
+        """
 
         if hasattr(outputs, 'encoder_hidden_states') and hasattr(outputs, 'decoder_hidden_states'):
             outputs['hidden_states'] = outputs[f'{which_hidden_states}_hidden_states']
@@ -45,6 +57,18 @@ class RepReadingPipeline(Pipeline):
                              component_index: int = 0,
                              which_hidden_states: Optional[str] = None,
                              **tokenizer_kwargs):
+        """
+        Sanitize and prepare pipeline parameters.
+
+        :param rep_reader: Optional `RepReader` instance for transforming representations.
+        :param rep_token: Token index used to extract hidden states.
+        :param hidden_layers: Layer indices to extract hidden states from.
+        :param component_index: Component index to extract after transformation.
+        :param which_hidden_states: Specify 'encoder' or 'decoder' for encoder-decoder models.
+        :param tokenizer_kwargs: Additional tokenizer parameters.
+        :return: Tuple of (preprocess_params, forward_params, postprocess_params).
+        """
+
         preprocess_params = tokenizer_kwargs
         forward_params = {}
         postprocess_params = {}
@@ -66,19 +90,39 @@ class RepReadingPipeline(Pipeline):
             self,
             inputs: Union[str, List[str], List[List[str]]],
             **tokenizer_kwargs):
+        """
+        Preprocess input data using tokenizer or image processor.
+
+        :param inputs: Input data.
+        :param tokenizer_kwargs: Additional arguments for the tokenizer.
+        :return: Tokenized or processed inputs.
+        """
 
         if self.image_processor:
             return self.image_processor(inputs, add_end_of_utterance_token=False, return_tensors="pt")
         return self.tokenizer(inputs, return_tensors=self.framework, **tokenizer_kwargs)
 
     def postprocess(self, outputs):
+        """
+        Pass-through postprocessing step.
+
+        :param outputs: Outputs from the model.
+        :return: Unmodified outputs.
+        """
         return outputs
 
     def _forward(self, model_inputs, rep_token, hidden_layers, rep_reader=None, component_index=0, which_hidden_states=None, **tokenizer_args):
         """
-        Args:
-        - which_hidden_states (str): Specifies which part of the model (encoder, decoder, or both) to compute the hidden states from.
-                        It's applicable only for encoder-decoder models. Valid values: 'encoder', 'decoder'.
+        Forward pass to extract or transform hidden states.
+
+        :param model_inputs: Tokenized inputs.
+        :param rep_token: Index of the token to extract from.
+        :param hidden_layers: Target layers to extract hidden states from.
+        :param rep_reader: Optional `RepReader` to apply transformation.
+        :param component_index: Component index used in transformation.
+        :param which_hidden_states: For encoder-decoder models, specify 'encoder' or 'decoder'.
+        :param tokenizer_args: Additional tokenizer arguments.
+        :return: Extracted or transformed hidden states.
         """
         # get model hidden states and optionally transform them with a RepReader
         with torch.no_grad():
@@ -95,6 +139,17 @@ class RepReadingPipeline(Pipeline):
         return rep_reader.transform(hidden_states, hidden_layers, component_index)
 
     def _batched_string_to_hiddens(self, train_inputs, rep_token, hidden_layers, batch_size, which_hidden_states, **tokenizer_args):
+        """
+        Extract hidden states from batches of input strings.
+
+        :param train_inputs: List of training strings.
+        :param rep_token: Token index to extract representation from.
+        :param hidden_layers: List of layer indices to extract from.
+        :param batch_size: Batch size for processing.
+        :param which_hidden_states: Specify 'encoder' or 'decoder' for encoder-decoder models.
+        :param tokenizer_args: Additional tokenizer arguments.
+        :return: Dictionary of hidden states.
+        """
         # Wrapper method to get a dictionary hidden states from a list of strings
         hidden_states_outputs = self(train_inputs, rep_token=rep_token,
                                      hidden_layers=hidden_layers, batch_size=batch_size, rep_reader=None, which_hidden_states=which_hidden_states, **tokenizer_args)
@@ -105,6 +160,13 @@ class RepReadingPipeline(Pipeline):
         return {k: np.vstack(v) for k, v in hidden_states.items()}
 
     def _validate_params(self, n_difference, direction_method):
+        """
+        Validate parameters `get_directions`.
+
+        :param n_difference: Number of pairwise differences to compute.
+        :param direction_method: Method used to find representation directions.
+        :raises AssertionError: If invalid parameter combinations are provided.
+        """
         # validate params for get_directions
         if direction_method == 'clustermean':
             assert n_difference == 1, "n_difference must be 1 for clustermean"
@@ -121,11 +183,20 @@ class RepReadingPipeline(Pipeline):
             direction_finder_kwargs: dict = {},
             which_hidden_states: Optional[str] = None,
             **tokenizer_args,):
-        """Train a RepReader on the training data.
-        Args:
-            batch_size: batch size to use when getting hidden states
-            direction_method: string specifying the RepReader strategy for finding directions
-            direction_finder_kwargs: kwargs to pass to RepReader constructor
+        """
+        Train a RepReader on the training data.
+
+        :param train_inputs: Input examples to train on.
+        :param rep_token: Index of the token to extract hidden states from.
+        :param hidden_layers: Layer indices to extract hidden states from.
+        :param n_difference: Number of times to compute differences in training pairs.
+        :param batch_size: Batch size for extracting hidden states.
+        :param train_labels: Labels for supervised direction finding.
+        :param direction_method: Method to use for finding directions (e.g., 'pca', 'clustermean').
+        :param direction_finder_kwargs: Additional keyword arguments for the direction finder.
+        :param which_hidden_states: For encoder-decoder models, specify 'encoder' or 'decoder'.
+        :param tokenizer_args: Additional tokenizer parameters.
+        :return: A trained `RepReader` containing the learned directions.
         """
 
         if not isinstance(hidden_layers, list):

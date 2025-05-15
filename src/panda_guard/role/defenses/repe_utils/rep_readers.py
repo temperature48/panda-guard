@@ -16,7 +16,13 @@ import torch
 
 
 def project_onto_direction(H, direction):
-    """Project matrix H (n, d_1) onto direction vector (d_2,)"""
+    """
+    Project hidden representations onto a given direction.
+
+    :param H: A tensor of shape (n, d_1), the input hidden states.
+    :param direction: A tensor of shape (d_2,), the direction vector.
+    :return: The projections.
+    """
     # Calculate the magnitude of the direction vector
     # Ensure H and direction are on the same device (CPU or GPU)
     if not isinstance(direction, torch.Tensor):
@@ -32,6 +38,13 @@ def project_onto_direction(H, direction):
 
 
 def recenter(x, mean=None):
+    """
+    Recenter data around a specified or computed mean.
+
+    :param x: Input data.
+    :param mean: Optional mean vector. If None, the mean of `x` is used.
+    :return: Tensor of recentered data.
+    """
     x = torch.Tensor(x).cuda()
     if mean is None:
         mean = torch.mean(x, axis=0, keepdims=True).cuda()
@@ -41,7 +54,8 @@ def recenter(x, mean=None):
 
 
 class RepReader(ABC):
-    """Class to identify and store concept directions.
+    """
+    Class to identify and store concept directions.
 
     Subclasses implement the abstract methods to identify concept directions
     for each hidden layer via strategies including PCA, embedding vectors
@@ -49,7 +63,8 @@ class RepReader(ABC):
 
     RepReader instances are used by RepReaderPipeline to get concept scores.
 
-    Directions can be used for downstream interventions."""
+    Directions can be used for downstream interventions.
+    """
 
     @abstractmethod
     def __init__(self) -> None:
@@ -59,36 +74,27 @@ class RepReader(ABC):
 
     @abstractmethod
     def get_rep_directions(self, model, tokenizer, hidden_states, hidden_layers, **kwargs):
-        """Get concept directions for each hidden layer of the model
+        """
+        Abstract method to compute concept directions per layer.
 
-        Args:
-            model: Model to get directions for
-            tokenizer: Tokenizer to use
-            hidden_states: Hidden states of the model on the training data (per layer)
-            hidden_layers: Layers to consider
-
-        Returns:
-            directions: A dict mapping layers to direction arrays (n_components, hidden_size)
+        :param model: The language model.
+        :param tokenizer: Tokenizer associated with the model.
+        :param hidden_states: Hidden states per layer.
+        :param hidden_layers: Layers to consider.
+        :return: Dictionary of directions per layer.
         """
         pass
 
     def get_signs(self, hidden_states, train_choices, hidden_layers):
-        """Given labels for the training data hidden_states, determine whether the
+        """
+        Given labels for the training data hidden_states, determine whether the
         negative or positive direction corresponds to low/high concept
         (and return corresponding signs -1 or 1 for each layer and component index)
 
-        NOTE: This method assumes that there are 2 entries in hidden_states per label,
-        aka len(hidden_states[layer]) == 2 * len(train_choices). For example, if
-        n_difference=1, then hidden_states here should be the raw hidden states
-        rather than the relative (i.e. the differences between pairs of examples).
-
-        Args:
-            hidden_states: Hidden states of the model on the training data (per layer)
-            train_choices: Labels for the training data
-            hidden_layers: Layers to consider
-
-        Returns:
-            signs: A dict mapping layers to sign arrays (n_components,)
+        :param hidden_states: Hidden states of the model on the training data (per layer)
+        :param train_choices: Labels for the training data.
+        :param hidden_layers: Layers to compute signs for.
+        :return: Dictionary mapping layers to signs.
         """
         signs = {}
 
@@ -112,15 +118,13 @@ class RepReader(ABC):
         return signs
 
     def transform(self, hidden_states, hidden_layers, component_index):
-        """Project the hidden states onto the concept directions in self.directions
+        """
+        Project hidden states onto a selected concept direction.
 
-        Args:
-            hidden_states: dictionary with entries of dimension (n_examples, hidden_size)
-            hidden_layers: list of layers to consider
-            component_index: index of the component to use from self.directions
-
-        Returns:
-            transformed_hidden_states: dictionary with entries of dimension (n_examples,)
+        :param hidden_states: Dictionary of hidden states (n_examples, hidden_size).
+        :param hidden_layers: Layers to transform.
+        :param component_index: Index of the direction/component to project onto.
+        :return: Dictionary of transformed hidden states (n_examples,).
         """
 
         assert component_index < self.n_components
@@ -138,7 +142,9 @@ class RepReader(ABC):
 
 
 class PCARepReader(RepReader):
-    """Extract directions via PCA"""
+    """
+    Extract directions via Principal Component Analysis (PCA).
+    """
     needs_hiddens = True
 
     def __init__(self, n_components=1):
@@ -147,7 +153,15 @@ class PCARepReader(RepReader):
         self.H_train_means = {}
 
     def get_rep_directions(self, model, tokenizer, hidden_states, hidden_layers, **kwargs):
-        """Get PCA components for each layer"""
+        """
+        Get PCA components as directions for each layer.
+
+        :param model: The language model.
+        :param tokenizer: Tokenizer associated with the model.
+        :param hidden_states: Hidden states per layer.
+        :param hidden_layers: Layers to consider.
+        :return: Dictionary of directions per layer.
+        """
         directions = {}
 
         for layer in hidden_layers:
@@ -164,6 +178,14 @@ class PCARepReader(RepReader):
         return directions
 
     def get_signs(self, hidden_states, train_labels, hidden_layers):
+        """
+        Determine signs for each PCA direction by comparing projection magnitudes relative to labels.
+
+        :param hidden_states: Hidden states of the model on the training data (per layer)
+        :param train_labels: Labels for the training data.
+        :param hidden_layers: Layers to compute signs for.
+        :return: Dictionary mapping layers to signs.
+        """
 
         signs = {}
 
@@ -197,7 +219,9 @@ class PCARepReader(RepReader):
 
 
 class ClusterMeanRepReader(RepReader):
-    """Get the direction that is the difference between the mean of the positive and negative clusters."""
+    """
+    Get the direction that is the difference between the mean of the positive and negative clusters.
+    """
     n_components = 1
     needs_hiddens = True
 
@@ -205,7 +229,16 @@ class ClusterMeanRepReader(RepReader):
         super().__init__()
 
     def get_rep_directions(self, model, tokenizer, hidden_states, hidden_layers, **kwargs):
+        """
+        Compute direction by subtracting mean of negative class from positive class.
 
+        :param model: The language model.
+        :param tokenizer: Tokenizer associated with the model.
+        :param hidden_states: Hidden states per layer.
+        :param hidden_layers: Layers to consider.
+        :param kwargs: Must contain 'train_choices' - the label list.
+        :return: Dictionary of directions per layer.
+        """
         # train labels is necessary to differentiate between different classes
         train_choices = kwargs['train_choices'] if 'train_choices' in kwargs else None
         assert train_choices is not None, "ClusterMeanRepReader requires train_choices to differentiate two clusters"
@@ -229,8 +262,10 @@ class ClusterMeanRepReader(RepReader):
 
 
 class RandomRepReader(RepReader):
-    """Get random directions for each hidden layer. Do not use hidden
-    states or train labels of any kind."""
+    """
+    Get random directions for each hidden layer. Do not use hidden
+    states or train labels of any kind.
+    """
 
     def __init__(self, needs_hiddens=True):
         super().__init__()
@@ -239,6 +274,15 @@ class RandomRepReader(RepReader):
         self.needs_hiddens = needs_hiddens
 
     def get_rep_directions(self, model, tokenizer, hidden_states, hidden_layers, **kwargs):
+        """
+        Generate random direction vectors for each layer.
+
+        :param model: The language model.
+        :param tokenizer: Tokenizer associated with the model.
+        :param hidden_states: Hidden states per layer.
+        :param hidden_layers: Layers to consider.
+        :return: Dictionary of directions per layer.
+        """
 
         directions = {}
         for layer in hidden_layers:
