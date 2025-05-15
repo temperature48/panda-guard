@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Panda-Guard \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 12:42+0000\n"
+"POT-Creation-Date: 2025-05-15 15:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_CN\n"
@@ -65,6 +65,8 @@ msgid "Generate responses for a batch of messages concurrently."
 msgstr "同时为一批消息生成响应。"
 
 #: of panda_guard.llms.base.BaseLLM.batch_generate:3
+#: panda_guard.llms.hf.HuggingFaceLLM.batch_generate:3
+#: panda_guard.llms.vllm.VLLMLLM.batch_generate:3
 msgid "List of batches of messages."
 msgstr "消息的批量列表。"
 
@@ -73,7 +75,11 @@ msgstr "消息的批量列表。"
 #: panda_guard.llms.base.BaseLLM.evaluate_log_likelihood:4
 #: panda_guard.llms.base.BaseLLM.generate:4
 #: panda_guard.llms.claude.ClaudeLLM.continual_generate:4
+#: panda_guard.llms.gemini.GeminiLLM.continual_generate:4
+#: panda_guard.llms.hf.HuggingFaceLLM.continual_generate:4
 #: panda_guard.llms.oai.OpenAiChatLLM.continual_generate:4
+#: panda_guard.llms.oai.OpenAiLLM.continual_generate:4
+#: panda_guard.llms.vllm.VLLMLLM.continual_generate:4
 msgid "Configuration for generation."
 msgstr "生成配置。"
 
@@ -91,13 +97,20 @@ msgstr "在格式化的提示中删除EOS标记。手动添加生成提示。"
 #: of panda_guard.llms.base.BaseLLM.continual_generate:3
 #: panda_guard.llms.base.BaseLLM.generate:3
 #: panda_guard.llms.claude.ClaudeLLM.continual_generate:3
+#: panda_guard.llms.gemini.GeminiLLM.continual_generate:3
+#: panda_guard.llms.hf.HuggingFaceLLM.continual_generate:3
 #: panda_guard.llms.oai.OpenAiChatLLM.continual_generate:3
+#: panda_guard.llms.oai.OpenAiLLM.continual_generate:3
+#: panda_guard.llms.vllm.VLLMLLM.continual_generate:3
 msgid "List of messages for input."
 msgstr "输入消息列表。"
 
 #: of panda_guard.llms.base.BaseLLM.continual_generate:5
 #: panda_guard.llms.base.BaseLLM.generate:5
+#: panda_guard.llms.hf.HuggingFaceLLM.continual_generate:5
 #: panda_guard.llms.oai.OpenAiChatLLM.continual_generate:5
+#: panda_guard.llms.oai.OpenAiLLM.continual_generate:5
+#: panda_guard.llms.vllm.VLLMLLM.continual_generate:5
 msgid "Generated response or responses with log probabilities."
 msgstr "生成的响应或带有对数概率的响应。"
 
@@ -159,6 +172,9 @@ msgstr "LLM的类型。"
 
 #: of panda_guard.llms.base.BaseLLMConfig:4
 #: panda_guard.llms.claude.ClaudeLLMConfig:4
+#: panda_guard.llms.gemini.GeminiLLMConfig:4
+#: panda_guard.llms.oai.OpenAiChatLLMConfig:4
+#: panda_guard.llms.oai.OpenAiLLMConfig:4
 msgid "Name of the model."
 msgstr "模型的名称"
 
@@ -169,6 +185,18 @@ msgstr ""
 #: of panda_guard.llms.base.LLMGenerateConfig:1
 #: panda_guard.llms.claude.ClaudeLLM.evaluate_log_likelihood:4
 #: panda_guard.llms.claude.ClaudeLLM.generate:4
+#: panda_guard.llms.gemini.GeminiLLM.evaluate_log_likelihood:4
+#: panda_guard.llms.gemini.GeminiLLM.generate:4
+#: panda_guard.llms.hf.HuggingFaceLLM.batch_generate:4
+#: panda_guard.llms.hf.HuggingFaceLLM.evaluate_log_likelihood:4
+#: panda_guard.llms.hf.HuggingFaceLLM.generate:4
+#: panda_guard.llms.oai.OpenAiChatLLM.evaluate_log_likelihood:4
+#: panda_guard.llms.oai.OpenAiChatLLM.generate:4
+#: panda_guard.llms.oai.OpenAiLLM.evaluate_log_likelihood:4
+#: panda_guard.llms.oai.OpenAiLLM.generate:4
+#: panda_guard.llms.vllm.VLLMLLM.batch_generate:4
+#: panda_guard.llms.vllm.VLLMLLM.evaluate_log_likelihood:4
+#: panda_guard.llms.vllm.VLLMLLM.generate:4
 msgid "Configuration for LLM generation."
 msgstr "LLM生成的配置。"
 
@@ -216,6 +244,7 @@ msgid "Generate continuation for the last message."
 msgstr ""
 
 #: of panda_guard.llms.claude.ClaudeLLM.continual_generate:5
+#: panda_guard.llms.gemini.GeminiLLM.continual_generate:5
 msgid "Generated response."
 msgstr "生成的回复。"
 
@@ -229,6 +258,11 @@ msgid "Evaluate the log likelihood of the given messages."
 msgstr "评估给定消息的对数似然。"
 
 #: of panda_guard.llms.claude.ClaudeLLM.evaluate_log_likelihood:3
+#: panda_guard.llms.gemini.GeminiLLM.evaluate_log_likelihood:3
+#: panda_guard.llms.hf.HuggingFaceLLM.evaluate_log_likelihood:3
+#: panda_guard.llms.oai.OpenAiChatLLM.evaluate_log_likelihood:3
+#: panda_guard.llms.oai.OpenAiLLM.evaluate_log_likelihood:3
+#: panda_guard.llms.vllm.VLLMLLM.evaluate_log_likelihood:3
 msgid "List of messages for evaluation."
 msgstr "待评估的消息列表。"
 
@@ -250,10 +284,18 @@ msgid "Generate a response for a given input using Anthropic Claude API."
 msgstr "使用Anthropic Claude API为给定输入生成响应。"
 
 #: of panda_guard.llms.claude.ClaudeLLM.generate:3
+#: panda_guard.llms.gemini.GeminiLLM.generate:3
+#: panda_guard.llms.hf.HuggingFaceLLM.generate:3
+#: panda_guard.llms.oai.OpenAiChatLLM.generate:3
+#: panda_guard.llms.oai.OpenAiLLM.generate:3
+#: panda_guard.llms.vllm.VLLMLLM.generate:3
 msgid "List of input messages."
 msgstr "输入消息的列表。"
 
 #: of panda_guard.llms.claude.ClaudeLLM.generate:5
+#: panda_guard.llms.gemini.GeminiLLM.generate:5
+#: panda_guard.llms.hf.HuggingFaceLLM.generate:5
+#: panda_guard.llms.vllm.VLLMLLM.generate:5
 msgid "Generated response, stream generator, or response with logprobs."
 msgstr "生成的响应，流式生成器，或带有对数概率的响应。"
 
@@ -290,49 +332,9 @@ msgid "Gemini LLM Implementation."
 msgstr ""
 
 #: of panda_guard.llms.gemini.GeminiLLM:3
-msgid "Configuration for Gemini LLM.  用于Gemini LLM的配置"
-msgstr ""
-
-#: of panda_guard.llms.gemini.GeminiLLM.continual_generate:3
-#: panda_guard.llms.hf.HuggingFaceLLM.continual_generate:3
-#: panda_guard.llms.oai.OpenAiLLM.continual_generate:3
-#: panda_guard.llms.vllm.VLLMLLM.continual_generate:3
-msgid "List of messages for input.  输入的消息列表"
-msgstr ""
-
-#: of panda_guard.llms.gemini.GeminiLLM.continual_generate:4
-#: panda_guard.llms.hf.HuggingFaceLLM.continual_generate:4
-#: panda_guard.llms.oai.OpenAiLLM.continual_generate:4
-#: panda_guard.llms.vllm.VLLMLLM.continual_generate:4
-msgid "Configuration for generation.  生成配置"
-msgstr ""
-
-#: of panda_guard.llms.gemini.GeminiLLM.continual_generate:5
-msgid "Generated response.  返回生成的应答"
-msgstr ""
-
-#: of panda_guard.llms.gemini.GeminiLLM.evaluate_log_likelihood:3
-#: panda_guard.llms.hf.HuggingFaceLLM.evaluate_log_likelihood:3
-#: panda_guard.llms.oai.OpenAiChatLLM.evaluate_log_likelihood:3
-#: panda_guard.llms.oai.OpenAiLLM.evaluate_log_likelihood:3
-#: panda_guard.llms.vllm.VLLMLLM.evaluate_log_likelihood:3
-msgid "List of messages for evaluation.  需要评估的消息列表"
-msgstr ""
-
-#: of panda_guard.llms.gemini.GeminiLLM.evaluate_log_likelihood:4
-#: panda_guard.llms.gemini.GeminiLLM.generate:4
-#: panda_guard.llms.hf.HuggingFaceLLM.batch_generate:4
-#: panda_guard.llms.hf.HuggingFaceLLM.evaluate_log_likelihood:4
-#: panda_guard.llms.hf.HuggingFaceLLM.generate:4
-#: panda_guard.llms.oai.OpenAiChatLLM.evaluate_log_likelihood:4
-#: panda_guard.llms.oai.OpenAiChatLLM.generate:4
-#: panda_guard.llms.oai.OpenAiLLM.evaluate_log_likelihood:4
-#: panda_guard.llms.oai.OpenAiLLM.generate:4
-#: panda_guard.llms.vllm.VLLMLLM.batch_generate:4
-#: panda_guard.llms.vllm.VLLMLLM.evaluate_log_likelihood:4
-#: panda_guard.llms.vllm.VLLMLLM.generate:4
-msgid "Configuration for LLM generation.  生成配置"
-msgstr ""
+#, fuzzy
+msgid "Configuration for Gemini LLM."
+msgstr "Claude LLM的配置。"
 
 #: of panda_guard.llms.gemini.GeminiLLM.evaluate_log_likelihood:6
 msgid "Gemini API does not support log likelihood evaluation."
@@ -342,42 +344,22 @@ msgstr ""
 msgid "Generate a response for a given input using Google Gemini API."
 msgstr ""
 
-#: of panda_guard.llms.gemini.GeminiLLM.generate:3
-#: panda_guard.llms.hf.HuggingFaceLLM.generate:3
-#: panda_guard.llms.oai.OpenAiChatLLM.generate:3
-#: panda_guard.llms.oai.OpenAiLLM.generate:3
-#: panda_guard.llms.vllm.VLLMLLM.generate:3
-msgid "List of input messages.  输入的消息列表"
-msgstr ""
-
-#: of panda_guard.llms.gemini.GeminiLLM.generate:5
-#: panda_guard.llms.hf.HuggingFaceLLM.generate:5
-#: panda_guard.llms.vllm.VLLMLLM.generate:5
-msgid ""
-"Generated response, stream generator, or response with logprobs.  "
-"返回生成的应答、流式生成器或启用logprobs的应答"
-msgstr ""
-
 #: of panda_guard.llms.gemini.GeminiLLMConfig:1
 msgid "Gemini LLM Configuration."
 msgstr ""
 
 #: of panda_guard.llms.gemini.GeminiLLMConfig:3
-msgid "Type of LLM, default is \"GeminiLLM\".  LLM的类型，默认值为 \"GeminiLLM\""
-msgstr ""
-
-#: of panda_guard.llms.gemini.GeminiLLMConfig:4
-#: panda_guard.llms.oai.OpenAiChatLLMConfig:4
-#: panda_guard.llms.oai.OpenAiLLMConfig:4
-msgid "Name of the model.  模型的名称"
-msgstr ""
+#, fuzzy
+msgid "Type of LLM, default is \"GeminiLLM\"."
+msgstr "LLM类型，默认为\"ClaudeLLM\"。"
 
 #: of panda_guard.llms.gemini.GeminiLLMConfig:5
-msgid "API key for accessing Google AI.  访问Google AI的API密钥"
-msgstr ""
+#, fuzzy
+msgid "API key for accessing Google AI."
+msgstr "访问Anthropic的API密钥。"
 
 #: of panda_guard.llms.gemini.GeminiLLMConfig:6
-msgid "Custom safety settings for the model. 自定义安全设置"
+msgid "Custom safety settings for the model."
 msgstr ""
 
 #: ../../source/panda_guard.llms.rst:32
@@ -389,28 +371,19 @@ msgid "Hugging Face Language Model Implementation."
 msgstr ""
 
 #: of panda_guard.llms.hf.HuggingFaceLLM:3
-msgid "Configuration for Hugging Face LLM.  用于模型配置"
-msgstr ""
+#, fuzzy
+msgid "Configuration for Hugging Face LLM."
+msgstr "Claude LLM的配置。"
 
 #: of panda_guard.llms.hf.HuggingFaceLLM.batch_generate:1
 msgid "Generate responses for a batch of messages in a single call."
 msgstr ""
 
-#: of panda_guard.llms.hf.HuggingFaceLLM.batch_generate:3
-#: panda_guard.llms.vllm.VLLMLLM.batch_generate:3
-msgid "List of batches of messages.  批量生成的消息列表"
-msgstr ""
-
 #: of panda_guard.llms.hf.HuggingFaceLLM.batch_generate:5
 #: panda_guard.llms.vllm.VLLMLLM.batch_generate:5
-msgid "List of generated responses for each batch.  返回每个批量的生成应答列表"
-msgstr ""
-
-#: of panda_guard.llms.hf.HuggingFaceLLM.continual_generate:5
-#: panda_guard.llms.oai.OpenAiLLM.continual_generate:5
-#: panda_guard.llms.vllm.VLLMLLM.continual_generate:5
-msgid "Generated response or responses with log probabilities.  返回生成的应答或启用百分比的应答"
-msgstr ""
+#, fuzzy
+msgid "List of generated responses for each batch."
+msgstr "生成的回复列表。"
 
 #: of panda_guard.llms.hf.HuggingFaceLLM.evaluate_log_likelihood:5
 msgid "logprobs have grad"
@@ -419,8 +392,9 @@ msgstr ""
 #: of panda_guard.llms.hf.HuggingFaceLLM.evaluate_log_likelihood:6
 #: panda_guard.llms.oai.OpenAiLLM.evaluate_log_likelihood:5
 #: panda_guard.llms.vllm.VLLMLLM.evaluate_log_likelihood:6
-msgid "List of log likelihood values.  返回的log likelihood值列表"
-msgstr ""
+#, fuzzy
+msgid "List of log likelihood values."
+msgstr "对数似然列表。"
 
 #: of panda_guard.llms.hf.HuggingFaceLLM.generate:1
 msgid "Generate a response for a given input using Hugging Face model."
@@ -431,17 +405,17 @@ msgid "Hugging Face LLM Configuration."
 msgstr ""
 
 #: of panda_guard.llms.hf.HuggingFaceLLMConfig:3
-msgid ""
-"Type of LLM, default is \"HuggingFaceLLM\".  LLM的类型，默认值为 "
-"\"HuggingFaceLLM\""
-msgstr ""
+#, fuzzy
+msgid "Type of LLM, default is \"HuggingFaceLLM\"."
+msgstr "LLM类型，默认为\"ClaudeLLM\"。"
 
 #: of panda_guard.llms.hf.HuggingFaceLLMConfig:4
-msgid "Name of the model or model instance.  模型的名称或模型实例"
-msgstr ""
+#, fuzzy
+msgid "Name of the model or model instance."
+msgstr "模型的名称"
 
 #: of panda_guard.llms.hf.HuggingFaceLLMConfig:5
-msgid "Device mapping for model deployment.  用于模型部署的设备对应表"
+msgid "Device mapping for model deployment."
 msgstr ""
 
 #: ../../source/panda_guard.llms.rst:40
@@ -457,14 +431,14 @@ msgid "OpenAI Chat LLM Implementation."
 msgstr ""
 
 #: of panda_guard.llms.oai.OpenAiChatLLM:3
-msgid "Configuration for OpenAI Chat LLM.  用于OpenAI小谱LLM的配置"
-msgstr ""
+#, fuzzy
+msgid "Configuration for OpenAI Chat LLM."
+msgstr "Claude LLM的配置。"
 
 #: of panda_guard.llms.oai.OpenAiChatLLM.evaluate_log_likelihood:5
-msgid ""
-"OpenAI Chat does not support log likelihood evaluation.  这个LLM属性不支持log "
-"likelihood评估"
-msgstr ""
+#, fuzzy
+msgid "OpenAI Chat does not support log likelihood evaluation."
+msgstr "Claude API不支持对数似然评估。"
 
 #: of panda_guard.llms.oai.OpenAiChatLLM.generate:1
 msgid "Generate a response for a given input using OpenAI Chat API."
@@ -472,36 +446,38 @@ msgstr ""
 
 #: of panda_guard.llms.oai.OpenAiChatLLM.generate:5
 #: panda_guard.llms.oai.OpenAiLLM.generate:5
-msgid ""
-"Generated response or response with logprobs or stream generator.  "
-"返回生成的应答、启用logprobs的应答或流式生成器"
-msgstr ""
+#, fuzzy
+msgid "Generated response or response with logprobs or stream generator."
+msgstr "生成的响应或带有对数概率的响应。"
 
 #: of panda_guard.llms.oai.OpenAiChatLLMConfig:1
 msgid "OpenAI Chat LLM Configuration."
 msgstr ""
 
 #: of panda_guard.llms.oai.OpenAiChatLLMConfig:3
-msgid "Type of LLM, default is \"OpenAiChatLLM\".  LLM的类型，默认值为 \"OpenAiChatLLM\""
-msgstr ""
+#, fuzzy
+msgid "Type of LLM, default is \"OpenAiChatLLM\"."
+msgstr "LLM类型，默认为\"ClaudeLLM\"。"
 
 #: of panda_guard.llms.oai.OpenAiChatLLMConfig:5
 #: panda_guard.llms.oai.OpenAiLLMConfig:5
-msgid "Base URL for the OpenAI API.  OpenAI API的基础URL"
+msgid "Base URL for the OpenAI API."
 msgstr ""
 
 #: of panda_guard.llms.oai.OpenAiChatLLMConfig:6
 #: panda_guard.llms.oai.OpenAiLLMConfig:6
-msgid "API key for accessing OpenAI.  访问OpenAI的API密钥"
-msgstr ""
+#, fuzzy
+msgid "API key for accessing OpenAI."
+msgstr "访问Anthropic的API密钥。"
 
 #: of panda_guard.llms.oai.OpenAiLLM:1
 msgid "OpenAI LLM Implementation."
 msgstr ""
 
 #: of panda_guard.llms.oai.OpenAiLLM:3
-msgid "Configuration for OpenAI LLM.  用于OpenAI LLM的配置"
-msgstr ""
+#, fuzzy
+msgid "Configuration for OpenAI LLM."
+msgstr "Claude LLM的配置。"
 
 #: of panda_guard.llms.oai.OpenAiLLM.generate:1
 msgid "Generate a response for a given input using OpenAI API."
@@ -512,8 +488,9 @@ msgid "OpenAI LLM Configuration."
 msgstr ""
 
 #: of panda_guard.llms.oai.OpenAiLLMConfig:3
-msgid "Type of LLM, default is \"OpenAiLLM\".  LLM的类型，默认值为 \"OpenAiLLM\""
-msgstr ""
+#, fuzzy
+msgid "Type of LLM, default is \"OpenAiLLM\"."
+msgstr "LLM类型，默认为\"ClaudeLLM\"。"
 
 #: ../../source/panda_guard.llms.rst:56
 msgid "panda\\_guard.llms.vllm module"
@@ -524,8 +501,9 @@ msgid "VLLM LLM Implementation for high-performance inference."
 msgstr ""
 
 #: of panda_guard.llms.vllm.VLLMLLM:3
-msgid "Configuration for VLLM LLM.  用于VLLM LLM的配置"
-msgstr ""
+#, fuzzy
+msgid "Configuration for VLLM LLM."
+msgstr "Claude LLM的配置。"
 
 #: of panda_guard.llms.vllm.VLLMLLM.batch_generate:1
 msgid ""
@@ -550,31 +528,33 @@ msgid "VLLM LLM Configuration."
 msgstr ""
 
 #: of panda_guard.llms.vllm.VLLMLLMConfig:3
-msgid "Type of LLM, default is \"VLLMLLM\".  LLM的类型，默认值为 \"VLLMLLM\""
-msgstr ""
+#, fuzzy
+msgid "Type of LLM, default is \"VLLMLLM\"."
+msgstr "LLM类型，默认为\"ClaudeLLM\"。"
 
 #: of panda_guard.llms.vllm.VLLMLLMConfig:4
-msgid "Name or path of the model.  模型的名称或路径"
-msgstr ""
+#, fuzzy
+msgid "Name or path of the model."
+msgstr "模型的名称"
 
 #: of panda_guard.llms.vllm.VLLMLLMConfig:5
-msgid "Number of GPUs to use for tensor parallelism.  用于张量并行的GPU数量"
+msgid "Number of GPUs to use for tensor parallelism."
 msgstr ""
 
 #: of panda_guard.llms.vllm.VLLMLLMConfig:6
-msgid "Fraction of GPU memory to use. 使用GPU内存的比例"
+msgid "Fraction of GPU memory to use."
 msgstr ""
 
 #: of panda_guard.llms.vllm.VLLMLLMConfig:7
-msgid "Maximum sequence length. 最大序列长度"
+msgid "Maximum sequence length."
 msgstr ""
 
 #: of panda_guard.llms.vllm.VLLMLLMConfig:8
-msgid "Quantization method to use. 量化方法"
+msgid "Quantization method to use."
 msgstr ""
 
 #: of panda_guard.llms.vllm.VLLMLLMConfig:9
-msgid "Whether to trust remote code. 是否信任远程代码"
+msgid "Whether to trust remote code."
 msgstr ""
 
 #: ../../source/panda_guard.llms.rst:64
@@ -648,5 +628,126 @@ msgstr ""
 #~ "Maximum tokens to sample, overrides "
 #~ "max_n_tokens if provided. "
 #~ "最大采样词汇数，如果提供则覆盖max_n_tokens"
+#~ msgstr ""
+
+#~ msgid "Configuration for Gemini LLM.  用于Gemini LLM的配置"
+#~ msgstr ""
+
+#~ msgid "List of messages for input.  输入的消息列表"
+#~ msgstr ""
+
+#~ msgid "Configuration for generation.  生成配置"
+#~ msgstr ""
+
+#~ msgid "Generated response.  返回生成的应答"
+#~ msgstr ""
+
+#~ msgid "List of messages for evaluation.  需要评估的消息列表"
+#~ msgstr ""
+
+#~ msgid "Configuration for LLM generation.  生成配置"
+#~ msgstr ""
+
+#~ msgid "List of input messages.  输入的消息列表"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Generated response, stream generator, or "
+#~ "response with logprobs.  返回生成的应答、流式生成器或启用logprobs的应答"
+#~ msgstr ""
+
+#~ msgid "Type of LLM, default is \"GeminiLLM\".  LLM的类型，默认值为 \"GeminiLLM\""
+#~ msgstr ""
+
+#~ msgid "Name of the model.  模型的名称"
+#~ msgstr ""
+
+#~ msgid "API key for accessing Google AI.  访问Google AI的API密钥"
+#~ msgstr ""
+
+#~ msgid "Custom safety settings for the model. 自定义安全设置"
+#~ msgstr ""
+
+#~ msgid "Configuration for Hugging Face LLM.  用于模型配置"
+#~ msgstr ""
+
+#~ msgid "List of batches of messages.  批量生成的消息列表"
+#~ msgstr ""
+
+#~ msgid "List of generated responses for each batch.  返回每个批量的生成应答列表"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Generated response or responses with log"
+#~ " probabilities.  返回生成的应答或启用百分比的应答"
+#~ msgstr ""
+
+#~ msgid "List of log likelihood values.  返回的log likelihood值列表"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Type of LLM, default is "
+#~ "\"HuggingFaceLLM\".  LLM的类型，默认值为 \"HuggingFaceLLM\""
+#~ msgstr ""
+
+#~ msgid "Name of the model or model instance.  模型的名称或模型实例"
+#~ msgstr ""
+
+#~ msgid "Device mapping for model deployment.  用于模型部署的设备对应表"
+#~ msgstr ""
+
+#~ msgid "Configuration for OpenAI Chat LLM.  用于OpenAI小谱LLM的配置"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "OpenAI Chat does not support log "
+#~ "likelihood evaluation.  这个LLM属性不支持log likelihood评估"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Generated response or response with "
+#~ "logprobs or stream generator.  "
+#~ "返回生成的应答、启用logprobs的应答或流式生成器"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Type of LLM, default is "
+#~ "\"OpenAiChatLLM\".  LLM的类型，默认值为 \"OpenAiChatLLM\""
+#~ msgstr ""
+
+#~ msgid "Base URL for the OpenAI API.  OpenAI API的基础URL"
+#~ msgstr ""
+
+#~ msgid "API key for accessing OpenAI.  访问OpenAI的API密钥"
+#~ msgstr ""
+
+#~ msgid "Configuration for OpenAI LLM.  用于OpenAI LLM的配置"
+#~ msgstr ""
+
+#~ msgid "Type of LLM, default is \"OpenAiLLM\".  LLM的类型，默认值为 \"OpenAiLLM\""
+#~ msgstr ""
+
+#~ msgid "Configuration for VLLM LLM.  用于VLLM LLM的配置"
+#~ msgstr ""
+
+#~ msgid "Type of LLM, default is \"VLLMLLM\".  LLM的类型，默认值为 \"VLLMLLM\""
+#~ msgstr ""
+
+#~ msgid "Name or path of the model.  模型的名称或路径"
+#~ msgstr ""
+
+#~ msgid "Number of GPUs to use for tensor parallelism.  用于张量并行的GPU数量"
+#~ msgstr ""
+
+#~ msgid "Fraction of GPU memory to use. 使用GPU内存的比例"
+#~ msgstr ""
+
+#~ msgid "Maximum sequence length. 最大序列长度"
+#~ msgstr ""
+
+#~ msgid "Quantization method to use. 量化方法"
+#~ msgstr ""
+
+#~ msgid "Whether to trust remote code. 是否信任远程代码"
 #~ msgstr ""
 

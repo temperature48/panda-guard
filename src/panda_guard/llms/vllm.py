@@ -22,13 +22,13 @@ class VLLMLLMConfig(BaseLLMConfig):
     """
     VLLM LLM Configuration.
 
-    :param llm_type: Type of LLM, default is "VLLMLLM".  LLM的类型，默认值为 "VLLMLLM"
-    :param model_name: Name or path of the model.  模型的名称或路径
-    :param tensor_parallel_size: Number of GPUs to use for tensor parallelism.  用于张量并行的GPU数量
-    :param gpu_memory_utilization: Fraction of GPU memory to use. 使用GPU内存的比例
-    :param max_model_len: Maximum sequence length. 最大序列长度
-    :param quantization: Quantization method to use. 量化方法
-    :param trust_remote_code: Whether to trust remote code. 是否信任远程代码
+    :param llm_type: Type of LLM, default is "VLLMLLM".  
+    :param model_name: Name or path of the model.  
+    :param tensor_parallel_size: Number of GPUs to use for tensor parallelism.  
+    :param gpu_memory_utilization: Fraction of GPU memory to use. 
+    :param max_model_len: Maximum sequence length. 
+    :param quantization: Quantization method to use. 
+    :param trust_remote_code: Whether to trust remote code. 
     """
 
     llm_type: str = field(default="VLLM")
@@ -44,7 +44,7 @@ class VLLMLLM(BaseLLM):
     """
     VLLM LLM Implementation for high-performance inference.
 
-    :param config: Configuration for VLLM LLM.  用于VLLM LLM的配置
+    :param config: Configuration for VLLM LLM.  
     """
 
     def __init__(self, config: VLLMLLMConfig):
@@ -74,8 +74,8 @@ class VLLMLLM(BaseLLM):
         """
         Format messages into a prompt string for VLLM.
 
-        :param messages: List of messages for input.  输入的消息列表
-        :return: Formatted prompt string.  格式化后的提示字符串
+        :param messages: List of messages for input.  
+        :return: Formatted prompt string.  
         """
         # Try to use the VLLM engine's tokenizer to apply chat template if available
         try:
@@ -108,9 +108,9 @@ class VLLMLLM(BaseLLM):
         """
         Generate a response using VLLM.
 
-        :param messages: List of input messages.  输入的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: Generated response, stream generator, or response with logprobs.  返回生成的应答、流式生成器或启用logprobs的应答
+        :param messages: List of input messages.  
+        :param config: Configuration for LLM generation.  
+        :return: Generated response, stream generator, or response with logprobs.  
         """
         try:
             # Format messages into a prompt
@@ -248,9 +248,9 @@ class VLLMLLM(BaseLLM):
         """
         Generate responses for a batch of messages in one go using VLLM's batching capabilities.
 
-        :param batch_messages: List of batches of messages.  批量生成的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: List of generated responses for each batch.  返回每个批量的生成应答列表
+        :param batch_messages: List of batches of messages.  
+        :param config: Configuration for LLM generation.  
+        :return: List of generated responses for each batch.  
         """
         if len(batch_messages) == 0:
             return []
@@ -308,9 +308,9 @@ class VLLMLLM(BaseLLM):
         """
         Generate continuation for the existing conversation.
 
-        :param messages: List of messages for input.  输入的消息列表
-        :param config: Configuration for generation.  生成配置
-        :return: Generated response or responses with log probabilities.  返回生成的应答或启用百分比的应答
+        :param messages: List of messages for input.  
+        :param config: Configuration for generation.  
+        :return: Generated response or responses with log probabilities.
         """
         # Clone messages to avoid modifying the original
         convo_messages = messages.copy()
@@ -384,10 +384,10 @@ class VLLMLLM(BaseLLM):
         """
         Evaluate the log likelihood of the given messages.
 
-        :param messages: List of messages for evaluation.  需要评估的消息列表
-        :param config: Configuration for LLM generation.  生成配置
+        :param messages: List of messages for evaluation.  
+        :param config: Configuration for LLM generation. 
         :param require_grad: Whether grad information is needed (not supported in VLLM)
-        :return: List of log likelihood values.  返回的log likelihood值列表
+        :return: List of log likelihood values.  
         """
         if require_grad:
             raise NotImplementedError("VLLM does not support gradient computation")

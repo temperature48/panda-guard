@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Panda-Guard \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-12 08:42+0000\n"
+"POT-Creation-Date: 2025-05-15 15:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_CN\n"
@@ -29,7 +29,7 @@ msgstr "子模块"
 
 #: ../../source/panda_guard.role.attacks.cold_attack.rst:8
 msgid "panda\\_guard.role.attacks.cold\\_attack.attack\\_suffix module"
-msgstr "panda\\_guard.role.attacks.cold\\_attack.attack\\_suffix module"
+msgstr "panda_guard.role.attacks.cold_attack.attack_suffix module"
 
 #: ../../source/panda_guard.role.attacks.cold_attack.rst:16
 msgid "panda\\_guard.role.attacks.cold\\_attack.bleuloss module"
@@ -61,7 +61,7 @@ msgstr "要考虑的n-gram"
 
 #: of panda_guard.role.attacks.cold_attack.bleuloss.batch_log_bleulosscnn_ae:7
 msgid "pad: int"
-msgstr "pad: 整数"
+msgstr "pad: int"
 
 #: of panda_guard.role.attacks.cold_attack.bleuloss.batch_log_bleulosscnn_ae:8
 msgid "the idx of \"pad\" token"
@@ -81,7 +81,7 @@ msgstr "对应n-gram的权重"
 
 #: of panda_guard.role.attacks.cold_attack.bleuloss.batch_log_bleulosscnn_ae:12
 msgid "NOTE: output_len == target_len"
-msgstr "注: output_len == target_len"
+msgstr "NOTE: output_len == target_len"
 
 #: ../../source/panda_guard.role.attacks.cold_attack.rst:24
 msgid "panda\\_guard.role.attacks.cold\\_attack.cold module"
@@ -96,17 +96,22 @@ msgid ""
 "Cold Attacker Implementation that substitutes the user message with a "
 "pre-formulated attack prompt. Reference：Guo, Xingang and Yu, Fangxu and "
 "Zhang, Huan and Qin, Lianhui and Hu, Bin, 2024, Cold-attack: Jailbreaking"
-" llms with stealthiness and controllability, ICML 2024 实现过程中不同的一些点： 1. "
-"target 在框架中没有传入，简单使用'Sure, here is' 2. 原文中需要使用GPT-4从多个sample中取出合适的一个. "
-"为了不使用GPT-4. 我们将batch size设置为1, 只用第一个."
+" llms with stealthiness and controllability, ICML 2024 Some different points in the implementation process: 1. "
+"The target is not passed in the framework, simply use 'Sure, here is' 2. In the original text, you need to use GPT-4 to pick out the appropriate one from multiple samples. "
+"In order not to use GPT-4. We set the batch size to 1 and only use the first one."
 msgstr ""
-"Cold Attacker 实现，用于将用户消息替换为预先制定的攻击提示。参考文献：Guo, Xingang 和 Yu, Fangxu 和 Zhang, Huan 和 Qin, Lianhui 和 Hu, Bin, 2024, Cold-attack: Jailbreaking llms with stealthiness and controllability, ICML 2024 实现过程中不同的一些点： 1. 框架中没有传入target，简单使用 'Sure, here is' 2. 原文中需要使用GPT-4从多个sample中取出合适的一个，为了不使用GPT-4，我们将batch size设置为1，只用第一个。"
+"Cold Attacker 实现，用于将用户消息替换为预先制定的攻击提示。参考文献：Guo, Xingang 和 Yu, Fangxu 和 "
+"Zhang, Huan 和 Qin, Lianhui 和 Hu, Bin, 2024, Cold-attack: Jailbreaking "
+"llms with stealthiness and controllability, ICML 2024 实现过程中不同的一些点： 1. "
+"框架中没有传入target，简单使用 'Sure, here is' 2. 原文中需要使用GPT-"
+"4从多个sample中取出合适的一个，为了不使用GPT-4，我们将batch size设置为1，只用第一个。"
 
 #: ../../source/panda_guard.role.attacks.cold_attack.rst
 msgid "Parameters"
 msgstr "参数"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttacker:7
+
 msgid "Configuration for the ColdAttacker."
 msgstr "用于ColdAttacker的配置"
 
@@ -117,10 +122,12 @@ msgid ""
 msgstr "通过将重新格式化的请求转移到对话中来执行攻击。"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttacker.attack:3
+
 msgid "List of messages in the conversation."
 msgstr "对话中的消息列表"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttacker.attack:4
+
 msgid ""
 "Additional parameters for the attack, must include "
 "\"request_reformulated\"."
@@ -131,6 +138,7 @@ msgid "Returns"
 msgstr "返回"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttacker.attack:5
+#, fuzzy
 msgid ""
 "Prompts containing harmful attacks on the target, is of the form “role: "
 "user, content: xx”.""
@@ -142,23 +150,26 @@ msgstr "基类: :py:class:`~panda_guard.role.attacks.base.BaseAttackerConfig`"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttackerConfig:1
 msgid "Configuration for the Cold Attacker."
-msgstr "Configuration for the Cold Attacker."
+msgstr "Cold Attacker 的配置"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttackerConfig:3
+
 msgid ""
-"Class of the attacker, default is \"ColdAttacker\"."
-"\"ColdAttacker\""
+"Class of the attacker, default is \"ColdAttacker\"."""
 msgstr "攻击者的类型，默认值为 \"ColdAttacker\""
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttackerConfig:4
+
 msgid "Name of the attacker."
 msgstr "攻击者的名称"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttackerConfig:5
+
 msgid "Configuration of attacker llm."
 msgstr "白盒攻击时使用的llm配置"
 
 #: of panda_guard.role.attacks.cold_attack.cold.ColdAttackerConfig:6
+
 msgid "Generation configuration for the attacker's LLM."
 msgstr "白盒攻击者 LLM 的生成配置"
 
@@ -175,7 +186,7 @@ msgstr "x: 左上下文（词汇任务中的提示）z: 优化目标（反事实
 
 #: ../../source/panda_guard.role.attacks.cold_attack.rst:40
 msgid "panda\\_guard.role.attacks.cold\\_attack.util module"
-msgstr "panda_guard.role.attacks.cold_attack.util 模块"
+msgstr "panda_guard.role.attacks.cold_attack.util module"
 
 #: of panda_guard.role.attacks.cold_attack.util.compute_loss:1
 msgid ""
@@ -192,8 +203,7 @@ msgstr "带掩码的约束损失 cs_ids: [batch_size, num_cs]"
 msgid ""
 "constraint loss with mask cs_ids_all: list of tensor [batch_size, "
 "num_variants], of length num_cs"
-msgstr ""
-"带掩码的约束损失 cs_ids_all: list of tensor [batch_size, ""num_variants], of length num_cs"
+msgstr "带掩码的约束损失 cs_ids_all: tensor 列表 [batch_size, num_variants]，长度为 num_cs"
 
 #: of panda_guard.role.attacks.cold_attack.util.embed_inputs:1
 #: panda_guard.role.attacks.cold_attack.util.embed_inputs_target:1
@@ -228,14 +238,15 @@ msgstr "O2"
 msgid ""
 "computes logits for $y$, based on a fixed context $y$ and the current "
 "logit distribution of $y$ :param model: :param x_onehot: :param y_logits:" 
-" :return:"
-msgstr ""
-"基于固定上下文$y$和当前的logit分布，计算$y$的logits: :param model: :param x_onehot: :param y_logits: :return:"
+":return:"
+msgstr "基于固定上下文$y$和当前的logit分布，计算$y$的logits: :param model: :param x_onehot: :param y_logits: :return:"
 
 #: of panda_guard.role.attacks.cold_attack.util.top_k_filter_3d:1
 msgid ""
 "logits.shape = [batch_size, length, vocab_size] extra_mask: [batch_size, "
 "length, vocab_size], 1 if reserve"
-msgstr ""
-"logits.shape = [batch_size, length, vocab_size] extra_mask: [batch_size, "
-"length, vocab_size], 1 if reserve"
+msgstr "logits.shape = [batch_size, length, vocab_size] extra_mask: [batch_size, length, vocab_size], 1 if reserve"
+
+#: ../../source/panda_guard.role.attacks.cold_attack.rst:48
+msgid "Module contents"
+msgstr "模块内容"
