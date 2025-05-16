@@ -36,14 +36,6 @@ panda\_guard.llms.hf module
    :undoc-members:
    :show-inheritance:
 
-panda\_guard.llms.llm\_registry module
---------------------------------------
-
-.. automodule:: panda_guard.llms.llm_registry
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 panda\_guard.llms.oai module
 ----------------------------
 
@@ -52,10 +44,26 @@ panda\_guard.llms.oai module
    :undoc-members:
    :show-inheritance:
 
-panda\_guard.llms.vllm module
------------------------------
+panda\_guard.llms.ollama\_llm module
+------------------------------------
 
-.. automodule:: panda_guard.llms.vllm
+.. automodule:: panda_guard.llms.ollama_llm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+panda\_guard.llms.sglang\_llm module
+------------------------------------
+
+.. automodule:: panda_guard.llms.sglang_llm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+panda\_guard.llms.vllm\_llm module
+----------------------------------
+
+.. automodule:: panda_guard.llms.vllm_llm
    :members:
    :undoc-members:
    :show-inheritance:
