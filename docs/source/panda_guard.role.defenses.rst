@@ -28,14 +28,6 @@ panda\_guard.role.defenses.base module
    :undoc-members:
    :show-inheritance:
 
-panda\_guard.role.defenses.defender\_registry module
-----------------------------------------------------
-
-.. automodule:: panda_guard.role.defenses.defender_registry
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 panda\_guard.role.defenses.goal\_priority module
 ------------------------------------------------
 

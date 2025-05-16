@@ -4,6 +4,14 @@ panda\_guard.cli package
 Submodules
 ----------
 
+panda\_guard.cli.attack module
+------------------------------
+
+.. automodule:: panda_guard.cli.attack
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 panda\_guard.cli.chat module
 ----------------------------
 
@@ -12,10 +20,18 @@ panda\_guard.cli.chat module
    :undoc-members:
    :show-inheritance:
 
-panda\_guard.cli.config module
-------------------------------
+panda\_guard.cli.eval module
+----------------------------
 
-.. automodule:: panda_guard.cli.config
+.. automodule:: panda_guard.cli.eval
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+panda\_guard.cli.inference module
+---------------------------------
+
+.. automodule:: panda_guard.cli.inference
    :members:
    :undoc-members:
    :show-inheritance:
