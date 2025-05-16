@@ -349,10 +349,10 @@ benchmarks/
 |   ✅    | GPT4-Cipher            | "GPT-4 Is Too Smart To Be Safe: Stealthy Chat with LLMs via Cipher"                                    |
 |   ✅    | SCAV                   | "Uncovering Safety Risks of Large Language Models Through Concept Activation Vector"                   |
 |   ✅    | RandomSearch           | "Jailbreaking Leading Safety-Aligned LLMs with Simple Adaptive Attacks"                                |
-|   ✅    | ICA                    | "Jailbreak and Guard Aligned Language Models with Only Few In-Context Demonstrations"                  |
-|   ✅    | Cold Attack            | "Rainbow Teaming: Open-Ended Generation of Diverse Adversarial Prompts"                                |
-|   ✅    | GPTFuzzer              | "GPTFuzzer: Red Teaming Large Language Models with Auto-Generated Jailbreak Prompts"                   |
-|   ✅    | ReNeLLM                | "Improved Generation of Adversarial Examples Against Safety-aligned LLMs"                              |
+|   ✅    | [ICA](https://arxiv.org/abs/2310.06387)                    | "Jailbreak and Guard Aligned Language Models with Only Few In-Context Demonstrations"                  |
+|   ✅    | [Cold Attack](https://arxiv.org/abs/2402.08679)            | "COLD-Attack: Jailbreaking LLMs with Stealthiness and Controllability"                                |
+|   ✅    | [GPTFuzzer](https://arxiv.org/abs/2309.10253)              | "GPTFuzzer: Red Teaming Large Language Models with Auto-Generated Jailbreak Prompts"                   |
+|   ✅    | [ReNeLLM](https://arxiv.org/abs/2311.08268)                | "A Wolf in Sheep's Clothing: Generalized Nested Jailbreak Prompts can Fool Large Language Models Easily"                              |
 
 
 ### Defense Algorithms
