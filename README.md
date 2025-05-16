@@ -20,7 +20,7 @@ pip install git+https://github.com/Beijing-AISI/panda-guard.git
 Set the environment variables according to your LLM backend:
 
 ```bash
-export OPENAI_BASE_URL=<your_base_url>  # e.g., https://aihubmix.com/v1
+export OPENAI_BASE_URL=<your_base_url>  
 export OPENAI_API_KEY=<your_api_key>
 ```
 
