@@ -136,8 +136,8 @@ def run_all_experiments(args):
         for attack_file in attack_files
         for defense_file in defense_files
         # for llm_file in llm_files if 'vllm' not in llm_file and 'claude' not in llm_file
-        for llm_file in llm_files #if 'vllm' in llm_file # or 'claude' in llm_file
-        for llm_file in llm_files if '8k' in llm_file # or 'claude' in llm_file
+        for llm_file in llm_files if 'vllm' not in llm_file # or 'claude' in llm_file
+        # for llm_file in llm_files if '8k' in llm_file # or 'claude' in llm_file
     ]
 
     tasks = []

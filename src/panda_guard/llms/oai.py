@@ -91,7 +91,7 @@ class OpenAiChatLLM(BaseLLM):
             messages[0]["content"] = system_prompt + "\n\n" + messages[0]["content"]
 
         retry_count = 0
-        max_retries = 20
+        max_retries = 50
         while retry_count < max_retries:
             model_name = 'DeepSeek-R1' if self._NAME == 'deepseek-reasoner' else self._NAME
             model_name = 'DeepSeek-V3' if self._NAME == 'deepseek-ai/DeepSeek-V3' else model_name
@@ -193,6 +193,7 @@ class OpenAiChatLLM(BaseLLM):
                     messages.append({"role": "assistant", "content": "I'm sorry, but I can't fulfill this request."})
                     print(
                         f"API request failed when testing model {self._NAME}, tried: {max_retries}, Error: {e}")
+                    exit(0)
                 else:
                     print(
                         f"API request failed when testing model {self._NAME}，retrying {retry_count}/{max_retries}... Error: {e}")
