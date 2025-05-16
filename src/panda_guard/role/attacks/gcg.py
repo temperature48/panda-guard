@@ -13,99 +13,60 @@ from tqdm import tqdm
 from panda_guard.role.judges.rule_based import *
 
 @dataclass
-class GCGAttacker(BaseAttacker):
+class GCGAttackerConfig(BaseAttackerConfig):
     """
-    GCG Attacker Implementation
-    Reference: https://arxiv.org/abs/2307.15043
+    Configuration for the GCG Attacker.
 
-    :param config: Configuration object for the GCG Attacker, containing all parameters needed to initialize the attacker.
+    :param attacker_cls: Class of the attacker, default is "GCGAttacker". 
+    :param attacker_name: Name of the attacker. 
+    :param topk: Each time the ID of the k largest one-hot vector is selected before the gradient.
+    :param adv_string_init: Initialization versus suffix
+    :param num_steps: Number of iteration steps
+    :param use_prefix_cache: Whether to cache content before the suffix
+    :param early_stop: Whether to stop after judging that the attack is successful
     """
-
-    def __init__(
-            self,
-            config: GCGAttackerConfig
-    ):
-        """
-        Initializes the GCGAttacker with the provided configuration.
-
-        :param config: Configuration object for the GCGAttacker, of type GCGAttackerConfig, which contains all the parameters used to initialize the attacker. 
-            The configuration includes:
-            - attacker_cls: The class name of the attacker, default is "GCGAttacker".
-            - attacker_name: The name of the attacker.
-            - search_width: The width of the search, controlling how many candidate tokens are considered for each search step.
-            - batch_size: The batch size used for processing during optimization.
-            - topk: The number of top-k values to select from the one-hot vector for gradient computation.
-            - adv_string_init: The initialization string for the adversarial attack.
-            - num_steps: The number of steps to run the attack.
-            - use_prefix_cache: Whether to use a prefix cache to speed up the computation.
-            - early_stop: Whether to stop the attack once it is deemed successful.
-            - allow_non_ascii: Whether to allow non-ASCII characters.
-            - if_filter_ids: Whether to filter the generated token IDs.
-            - add_space_before_target: Whether to add a space before the target string.
-            - seed: The random seed for controlling the randomness of the attack.
-
-        This initialization method uses the provided `config` object to initialize the `GCGAttacker` class:
-        - It iterates through the configuration fields and assigns values to the corresponding attributes.
-        - It creates a language model using the `llm_config` in the configuration.
-        - Initializes embedding layers, non-ASCII token IDs, prefix cache, and necessary control flags.
-
-        Key member variables:
-        - embedding_layer: The layer that retrieves the input embeddings from the model.
-        - not_allowed_ids: A list of token IDs that are not allowed, based on the `allow_non_ascii` parameter in the config.
-        - prefix_cache: Stores the prefix cache, used to speed up the generation process.
-        - stop_flag: A flag that controls whether to stop the attack early once the attack is successful.
-        - INIT_CHARS: A set of characters used for initializing the adversarial string.
-        """
-        super().__init__(config)
-
-        for field in fields(config):
-            field_name = field.name
-            field_value = getattr(config, field_name)
-            if "llm_gen_config" in field_name:
-                self.llm_gen_config = config.llm_gen_config
-            elif "llm_config" in field_name:
-                self.llm = create_llm(config.llm_config)
-            else:
-                setattr(self, field_name, field_value)
-
-        self.embedding_layer = self.llm.model.get_input_embeddings()
-        self.not_allowed_ids = None if config.allow_non_ascii else self.get_nonascii_toks()
-        self.prefix_cache = None
-        self.stop_flag = False
-        self.INIT_CHARS = [
-            ".", ",", "!", "?", ";", ":", "(", ")", "[", "]", "{", "}",
-            "@", "#", "$", "%", "&", "*",
-            "w", "x", "y", "z",  
-        ]
-
+    attacker_cls: str = field(default="GCGAttacker")
+    attacker_name: str = field(default=None)
+    search_width: int = field(default=512)
+    batch_size: int = field(default=None)
+    topk: int = field(default=256)
+    adv_string_init: str = field(default="x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x")
+    num_steps: int = field(default=250)
+    llm_config: BaseLLMConfig = field(default_factory=BaseLLMConfig)
+    llm_gen_config: LLMGenerateConfig = field(default=None)
+    n_replace: int = field(default=1)
+    buffer_size: int = field(default=0)
+    use_mellowmax: bool = field(default=False)
+    mellowmax_alpha: float = field(default=1.0)
+    early_stop: bool = field(default=False)
+    use_prefix_cache: bool = field(default=True)
+    allow_non_ascii: bool = field(default=False)
+    filter_ids: bool = field(default=True)
+    add_space_before_target: bool = field(default=False)
+    seed: int = field(default=None)
 
 class AttackBuffer:
     """
-    A buffer to store and manage the best (lowest loss) optimization IDs during the attack process.
+    A buffer to store and manage the best (lowest loss) optimization IDs.
 
-    The buffer holds a fixed number of entries (loss, optim_ids), where each entry is the loss value 
-    and the associated optimized token IDs. The entries are sorted by loss, allowing efficient retrieval 
-    of the best (lowest loss) optimization IDs.
-
-    :param size: The maximum number of entries the buffer can hold. If the buffer exceeds this size, 
-                 the least optimal entry is replaced.
+    :param size: Maximum number of entries the buffer can hold.
     """
 
     def __init__(self, size: int):
         """
-        Initializes the AttackBuffer with a specified size.
+        Initializes the buffer.
 
         :param size: The maximum number of entries in the buffer.
         """
-        self.buffer = []  # elements are (loss: float, optim_ids: Tensor)
+        self.buffer = []  # (loss: float, optim_ids: Tensor)
         self.size = size
 
     def add(self, loss: float, optim_ids: Tensor) -> None:
         """
-        Adds a new entry (loss, optim_ids) to the buffer. If the buffer is full, the least optimal entry is replaced.
+        Adds a new entry to the buffer.
 
-        :param loss: The loss value associated with the current optimization.
-        :param optim_ids: The optimized token IDs corresponding to the loss value.
+        :param loss: The loss value of the current optimization.
+        :param optim_ids: The optimized token IDs corresponding to the loss.
         """
         if self.size == 0:
             self.buffer = [(loss, optim_ids)]
@@ -122,23 +83,23 @@ class AttackBuffer:
         """
         Retrieves the optimized token IDs with the lowest loss.
 
-        :return: The optimized token IDs corresponding to the lowest loss.
+        :return: The token IDs with the lowest loss.
         """
         return self.buffer[0][1]
 
     def get_lowest_loss(self) -> float:
         """
-        Retrieves the lowest loss value in the buffer.
+        Retrieves the lowest loss value.
 
-        :return: The lowest loss value stored in the buffer.
+        :return: The lowest loss value.
         """
         return self.buffer[0][0]
 
     def get_highest_loss(self) -> float:
         """
-        Retrieves the highest loss value in the buffer.
+        Retrieves the highest loss value.
 
-        :return: The highest loss value stored in the buffer.
+        :return: The highest loss value.
         """
         return self.buffer[-1][0]
 
@@ -146,17 +107,20 @@ class AttackBuffer:
 
 class GCGAttacker(BaseAttacker):
     """
-    GCG Attacker Implementation.
+    GCG Attacker Implementation
     Reference: https://arxiv.org/abs/2307.15043
 
     :param config: Configuration for the GCG Attacker.
     """
 
-    def __init__(self, config: GCGAttackerConfig):
+    def __init__(
+            self,
+            config: GCGAttackerConfig
+    ):
         """
         Initializes the GCGAttacker with the provided configuration.
 
-        :param config: Configuration object for the attacker, which includes all parameters for initializing the GCGAttacker.
+        :param config: Configuration object for the attacker.
         """
         super().__init__(config)
 
@@ -179,7 +143,6 @@ class GCGAttacker(BaseAttacker):
             "@", "#", "$", "%", "&", "*",
             "w", "x", "y", "z",
         ]
-
 
     def get_nonascii_toks(self):
         """
@@ -216,6 +179,7 @@ class GCGAttacker(BaseAttacker):
     ) -> List[Dict[str, str]]:
         """
         Execute GCG attack.
+
         :param messages: List of messages in the conversation.
         :param kwargs: Additional parameters for the attack, must include "request_reformulated".
         :return: Modified list of messages with the reformulated request.
@@ -375,32 +339,20 @@ class GCGAttacker(BaseAttacker):
         """
         Computes the gradient of the GCG loss with respect to the one-hot token matrix.
 
-        This method computes the gradient of the loss function used in the GCG attack, 
-        with respect to the one-hot encoding of the token IDs being optimized. The gradient 
-        is used to update the optimized token sequence in the attack process.
-
-        Args:
-            optim_ids (Tensor): A tensor of shape (1, n_optim_ids), representing the sequence 
-                                of token IDs that are being optimized. These are the token 
-                                IDs that are gradually adjusted during the attack.
-
-        Returns:
-            Tensor: The gradient of the loss with respect to the one-hot token matrix, 
-                    which is a tensor of shape (1, n_optim_ids, vocab_size). This gradient 
-                    is used to modify the token IDs during the optimization process.
+        :param optim_ids: Tensor, shape = (1, n_optim_ids), token IDs being optimized.
+        
+        :return: Tensor, shape = (1, n_optim_ids, vocab_size), gradient of the loss with respect to the one-hot token matrix.
         """
-        model = self.llm.model  # Get the language model
-        embedding_layer = self.embedding_layer  # Get the embedding layer
+        model = self.llm.model
+        embedding_layer = self.embedding_layer
 
-        # Create the one-hot encoding matrix of the optimized token ids
+        # Create the one-hot encoding matrix of our optimized token ids
         optim_ids_onehot = torch.nn.functional.one_hot(optim_ids, num_classes=embedding_layer.num_embeddings)
         optim_ids_onehot = optim_ids_onehot.to(model.device, model.dtype)
-        optim_ids_onehot.requires_grad_()  # Enable gradient calculation for the one-hot tensor
-
-        # Multiply the one-hot encoding matrix with the embedding layer's weights to get the token embeddings
+        optim_ids_onehot.requires_grad_()
+        # (1, num_optim_tokens, vocab_size) @ (vocab_size, embed_dim) -> (1, num_optim_tokens, embed_dim)
         optim_embeds = optim_ids_onehot @ embedding_layer.weight
 
-        # If using prefix cache, speed up the computation
         if self.prefix_cache:
             input_embeds = torch.cat([optim_embeds, self.after_embeds, self.target_embeds], dim=1)
             output = model(inputs_embeds=input_embeds, past_key_values=self.prefix_cache)
@@ -408,22 +360,21 @@ class GCGAttacker(BaseAttacker):
             input_embeds = torch.cat([self.before_embeds, optim_embeds, self.after_embeds, self.target_embeds], dim=1)
             output = model(inputs_embeds=input_embeds)
 
-        logits = output.logits  # Get the model's output logits
+        logits = output.logits
 
-        # Shift logits so that token n-1 predicts token n
+
+        # Shift logits so token n-1 predicts token n
         shift = input_embeds.shape[1] - self.target_ids.shape[1]
         shift_logits = logits[..., shift - 1:-1, :].contiguous()  # (1, num_target_ids, vocab_size)
-        shift_labels = self.target_ids  # Target labels
+        shift_labels = self.target_ids
 
-        # Compute the loss
         if self.use_mellowmax:
             label_logits = torch.gather(shift_logits, -1, shift_labels.unsqueeze(-1)).squeeze(-1)
             loss = self.mellowmax(-label_logits, alpha=self.mellowmax_alpha, dim=-1)
         else:
             loss = torch.nn.functional.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)),
-                                                    shift_labels.view(-1))
+                                                     shift_labels.view(-1))
 
-        # Compute the gradient of the one-hot token ids with respect to the loss
         optim_ids_onehot_grad = torch.autograd.grad(outputs=[loss], inputs=[optim_ids_onehot])[0]
 
         return optim_ids_onehot_grad
@@ -434,93 +385,64 @@ class GCGAttacker(BaseAttacker):
             input_embeds: Tensor,
     ) -> Tensor:
         """
-        Computes the GCG loss on all candidate token id sequences.
+        Computes the GCG loss on all candidate token ID sequences.
 
-        This method computes the GCG loss for a batch of candidate token ID sequences.
-        It evaluates the loss across different batches of input embeddings and accumulates 
-        the results. The loss is calculated based on the predicted logits of the token sequences.
-
-        Args:
-            search_batch_size (int): The number of candidate sequences to evaluate in a given batch.
-                This controls how many sequences are processed together in each batch.
-            input_embeds (Tensor): A tensor of shape (search_width, seq_len, embd_dim), representing the embeddings 
-                of the `search_width` candidate sequences to evaluate. Each sequence is embedded in `embd_dim` dimensional space.
-
-        Returns:
-            Tensor: A tensor containing the loss for each candidate sequence. The shape is (search_width,).
-                    This loss will be used to evaluate how well each candidate sequence performs in the attack.
+        :param search_batch_size: int, number of candidate sequences to evaluate in a given batch.
+        :param input_embeds: Tensor, shape = (search_width, seq_len, embd_dim), embeddings of the candidate sequences to evaluate.
         """
+
         all_loss = []
         prefix_cache_batch = []
 
-        # Process the input embeddings in batches
         for i in range(0, input_embeds.shape[0], search_batch_size):
             with torch.no_grad():
                 input_embeds_batch = input_embeds[i:i + search_batch_size]
                 current_batch_size = input_embeds_batch.shape[0]
-                
-                # Use prefix cache if available to speed up processing
                 if self.prefix_cache:
                     if not prefix_cache_batch or current_batch_size != search_batch_size:
                         prefix_cache_batch = [[x.expand(current_batch_size, -1, -1, -1) for x in self.prefix_cache[i]]
-                                            for i in range(len(self.prefix_cache))]
+                                              for i in range(len(self.prefix_cache))]
+
                     outputs = self.llm.model(inputs_embeds=input_embeds_batch, past_key_values=prefix_cache_batch)
                 else:
                     outputs = self.llm.model(inputs_embeds=input_embeds_batch)
 
-                logits = outputs.logits  # Get the model's output logits
+                logits = outputs.logits
 
-                # Shift logits so token n-1 predicts token n
                 tmp = input_embeds.shape[1] - self.target_ids.shape[1]
                 shift_logits = logits[..., tmp - 1:-1, :].contiguous()
                 shift_labels = self.target_ids.repeat(current_batch_size, 1)
 
-                # Compute the loss using either mellowmax or cross-entropy loss
                 if self.use_mellowmax:
                     label_logits = torch.gather(shift_logits, -1, shift_labels.unsqueeze(-1)).squeeze(-1)
                     loss = self.mellowmax(-label_logits, alpha=self.mellowmax_alpha, dim=-1)
                 else:
                     loss = torch.nn.functional.cross_entropy(shift_logits.view(-1, shift_logits.size(-1)),
-                                                            shift_labels.view(-1), reduction="none")
+                                                             shift_labels.view(-1), reduction="none")
 
-                loss = loss.view(current_batch_size, -1).mean(dim=-1)  # Average loss for each sequence
+                loss = loss.view(current_batch_size, -1).mean(dim=-1)
                 all_loss.append(loss)
 
-                # Early stopping if a perfect match is found
                 if self.early_stop:
                     if torch.any(torch.all(torch.argmax(shift_logits, dim=-1) == shift_labels, dim=-1)).item():
                         self.stop_flag = True
 
                 del outputs
-                gc.collect()  # Clean up memory
-                torch.cuda.empty_cache()  # Clear GPU memory cache
+                gc.collect()
+                torch.cuda.empty_cache()
 
-        return torch.cat(all_loss, dim=0)  # Return the concatenated loss across all batches
-
+        return torch.cat(all_loss, dim=0)
 
     def filter_ids_op(self, ids: Tensor, tokenizer: transformers.PreTrainedTokenizer):
         """
         Filters out sequences of token IDs that change after retokenization.
 
-        This method ensures that only token sequences that remain the same after being decoded and re-encoded
-        are kept. It decodes the input token IDs, re-encodes them, and checks if the re-encoded sequences match
-        the original token IDs. If any sequence changes, it is filtered out.
+        :param ids: Tensor, shape = (search_width, n_optim_ids), token IDs to evaluate.
+        :param tokenizer: transformers.PreTrainedTokenizer, the model's tokenizer.
 
-        Args:
-            ids (Tensor): A tensor of shape (search_width, n_optim_ids), representing a batch of token IDs 
-                        that are being optimized. Each row in the tensor corresponds to a candidate token sequence.
-            tokenizer (transformers.PreTrainedTokenizer): The tokenizer used to decode and re-encode the token IDs.
-
-        Returns:
-            Tensor: A tensor of shape (new_search_width, n_optim_ids), containing the token IDs that remain the same 
-                    after decoding and re-encoding. `new_search_width` is the number of valid token sequences 
-                    that passed the filter.
-            
-        Raises:
-            RuntimeError: If no token sequences remain after filtering, indicating that all sequences changed after
-                        decoding and re-encoding. The error suggests adjusting the optimization strategy or trying 
-                        a different initialization method.
+        :return: Tensor, shape = (new_search_width, n_optim_ids), token IDs that remain the same after retokenization.
         """
+
         ids_decoded = tokenizer.batch_decode(ids)
         filtered_ids = []
 
@@ -552,28 +474,16 @@ class GCGAttacker(BaseAttacker):
         """
         Returns `search_width` combinations of token IDs based on the token gradient.
 
-        This method samples new token ID sequences by using the gradients of the GCG loss. It selects the most 
-        likely token IDs based on the gradient, with an option to update only a subset of token positions in each sequence.
-        
-        Args:
-            ids (Tensor): A tensor of shape (n_optim_ids), representing the current sequence of token IDs being optimized.
-                        These are the token IDs that will be modified during the optimization.
-            grad (Tensor): A tensor of shape (n_optim_ids, vocab_size), representing the gradient of the GCG loss 
-                        with respect to the one-hot token embeddings. This is used to determine which token positions 
-                        should be updated.
-            search_width (int): The number of candidate sequences to return. This controls how many sequences 
-                                will be generated based on the token gradients.
-            topk (int): The number of top-k tokens to sample from the gradient. This parameter controls how many of 
-                        the most likely token candidates are considered for each token position. Default is 256.
-            n_replace (int): The number of token positions to update per sequence. This controls how many positions 
-                            in the sequence will be modified based on the sampled tokens. Default is 1.
-            not_allowed_ids (Tensor, optional): A tensor of token IDs that should not be used in the optimization.
-                                                These token IDs will be excluded from the gradient-based sampling.
+        :param ids: Tensor, shape = (n_optim_ids), the sequence of token IDs being optimized.
+        :param grad: Tensor, shape = (n_optim_ids, vocab_size), the gradient of the GCG loss with respect to the one-hot token embeddings.
+        :param search_width: int, the number of candidate sequences to return.
+        :param topk: int, the number of top-k tokens to sample from the gradient.
+        :param n_replace: int, the number of token positions to update per sequence.
+        :param not_allowed_ids: Tensor, shape = (n_ids), token IDs that should not be used in optimization.
 
-        Returns:
-            Tensor: A tensor of shape (search_width, n_optim_ids), representing the `search_width` sampled token ID sequences.
-                    These are the new sequences generated based on the gradients, with updated token positions.
+        :return: Tensor, shape = (search_width, n_optim_ids), sampled token IDs.
         """
+
         n_optim_tokens = len(ids)
         original_ids = ids.repeat(search_width, 1)
 
@@ -597,15 +507,9 @@ class GCGAttacker(BaseAttacker):
         """
         Checks if `exception` relates to CUDA out-of-memory, CUDNN not supported, or CPU out-of-memory.
 
-        This method checks whether the given exception is related to a memory error (CUDA out-of-memory, CUDNN not supported, or CPU out-of-memory).
-        If the exception matches any of these conditions, it returns `True`, indicating that the batch size should be reduced to avoid out-of-memory errors.
-        
-        Args:
-            exception (Exception): The exception to check, typically a RuntimeError.
-
-        Returns:
-            bool: `True` if the exception is related to memory allocation issues (CUDA or CPU), `False` otherwise.
+        :param exception: `Exception`, the exception to check.
         """
+
         _statements = [
             "CUDA out of memory.",  # CUDA OOM
             "cuDNN error: CUDNN_STATUS_NOT_SUPPORTED.",  # CUDNN SNAFU
@@ -618,33 +522,22 @@ class GCGAttacker(BaseAttacker):
     # modified from https://github.com/huggingface/accelerate/blob/85a75d4c3d0deffde2fc8b917d9b1ae1cb580eb2/src/accelerate/utils/memory.py#L87
     def find_executable_batch_size(self, function: callable = None, starting_batch_size: int = 128):
         """
-        A basic decorator that will try to execute `function`. If it fails due to exceptions related to out-of-memory or
-        CUDNN, the batch size is halved and passed to `function` again.
+        A basic decorator that executes `function`. If it fails due to out-of-memory or CUDNN errors, 
+        the batch size is halved and retried.
 
-        This decorator is designed to handle memory-related errors during model execution by automatically reducing the batch size
-        and retrying the function execution. It will keep halving the batch size until the function executes successfully or the
-        batch size reaches zero.
+        `function` must accept a `batch_size` parameter as its first argument.
 
-        `function` must take a `batch_size` parameter as its first argument. The decorator will ensure that this parameter is 
-        passed with the appropriate batch size.
-
-        Args:
-            function (callable, optional): The function to wrap, which must accept a `batch_size` parameter as its first argument.
-            starting_batch_size (int, optional): The initial batch size to try. The default is 128.
-
-        Returns:
-            callable: The wrapped function that automatically adjusts the batch size in case of memory-related errors.
+        :param function: callable, the function to wrap.
+        :param starting_batch_size: int, the initial batch size to try.
 
         Example:
-            # Example usage of find_executable_batch_size decorator
-
+            # Example usage of the decorator
             @find_executable_batch_size
             def train_model(batch_size: int):
-                # Function logic for training the model with the given batch size
-                pass
-
-            train_model(starting_batch_size=256)  # The decorator will automatically adjust the batch size if necessary
+                # Train model logic here
+            train_model(256)
         """
+
         if function is None:
             return functools.partial(self.find_executable_batch_size, starting_batch_size=starting_batch_size)
 
@@ -680,7 +573,3 @@ class GCGAttacker(BaseAttacker):
     def mellowmax(self, t: Tensor, alpha=1.0, dim=-1):
         return 1.0 / alpha * (torch.logsumexp(alpha * t, dim=dim) - torch.log(
             torch.tensor(t.shape[-1], dtype=t.dtype, device=t.device)))
-
-
-
-
