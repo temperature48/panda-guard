@@ -347,12 +347,12 @@ benchmarks/
 |:------:|------------------------|--------------------------------------------------------------------------------------------------------|
 |   ✅    | Transfer-based Attacks | Various templates from [JailbreakChat](https://jailbreakchat-hko42cs2r-alexalbertt-s-team.vercel.app/) |
 |   ✅    | Rewrite Attack         | "Does Refusal Training in LLMs Generalize to the Past Tense?"                                          |
-|   ✅    | PAIR                   | "Jailbreaking Black Box Large Language Models in Twenty Queries"                                       |
+|   ✅    | [PAIR](https://arxiv.org/abs/2310.08419)                   | "Jailbreaking Black Box Large Language Models in Twenty Queries"                                       |
 |   ✅    | GCG                    | "Universal and Transferable Adversarial Attacks on Aligned Language Models"                            |
-|   ✅    | TAP                    | "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically"                                           |
+|   ✅    | [TAP](https://arxiv.org/abs/2312.02119)                    | "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically"                                           |
 |   ✅    | Overload Attack        | "Harnessing Task Overload for Scalable Jailbreak Attacks on Large Language Models"                     |
 |   ✅    | ArtPrompt              | "ArtPrompt: ASCII Art-Based Jailbreak Attacks Against Aligned LLMs"                                    |
-|   ✅    | DeepInception          | "DeepInception: Hypnotize Large Language Model to Be Jailbreaker"                                      |
+|   ✅    | [DeepInception](https://arxiv.org/abs/2311.03191)          | "DeepInception: Hypnotize Large Language Model to Be Jailbreaker"                                      |
 |   ✅    | GPT4-Cipher            | "GPT-4 Is Too Smart To Be Safe: Stealthy Chat with LLMs via Cipher"                                    |
 |   ✅    | SCAV                   | "Uncovering Safety Risks of Large Language Models Through Concept Activation Vector"                   |
 |   ✅    | RandomSearch           | "Jailbreaking Leading Safety-Aligned LLMs with Simple Adaptive Attacks"                                |
@@ -374,9 +374,9 @@ benchmarks/
 |   ✅    | BackTranslation   | "Defending LLMs against Jailbreaking Attacks via Backtranslation"                                                  |
 |   ✅    | PerplexityFilter  | "Baseline Defenses for Adversarial Attacks Against Aligned Language Models"                                        |
 |   ✅    | RePE              | "Representation Engineering: A Top-Down Approach to AI Transparency"                                               |
-|   ✅    | GradSafe          | "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis"                             |
-|   ✅    | SelfDefense       | "LLM Self Defense: By Self Examination, LLMs Know They Are Being Tricked"                                          |
-|   ✅    | GoalPriority      | "Defending Large Language Models Against Jailbreaking Attacks Through Goal Prioritization"                         |
+|   ✅    | [GradSafe](https://arxiv.org/abs/2402.13494)          | "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis"                             |
+|   ✅    | [SelfDefense](https://arxiv.org/abs/2308.07308)       | "LLM Self Defense: By Self Examination, LLMs Know They Are Being Tricked"                                          |
+|   ✅    | [GoalPriority](https://arxiv.org/abs/2311.09096)      | "Defending Large Language Models Against Jailbreaking Attacks Through Goal Prioritization"                         |
 |   ✅    | RPO               | "Robust Prompt Optimization for Defending Language Models Against Jailbreaking Attacks"                            |
 |   ✅    | JailbreakAntidote | "Jailbreak Antidote: Runtime Safety-Utility Balance via Sparse Representation Adjustment in Large Language Models" |
 
@@ -386,8 +386,8 @@ benchmarks/
 | Status | Algorithm      | Source                                                                      |
 |:------:|----------------|-----------------------------------------------------------------------------|
 |   ✅    | RuleBasedJudge | "Universal and Transferable Adversarial Attacks on Aligned Language Models" |
-|   ✅    | PairLLMJudge   | "Jailbreaking Black Box Large Language Models in Twenty Queries"            |
-|   ✅    | TAPLLMJudge    | "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically"                |
+|   ✅    | [PairLLMJudge](https://arxiv.org/abs/2310.08419)   | "Jailbreaking Black Box Large Language Models in Twenty Queries"            |
+|   ✅    | [TAPLLMJudge](https://arxiv.org/abs/2312.02119)    | "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically"                |
 
 
 ### LLM Interfaces
@@ -398,9 +398,9 @@ benchmarks/
 |   ✅    | Claude API  | Interface for Anthropic's Claude models (Claude-3.7-sonnet, Claude-3.5-sonnet, etc.) |
 |   ✅    | Gemini API  | Interface for Google's Gemini models (Gemini-2.0-pro, Gemini-2.0-flash, etc.)        |
 |   ✅    | HuggingFace | Interface for models through HuggingFace Transformers library                        |
-|   ✅    | vLLM        | High-performance inference engine for LLM deployment                                 |
-|   ✅    | SGLang      | Framework for efficient LLM program execution                                        |
-|   ✅    | Ollama      | Local deployment for various open-source models                                      |
+|   ✅    | [vLLM](https://github.com/vllm-project/vllm)        | High-performance inference engine for LLM deployment                                 |
+|   ✅    | [SGLang](https://github.com/sgl-project/sglang)      | Framework for efficient LLM program execution                                        |
+|   ✅    | [Ollama](https://ollama.com/)      | Local deployment for various open-source models                                      |
 
 
 ## Contribution Guide
@@ -430,6 +430,12 @@ We would like to express our gratitude to the following projects and their contr
 - [JailbreakBench](https://arxiv.org/abs/2404.01318)
 - [AlpacaEval](https://github.com/tatsu-lab/alpaca_eval)
 - [JailbreakChat](https://jailbreakchat-hko42cs2r-alexalbertt-s-team.vercel.app/)
+- [GoalPriority](https://github.com/thu-coai/JailbreakDefense_GoalPriority)
+- [GradSafe](https://github.com/xyq7/GradSafe)
+- [DeepInception](https://github.com/tmlr-group/DeepInception)
+- [vLLM](https://github.com/vllm-project/vllm)
+- [SGLang](https://github.com/sgl-project/sglang)
+- [Ollama](https://ollama.com/)
 
 Special thanks to all the researchers who have contributed to the field of LLM safety and helped advance our understanding of jailbreak attacks and defense mechanisms.
 
