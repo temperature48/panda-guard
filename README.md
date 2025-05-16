@@ -4,9 +4,8 @@ English | [简体中文](./README_zh_CN.md)
 
 This repository contains the source code for `Panda Guard`, designed for researching jailbreak attacks, defenses, and evaluation algorithms for large language models (LLMs). It is built on the following core principles:
 
-- In the context of Language Model as a Service (LMaaS), LLMs should be viewed as part of a system rather than standalone entities by both service providers and users. Therefore, research should focus not only on the LLM itself but systematically study the related attack, defense, and evaluation algorithms.
-- "The safest model is one that doesn't answer anything." Hence, safety is just one aspect of a model. Our goal should be to explore the relationship between safety and model capabilities, and how to balance the two.
-- To better evaluate different models, attacks, and defense algorithms from multiple perspectives including safety, capability, and efficiency, we developed `panda-guard` to assess the safety and capabilities of LLMs as systems and explore their deployment in real-world scenarios.
+![PandaGuard Framework Architecture](figures/img-white.png)
+*The PandaGuard framework architecture illustrating the end-to-end pipeline for LLM safety evaluation. The system connects three key components: Attackers, Defenders, and Judges.*
 
 ## Quick Start
 
@@ -218,7 +217,10 @@ You can either:
 1. Download the benchmark results directly from HuggingFace and place them in the `benchmarks` directory
 2. Switch to the `bench-v0.1.0` branch to find all experiment configurations and rerun them
 
-#### Jailbreak Evaluation Reproduction
+## PandaBench Reproduction
+
+![Model Analysis Results](figures/models.png)
+*PandaBench builds comprehensive benchmarks for LLM/attack/defense/evaluation (a) Attack Success Rate vs. release date for various LLMs. (b) ASR across different harm categories with and without defense mechanisms. (c) Overall ASR for all evaluated LLMs with and without defense mechanisms.*
 
 To reproduce our jailbreak evaluation experiments:
 
