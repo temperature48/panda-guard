@@ -466,23 +466,23 @@ def soft_forward(model, x_onehot, y_logits, topk, extra_mask=None, x_past=None, 
     logits_so_far = None
     length = y_logits.shape[1]
     for i in range(length):
-        model_outputs = model(past_key_values=past, inputs_embeds=input_embeds) #送进去历史信息
+        model_outputs = model(past_key_values=past, inputs_embeds=input_embeds) #Send historical information
         
         # past = model_outputs.past_key_values    
-        logits_t = model_outputs.logits[:, -1:, :]  #选出来最后一个单词的logits
+        logits_t = model_outputs.logits[:, -1:, :]  #Select the logits of the last word
         assert logits_t.shape[1] == 1, logits_t.shape   
-        _, indices_t = torch.topk(logits_t, topk)   #最后一个单词的topk logits
+        _, indices_t = torch.topk(logits_t, topk)   #topk logits of the last word
         mask_t = torch.zeros_like(logits_t).scatter_(2, indices_t, 1)   #变mask
         if bad_mask != None:
             mask_t = torch.mul(mask_t, bad_mask)
-        mask_t_all = mask_t if mask_t_all is None else torch.cat((mask_t_all, mask_t), dim=1)   #第i个单词的topk-mask
-        logits_so_far = logits_t if logits_so_far is None else torch.cat((logits_so_far, logits_t), dim=1)  # 生成的y的logits
+        mask_t_all = mask_t if mask_t_all is None else torch.cat((mask_t_all, mask_t), dim=1)   #topk-mask of the i-th word
+        logits_so_far = logits_t if logits_so_far is None else torch.cat((logits_so_far, logits_t), dim=1)  # Generated logits of y
         if i < length - 1:
             if extra_mask is None:
                 y_logits_i_topk = top_k_filter_3d(y_logits[:,i:i+1,:], topk, mask=mask_t) / 0.001
             else:
                 y_logits_i_topk = top_k_filter_3d(y_logits[:,i:i+1,:], topk, mask=mask_t, extra_mask=extra_mask[:,i:i+1,:]) / 0.001
-            input_embeds = torch.matmul(F.softmax(y_logits_i_topk, dim=-1), model.get_input_embeddings().weight)   # 得到第i个单词的embedding
+            input_embeds = torch.matmul(F.softmax(y_logits_i_topk, dim=-1), model.get_input_embeddings().weight)   # Get the embedding of the i-th word
         # memory_difference = end_memory - start_memory
         # print(f"Memory Difference: {end_memory / (1024 ** 2)} MB")
     if detach:
