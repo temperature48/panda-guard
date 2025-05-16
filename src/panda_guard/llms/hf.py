@@ -361,7 +361,7 @@ class HuggingFaceLLM(BaseLLM):
 
         :param messages: List of messages for evaluation.  
         :param config: Configuration for LLM generation.  
-        :param require_grad: logprobs have grad
+        :param require_grad: Whether to compute gradients (not supported for API models).
         :return: List of log likelihood values.  
         """
 

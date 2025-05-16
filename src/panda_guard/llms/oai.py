@@ -192,16 +192,19 @@ class OpenAiChatLLM(BaseLLM):
                     time.sleep(retry_count)
         return None
 
-    def continual_generate(
-        self, messages: List[Dict[str, str]], config: LLMGenerateConfig
-    ):
+    def continual_generate(self, messages: List[Dict[str, str]], config: LLMGenerateConfig):
+        """
+        Remove EOS token in formatted prompt. Manually add generation prompt.
+
+        :param messages: List of messages for input.
+        :param config: Configuration for LLM generation.
+        :raises NotImplementedError: OpenAiChatLLM does not support continual generation.
+        """
         raise NotImplementedError(
             "OpenAiChatLLM does not support continual generation, please use OpenAiLLM instead."
         )
 
-    def evaluate_log_likelihood(
-        self, messages: List[Dict[str, str]], config: LLMGenerateConfig
-    ) -> List[float]:
+    def evaluate_log_likelihood(self, messages: List[Dict[str, str]], config: LLMGenerateConfig) -> List[float]:
         """
         Evaluate the log likelihood of the given messages.
 
@@ -219,7 +222,7 @@ class OpenAiLLM(BaseLLM):
     """
     OpenAI LLM Implementation.
 
-    :param config: Configuration for OpenAI LLM.  用于OpenAI LLM的配置
+    :param config: Configuration for OpenAI LLM.
     """
 
     def __init__(self, config: OpenAiLLMConfig):

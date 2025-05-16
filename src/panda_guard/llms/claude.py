@@ -246,7 +246,7 @@ class ClaudeLLM(BaseLLM):
 
         :param messages: List of messages for evaluation.
         :param config: Configuration for LLM generation.
-        :param require_grad: Whether to compute gradients (not supported for API models)
+        :param require_grad: Whether to compute gradients (not supported for API models).
         :raises NotImplementedError: Claude API does not support log likelihood evaluation.
         """
         raise NotImplementedError(
