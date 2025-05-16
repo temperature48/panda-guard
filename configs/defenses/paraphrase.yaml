@@ -1,25 +1,18 @@
-defender_cls: "ParaphraseDefender"
-target_llm_config:
-  llm_type: "OpenAiLLM"
-  model_name: "meta-llama/Meta-Llama-3.1-70B-Instruct"
-  base_url: "http://172.18.129.80:8000/v1"
-target_llm_gen_config:
-  max_n_tokens: 4096
-  temperature: 1.0
-  logprobs: False
-  seed: null
-paraphrase_llm_config:   # null for same as target_llm
-  model_name: "meta-llama/Meta-Llama-3.1-8B-Instruct"
-  llm_type: "OpenAiLLM"
-  base_url: "http://172.18.131.18:8000/v1"
-#  base_url: "http://172.18.131.2234/v1"
-#  api_key: "token-casia-braincog-233"
+defender_cls: ParaphraseDefender
+paraphrase_llm_config:
+  llm_type: OpenAiLLM
+  model_name: meta-llama/Meta-Llama-3.1-8B-Instruct
 paraphrase_llm_gen_config:
+  logprobs: false
   max_n_tokens: 300
-  temperature: 1.0
-  logprobs: False
   seed: null
+  temperature: 1.0
 paraphrase_prompt: 'paraphrase the following paragraph: \n"{prompt}"\n\n'
-
-
-#vllm serve meta-llama/Meta-Llama-3.1-8B-Instruct --port 8000
+target_llm_config:
+  llm_type: OpenAiLLM
+  model_name: meta-llama/Meta-Llama-3.1-70B-Instruct
+target_llm_gen_config:
+  logprobs: false
+  max_n_tokens: 4096
+  seed: null
+  temperature: 1.0

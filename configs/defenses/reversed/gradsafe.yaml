@@ -1,20 +1,12 @@
 defender_cls: GradSafeDefender
 defender_name: GradSafe
-
-# target LLM
-target_llm_config: 
+target_llm_config:
+  device_map: cuda:3
   llm_type: HuggingFaceLLM
   model_name: meta-llama/Llama-3.2-3B-Instruct
-  device_map: cuda:3 
 target_llm_gen_config:
-  max_n_tokens: 128
-  temperature: 1.0
   logprobs: false
+  max_n_tokens: 128
   seed: 42
-
-# determine is safe or not
+  temperature: 1.0
 unsafe_threshold: 0.25
-
-# default settings
-# unsafe_set: 
-# safe_set: 

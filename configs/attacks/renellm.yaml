@@ -1,38 +1,29 @@
-attacker_cls: "ReNeLLMAttacker"
-attacker_name: "ReNeLLM"
-
-# rewrite llm configs
-rewrite_llm_config:
-  llm_type: "HuggingFaceLLM"
-  model_name: "meta-llama/Llama-3.1-8B-Instruct"
-  device_map: cuda:0
-
-rewrite_llm_gen_config:
-  max_n_tokens: 1000
-  temperature: 1.0
-  logprobs: False
-  seed: null
-
-# target llm configs
-target_llm_config:
-  llm_type: "HuggingFaceLLM"
-  model_name: "meta-llama/Llama-3.1-8B-Instruct"
-  device_map: cuda:1
-
-target_llm_gen_config:
-  max_n_tokens: 1000
-  temperature: 1.0
-  logprobs: False
-  seed: null
-
-# judge llm configs
+attacker_cls: ReNeLLMAttacker
+attacker_name: ReNeLLM
 judge_llm_config:
-  llm_type: "HuggingFaceLLM"
-  model_name: "meta-llama/Llama-3.1-8B-Instruct"
   device_map: cuda:2
-
+  llm_type: HuggingFaceLLM
+  model_name: meta-llama/Llama-3.1-8B-Instruct
 judge_llm_gen_config:
+  logprobs: false
   max_n_tokens: 1000
-  temperature: 1.0
-  logprobs: False
   seed: null
+  temperature: 1.0
+rewrite_llm_config:
+  device_map: cuda:0
+  llm_type: HuggingFaceLLM
+  model_name: meta-llama/Llama-3.1-8B-Instruct
+rewrite_llm_gen_config:
+  logprobs: false
+  max_n_tokens: 1000
+  seed: null
+  temperature: 1.0
+target_llm_config:
+  device_map: cuda:1
+  llm_type: HuggingFaceLLM
+  model_name: meta-llama/Llama-3.1-8B-Instruct
+target_llm_gen_config:
+  logprobs: false
+  max_n_tokens: 1000
+  seed: null
+  temperature: 1.0

@@ -1,13 +1,12 @@
 defender_cls: GoalPriorityDefender
 defender_name: GoalPriority
-target_llm_config: 
+defense_type: selfremind
+target_llm_config:
+  device_map: cuda:0
   llm_type: HuggingFaceLLM
   model_name: Qwen/Qwen2.5-7B-Instruct
-  device_map: cuda:0 
-target_llm_gen_config: 
-  max_n_tokens: 4096
-  temperature: 1.0
+target_llm_gen_config:
   logprobs: false
+  max_n_tokens: 4096
   seed: 42
-
-defense_type: "selfremind"
+  temperature: 1.0
