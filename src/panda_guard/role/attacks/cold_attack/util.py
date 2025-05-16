@@ -1029,7 +1029,6 @@ def get_gpt_ppl(text_list, gpt_model, gpt_tokenizer, device):
 
     return ppl_list
 
-
 def rank_generations(text_list, x, z, mode="abductive"):
     if "abductive" in mode:
         text_xyz = []
