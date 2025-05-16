@@ -278,12 +278,19 @@ python alpaca_eval.py
 
 #### Using Pre-Computed Results
 
-To use our pre-computed benchmark results, you need to download benchmark data:
+To use our pre-computed benchmark results:
+
+1. Clone the repository and download benchmark data:
 ```bash
-mkdir bnechmakrs
+mkdir benchmarks
 # Download the benchmark data from HuggingFace
 python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Beijing-AISI/panda-bench', local_dir='./benchmarks')"
 ```
+
+The downloaded data includes:
+- `panda-bench.csv`: Contains the summarized final benchmark results
+- `benchmark.zip`: Contains all the original conversation data and detailed evaluation information. When extracted, it creates the directory structure described in the "Using Specific Configurations" section below.
+
 
 1. Find the configuration in the benchmark repository:
 ```
