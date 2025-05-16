@@ -21,7 +21,7 @@ pip install panda-guard
 To install the latest development version:
 
 ```bash
-pip install git+https://github.com/FloyedShen/panda-guard.git
+pip install git+https://github.com/Beijing-AISI/panda-guard.git
 ```
 
 ### Environment Configuration
@@ -165,7 +165,7 @@ curl -X POST http://localhost:8000/v1/chat/completions   -H "Content-Type: appli
 ### Source Installation
 
 ```bash
-git clone https://github.com/FloyedShen/panda-guard.git --recurse-submodules
+git clone https://github.com/Beijing-AISI/panda-guard.git --recurse-submodules
 cd panda-guard
 uv venv
 source .venv/bin/activate
