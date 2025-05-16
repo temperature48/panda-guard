@@ -11,8 +11,6 @@ from panda_guard.role.attacks.base import BaseAttacker, BaseAttackerConfig
 
 from panda_guard.utils import ComponentRegistry
 
-from panda_guard.role.attacks.transfer import TransferAttacker
-
 attacker_registry = ComponentRegistry[BaseAttacker](
     "attacker",
     BaseAttacker,

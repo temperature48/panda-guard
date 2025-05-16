@@ -13,7 +13,8 @@ from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from panda_guard.llms import BaseLLM
-from panda_guard.role.attacks import create_attacker, BaseAttacker, TransferAttacker, BaseAttackerConfig
+from panda_guard.role.attacks import create_attacker, BaseAttacker, BaseAttackerConfig
+from panda_guard.role.attacks.transfer import TransferAttacker
 from panda_guard.role.defenses import create_defender, BaseDefender, BaseDefenderConfig
 from panda_guard.role.judges import create_judge, BaseJudge, BaseJudgeConfig
 
