@@ -15,7 +15,6 @@ from dataclasses import dataclass, field
 
 import openai
 
-
 from panda_guard.llms import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 from panda_guard.utils import process_end_eos
 
@@ -25,10 +24,10 @@ class OpenAiLLMConfig(BaseLLMConfig):
     """
     OpenAI LLM Configuration.
 
-    :param llm_type: Type of LLM, default is "OpenAiLLM".  LLM的类型，默认值为 "OpenAiLLM"
-    :param model_name: Name of the model.  模型的名称
-    :param base_url: Base URL for the OpenAI API.  OpenAI API的基础URL
-    :param api_key: API key for accessing OpenAI.  访问OpenAI的API密钥
+    :param llm_type: Type of LLM, default is "OpenAiLLM". 
+    :param model_name: Name of the model. 
+    :param base_url: Base URL for the OpenAI API.  
+    :param api_key: API key for accessing OpenAI.  
     """
 
     llm_type: str = field(default="OpenAiLLM")
@@ -42,10 +41,10 @@ class OpenAiChatLLMConfig(BaseLLMConfig):
     """
     OpenAI Chat LLM Configuration.
 
-    :param llm_type: Type of LLM, default is "OpenAiChatLLM".  LLM的类型，默认值为 "OpenAiChatLLM"
-    :param model_name: Name of the model.  模型的名称
-    :param base_url: Base URL for the OpenAI API.  OpenAI API的基础URL
-    :param api_key: API key for accessing OpenAI.  访问OpenAI的API密钥
+    :param llm_type: Type of LLM, default is "OpenAiChatLLM". 
+    :param model_name: Name of the model.  
+    :param base_url: Base URL for the OpenAI API.  
+    :param api_key: API key for accessing OpenAI.  
     """
 
     llm_type: str = field(default="OpenAiChatLLM")
@@ -59,7 +58,7 @@ class OpenAiChatLLM(BaseLLM):
     """
     OpenAI Chat LLM Implementation.
 
-    :param config: Configuration for OpenAI Chat LLM.  用于OpenAI小谱LLM的配置
+    :param config: Configuration for OpenAI Chat LLM.  
     """
 
     def __init__(self, config: OpenAiLLMConfig):
@@ -76,9 +75,9 @@ class OpenAiChatLLM(BaseLLM):
         """
         Generate a response for a given input using OpenAI Chat API.
 
-        :param messages: List of input messages.  输入的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: Generated response or response with logprobs or stream generator.  返回生成的应答、启用logprobs的应答或流式生成器
+        :param messages: List of input messages. 
+        :param config: Configuration for LLM generation.  
+        :return: Generated response or response with logprobs or stream generator.  
         """
 
         if ('4k' in self._NAME or 'gemma-2-2b-it' in self._NAME) and config.max_n_tokens > 2048:
@@ -213,9 +212,9 @@ class OpenAiChatLLM(BaseLLM):
         """
         Evaluate the log likelihood of the given messages.
 
-        :param messages: List of messages for evaluation.  需要评估的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :raises NotImplementedError: OpenAI Chat does not support log likelihood evaluation.  这个LLM属性不支持log likelihood评估
+        :param messages: List of messages for evaluation.  
+        :param config: Configuration for LLM generation.  
+        :raises NotImplementedError: OpenAI Chat does not support log likelihood evaluation.  
         """
         raise NotImplementedError(
             "OpenAI Chat does not support log likelihood evaluation."
@@ -251,9 +250,9 @@ class OpenAiLLM(BaseLLM):
         """
         Generate a response for a given input using OpenAI API.
 
-        :param messages: List of input messages.  输入的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: Generated response or response with logprobs or stream generator.  返回生成的应答、启用logprobs的应答或流式生成器
+        :param messages: List of input messages.  
+        :param config: Configuration for LLM generation. 
+        :return: Generated response or response with logprobs or stream generator.  
         """
 
         if ('4k' in self._NAME or 'gemma-2-2b-it' in self._NAME) and config.max_n_tokens > 2048:
@@ -373,9 +372,9 @@ class OpenAiLLM(BaseLLM):
         """
         Remove EOS token in formatted prompt. Manually add generation prompt.
 
-        :param messages: List of messages for input.  输入的消息列表
-        :param config: Configuration for generation.  生成配置
-        :return: Generated response or responses with log probabilities.  返回生成的应答或启用百分比的应答
+        :param messages: List of messages for input.  
+        :param config: Configuration for generation.  
+        :return: Generated response or responses with log probabilities.  
         """
 
         if "gemma" in self._NAME.lower() and messages[0]["role"] == "system":
@@ -431,9 +430,9 @@ class OpenAiLLM(BaseLLM):
         """
         Evaluate the log likelihood of the given messages.
 
-        :param messages: List of messages for evaluation.  需要评估的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: List of log likelihood values.  返回的log likelihood值列表
+        :param messages: List of messages for evaluation.  
+        :param config: Configuration for LLM generation.  
+        :return: List of log likelihood values.  
         """
         if require_grad:
             raise NotImplementedError

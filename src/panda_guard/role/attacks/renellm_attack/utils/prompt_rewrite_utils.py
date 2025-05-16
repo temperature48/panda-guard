@@ -1,7 +1,6 @@
 import random
 from .data_utils import remove_number_prefix
 
-
 # Six rewrite functions we used
 ## Paraphrase with Fewer Words
 def shortenSentence(model, config, sentence):

@@ -16,15 +16,14 @@ import torch
 from panda_guard.llms import BaseLLM, BaseLLMConfig, LLMGenerateConfig
 from panda_guard.utils import process_end_eos
 
-
 @dataclass
 class HuggingFaceLLMConfig(BaseLLMConfig):
     """
     Hugging Face LLM Configuration.
 
-    :param llm_type: Type of LLM, default is "HuggingFaceLLM".  LLM的类型，默认值为 "HuggingFaceLLM"
-    :param model_name: Name of the model or model instance.  模型的名称或模型实例
-    :param device_map: Device mapping for model deployment.  用于模型部署的设备对应表
+    :param llm_type: Type of LLM, default is "HuggingFaceLLM".  
+    :param model_name: Name of the model or model instance.  
+    :param device_map: Device mapping for model deployment.  
     """
 
     llm_type: str = field(default="HuggingFaceLLM")
@@ -36,7 +35,7 @@ class HuggingFaceLLM(BaseLLM):
     """
     Hugging Face Language Model Implementation.
 
-    :param config: Configuration for Hugging Face LLM.  用于模型配置
+    :param config: Configuration for Hugging Face LLM.  
     """
 
     def __init__(
@@ -80,9 +79,9 @@ class HuggingFaceLLM(BaseLLM):
         """
         Generate a response for a given input using Hugging Face model.
 
-        :param messages: List of input messages.  输入的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: Generated response, stream generator, or response with logprobs.  返回生成的应答、流式生成器或启用logprobs的应答
+        :param messages: List of input messages.  
+        :param config: Configuration for LLM generation. 
+        :return: Generated response, stream generator, or response with logprobs.  
         """
 
         if ('4k' in self._NAME or 'gemma-2-2b-it' in self._NAME) and config.max_n_tokens > 2048:
@@ -117,7 +116,7 @@ class HuggingFaceLLM(BaseLLM):
             response_tokens = []
 
             def stream_response():
-                nonlocal full_content, generated_so_far, response_tokens
+                nonlocal full_content, generated_so_far, response_tokens, input_length
 
                 # Set up the streamer from transformers
                 from transformers import TextStreamer
@@ -137,7 +136,11 @@ class HuggingFaceLLM(BaseLLM):
                             return delta_text
                         else:
                             # For transformers versions that don't have token_buffer
-                            decoded = self.tokenizer.decode([value], skip_special_tokens=True)
+                            if isinstance(value, torch.Tensor):
+                                value = value.squeeze().tolist()
+                                decoded = self.tokenizer.decode(value, skip_special_tokens=True)
+                            else:
+                                decoded = self.tokenizer.decode([value], skip_special_tokens=True)
                             return decoded
 
                 # Create the custom streamer
@@ -156,7 +159,15 @@ class HuggingFaceLLM(BaseLLM):
                 # Process streamed tokens
                 last_text = ""
                 for token in streamer.output_tokens:
-                    response_tokens.append(token)
+                    # Ensure the input is a one-dimensional list of int, excluding the input prompt
+                    if isinstance(token, torch.Tensor):
+                        token = token.squeeze().tolist()
+                    if isinstance(token, list):
+                        if len(token) == input_length:
+                            continue
+                        response_tokens.extend(token)
+                    else:
+                        response_tokens.append(token)
                     current_text = self.tokenizer.decode(response_tokens, skip_special_tokens=True)
                     if current_text != last_text:
                         new_text = current_text[len(last_text):]
@@ -229,9 +240,9 @@ class HuggingFaceLLM(BaseLLM):
         """
         Generate responses for a batch of messages in a single call.
 
-        :param batch_messages: List of batches of messages.  批量生成的消息列表
-        :param config: Configuration for LLM generation.  生成配置
-        :return: List of generated responses for each batch.  返回每个批量的生成应答列表
+        :param batch_messages: List of batches of messages. 
+        :param config: Configuration for LLM generation.  
+        :return: List of generated responses for each batch.  
         """
         if len(batch_messages) == 0:
             return []
@@ -276,9 +287,9 @@ class HuggingFaceLLM(BaseLLM):
         """
         Remove EOS token in formatted prompt. Manually add generation prompt.
 
-        :param messages: List of messages for input.  输入的消息列表
-        :param config: Configuration for generation.  生成配置
-        :return: Generated response or responses with log probabilities.  返回生成的应答或启用百分比的应答
+        :param messages: List of messages for input. 
+        :param config: Configuration for generation. 
+        :return: Generated response or responses with log probabilities.  
         """
 
         # Prepare the prompt, set continual_final_message=True. add_generation_prompt=False
@@ -348,10 +359,10 @@ class HuggingFaceLLM(BaseLLM):
         """
         Evaluate the log likelihood of the given messages.
 
-        :param messages: List of messages for evaluation.  需要评估的消息列表
-        :param config: Configuration for LLM generation.  生成配置
+        :param messages: List of messages for evaluation.  
+        :param config: Configuration for LLM generation.  
         :param require_grad: logprobs have grad
-        :return: List of log likelihood values.  返回的log likelihood值列表
+        :return: List of log likelihood values.  
         """
 
         # if require grad, the model is traininig mode

@@ -23,10 +23,10 @@ class ArtPromptAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the Rewrite Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "RewriteAttacker".  攻击者的类型，默认值为 "RewriteAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param llm_config: Configuration for the language model.  LLM配置
-    :param llm_gen_config: Configuration for generating output with LLM.  LLM生成配置
+    :param attacker_cls: Class of the attacker, default is "RewriteAttacker".  
+    :param attacker_name: Name of the attacker.  
+    :param llm_config: Configuration for the language model.  
+    :param llm_gen_config: Configuration for generating output with LLM. 
     :param rewrite_template: Template for LLM to mask offensive words
     """
 
@@ -162,9 +162,9 @@ class ArtPromptAttacker(BaseAttacker):
         """
         Execute an attack by transfer the latest user prompt to ArtPrompt.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack.  额外的攻击参数
-        :return: Modified list of messages with the rewritten prompt.  包含重写提示的更改消息列表
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack.  
+        :return: Modified list of messages with the rewritten prompt.  
         """
         assert is_user_turn(messages)
         art_prompt = self.ascii_art(messages[-1]["content"])

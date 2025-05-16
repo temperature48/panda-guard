@@ -15,10 +15,10 @@ from dataclasses import dataclass, field
 @dataclass
 class BaseJudgeConfig(abc.ABC):
     """
-    Base configuration for the Judge class. 判断器基类配置
+    Base configuration for the Judge class.
 
-    :param judge_cls: Class of the judge, default is None. 判断器的类别，默认值为 None
-    :param judge_name: Name of the judge, default is None. 判断器的名称，默认值为 None
+    :param judge_cls: Class of the judge, default is None.
+    :param judge_name: Name of the judge, default is None.
     """
     judge_cls: str = field(default=None)
     judge_name: str = field(default=None)
@@ -26,9 +26,9 @@ class BaseJudgeConfig(abc.ABC):
 
 class BaseJudge(abc.ABC):
     """
-    Base class for implementing a judge to evaluate the safety of a given response. 判断器的基类，用于评估给定响应的安全性
+    Base class for implementing a judge to evaluate the safety of a given response.
 
-    :param config: Configuration for the judge. 判断器的配置
+    :param config: Configuration for the judge.
     """
 
     def __init__(
@@ -47,9 +47,9 @@ class BaseJudge(abc.ABC):
         """
         Abstract method to evaluate the safety of a given request and messages.
 
-        :param messages: List of messages to evaluate. 需要评估的消息列表
-        :param request: The user's request. 用户的请求
-        :return: An integer representing the evaluation result (0: Unsafe, 1: Safe). 表示评估结果的整数 (0: 不安全, 1: 安全)
+        :param messages: List of messages to evaluate.
+        :param request: The user's request.
+        :return: An integer representing the evaluation result (0: Unsafe, 1: Safe).
         """
         pass
 
