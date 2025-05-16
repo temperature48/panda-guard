@@ -91,9 +91,17 @@ class SemanticSmoothLLMDefender(BaseDefender):
             batch_outputs = self.target_llm.batch_generate(
                 batch_messages, self.target_llm_gen_config
             )
+            tmp = []
 
-            batch_outputs = [output[-1]['content'] for output in batch_outputs]
-            all_outputs.extend(batch_outputs)
+            for output in batch_outputs:
+                try:
+                    response = output[-1]['content']
+                except:
+                    response = "I'm sorry, but I can't fulfill this request."
+                    print(f"Batch Generation failed while retuen {output}.")
+
+                tmp.append(response)
+            all_outputs.extend(tmp)
 
         are_copies_jailbroken = [
             1 if self._is_jailbroken(output) else 0

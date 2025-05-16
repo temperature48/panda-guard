@@ -101,7 +101,7 @@ def run_all_experiments(args):
 
     # Prepare combinations of (llm, defense).
     tasks = [(llm_file, defense_file) for defense_file in defense_files for llm_file in llm_files if 'vllm_' not in llm_file]
-    tasks = reversed(tasks)
+    tasks = list(reversed(tasks))
     # Prepare a queue with available devices.
     # max_parallel = min(args.max_parallel, len(llm_files))
     max_parallel = args.max_parallel
