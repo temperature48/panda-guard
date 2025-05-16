@@ -348,7 +348,8 @@ benchmarks/
 |   ✅    | Transfer-based Attacks | Various templates from [JailbreakChat](https://jailbreakchat-hko42cs2r-alexalbertt-s-team.vercel.app/) |
 |   ✅    | Rewrite Attack         | "Does Refusal Training in LLMs Generalize to the Past Tense?"                                          |
 |   ✅    | [PAIR](https://arxiv.org/abs/2310.08419)                   | "Jailbreaking Black Box Large Language Models in Twenty Queries"                                       |
-|   ✅    | GCG                    | "Universal and Transferable Adversarial Attacks on Aligned Language Models"                            |
+|   ✅    | [GCG](https://arxiv.org/abs/2307.15043)                    | "Universal and Transferable Adversarial Attacks on Aligned Language Models"                            |
+|   ✅    | [AutoDAN](https://arxiv.org/abs/2310.04451)                | "Improved Generation of Adversarial Examples Against Safety-aligned LLMs"                              |
 |   ✅    | [TAP](https://arxiv.org/abs/2312.02119)                    | "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically"                                           |
 |   ✅    | Overload Attack        | "Harnessing Task Overload for Scalable Jailbreak Attacks on Large Language Models"                     |
 |   ✅    | ArtPrompt              | "ArtPrompt: ASCII Art-Based Jailbreak Attacks Against Aligned LLMs"                                    |
@@ -377,7 +378,7 @@ benchmarks/
 |   ✅    | [GradSafe](https://arxiv.org/abs/2402.13494)          | "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis"                             |
 |   ✅    | [SelfDefense](https://arxiv.org/abs/2308.07308)       | "LLM Self Defense: By Self Examination, LLMs Know They Are Being Tricked"                                          |
 |   ✅    | [GoalPriority](https://arxiv.org/abs/2311.09096)      | "Defending Large Language Models Against Jailbreaking Attacks Through Goal Prioritization"                         |
-|   ✅    | RPO               | "Robust Prompt Optimization for Defending Language Models Against Jailbreaking Attacks"                            |
+|   ✅    | [RPO](https://arxiv.org/abs/2401.17263)               | "Robust Prompt Optimization for Defending Language Models Against Jailbreaking Attacks"                            |
 |   ✅    | JailbreakAntidote | "Jailbreak Antidote: Runtime Safety-Utility Balance via Sparse Representation Adjustment in Large Language Models" |
 
 
