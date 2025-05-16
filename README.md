@@ -4,24 +4,15 @@ English | [简体中文](./README_zh_CN.md)
 
 This repository contains the source code for `Panda Guard`, designed for researching jailbreak attacks, defenses, and evaluation algorithms for large language models (LLMs). It is built on the following core principles:
 
-- In the context of Language Model as a Service (LMaaS), LLMs should be viewed as part of a system rather than standalone entities by both service providers and users. Therefore, research should focus not only on the LLM itself but systematically study the related attack, defense, and evaluation algorithms.
-- "The safest model is one that doesn't answer anything." Hence, safety is just one aspect of a model. Our goal should be to explore the relationship between safety and model capabilities, and how to balance the two.
-- To better evaluate different models, attacks, and defense algorithms from multiple perspectives including safety, capability, and efficiency, we developed `panda-guard` to assess the safety and capabilities of LLMs as systems and explore their deployment in real-world scenarios.
+![PandaGuard Framework Architecture](figures/img-white.png)
+*The PandaGuard framework architecture illustrating the end-to-end pipeline for LLM safety evaluation. The system connects three key components: Attackers, Defenders, and Judges.*
 
 ## Quick Start
 
-### Installation
-
-To install the stable release:
+To install the latest version:
 
 ```bash
-pip install panda-guard 
-```
-
-To install the latest development version:
-
-```bash
-pip install git+https://github.com/FloyedShen/panda-guard.git
+pip install git+https://github.com/Beijing-AISI/panda-guard.git
 ```
 
 ### Environment Configuration
@@ -29,7 +20,7 @@ pip install git+https://github.com/FloyedShen/panda-guard.git
 Set the environment variables according to your LLM backend:
 
 ```bash
-export OPENAI_BASE_URL=<your_base_url>  # e.g., https://aihubmix.com/v1
+export OPENAI_BASE_URL=<your_base_url>  
 export OPENAI_API_KEY=<your_api_key>
 ```
 
@@ -40,13 +31,13 @@ PandaGuard offers two main usage methods:
 #### 1. Command Line Interactive Mode
 
 ```bash
-panda-guard chat start --defense rpo --model gpt-4o-mini
+panda-guard chat --defense rpo --model gpt-4o-mini
 ```
 
 View help information:
 
 ```bash
-panda-guard chat start --help
+panda-guard chat --help
 ```
 
 Key command line options include:
@@ -115,7 +106,7 @@ judges:
 Start with a configuration file:
 
 ```bash
-panda-guard chat start --config <your_config_file>
+panda-guard chat --config <your_config_file>
 ```
 
 Example interaction:
@@ -144,7 +135,7 @@ User:
 Start an OpenAI API-compatible service:
 
 ```bash
-panda-guard serve start
+panda-guard serve
 ```
 
 Example curl request:
@@ -165,7 +156,7 @@ curl -X POST http://localhost:8000/v1/chat/completions   -H "Content-Type: appli
 ### Source Installation
 
 ```bash
-git clone https://github.com/FloyedShen/panda-guard.git --recurse-submodules
+git clone https://github.com/Beijing-AISI/panda-guard.git --recurse-submodules
 cd panda-guard
 uv venv
 source .venv/bin/activate
@@ -218,25 +209,32 @@ class MyAttacker(BaseAttacker):
 2. Define configuration and judge classes inheriting from `BaseJudgeConfig` and `BaseJudge`
 3. Register in `pyproject.toml` under `[project.entry-points."panda_guard.judges"]` and `[project.entry-points."panda_guard.judge_configs"]`
 
-### Evaluation Framework
+### Reproducing Experiments
 
-PandaGuard provides two main evaluation scenarios:
+PandaGuard provides a comprehensive framework for reproducing the experiments from our papers. All benchmark results are available at [HuggingFace/Beijing-AISI/panda-bench](https://huggingface.co/datasets/Beijing-AISI/panda-bench), and corresponding configurations for each experiment can be found in the same path as the result JSON files.
 
-#### Jailbreak Evaluation
+You can either:
+1. Download the benchmark results directly from HuggingFace and place them in the `benchmarks` directory
+2. Switch to the `bench-v0.1.0` branch to find all experiment configurations and rerun them
 
-For evaluating model safety against jailbreak attacks:
+## PandaBench Reproduction
 
-1. Single inference:
+![Model Analysis Results](figures/models.png)
+*PandaBench builds comprehensive benchmarks for LLM/attack/defense/evaluation (a) Attack Success Rate vs. release date for various LLMs. (b) ASR across different harm categories with and without defense mechanisms. (c) Overall ASR for all evaluated LLMs with and without defense mechanisms.*
+
+To reproduce our jailbreak evaluation experiments:
+
+1. Single model/attack/defense evaluation:
 
 ```bash
 python jbb_inference.py \
   --config ../../configs/tasks/jbb.yaml \
   --attack ../../configs/attacks/transfer/gcg.yaml \
   --defense ../../configs/defenses/self_reminder.yaml \
-  --llm ../../configs/defenses/llms/llama3.2-1b-it.yaml
+  --llm ../../configs/defenses/llms/gpt-4o-mini.yaml 
 ```
 
-2. Batch experiments:
+2. Batch experiment reproduction:
 
 ```bash
 python run_all_inference.py --max-parallel 8
@@ -248,11 +246,11 @@ python run_all_inference.py --max-parallel 8
 python jbb_eval.py
 ```
 
-#### Capability Evaluation (AlpacaEval)
+#### Capability Evaluation Reproduction (AlpacaEval)
 
-For evaluating the impact of defense mechanisms on model capabilities:
+To reproduce our capability impact experiments, you may need to install [AlpacaEval](https://github.com/tatsu-lab/alpaca_eval) first. 
 
-1. Single inference:
+1. Single model/defense evaluation:
 
 ```bash
 python alpaca_inference.py \
@@ -266,7 +264,7 @@ python alpaca_inference.py \
   --visible
 ```
 
-2. Batch experiments:
+2. Batch experiment reproduction:
 
 ```bash
 python run_all_inference.py --max-parallel 8
@@ -278,96 +276,49 @@ python run_all_inference.py --max-parallel 8
 python alpaca_eval.py
 ```
 
-### Custom Configuration
+#### Using Pre-Computed Results
 
-PandaGuard uses YAML files for configuration, supporting these main configuration directories:
+To use our pre-computed benchmark results:
 
-- `configs/attacks/`: Attack algorithm configurations
-- `configs/defenses/`: Defense algorithm configurations
-- `configs/defenses/llms/`: Target model configurations
-- `configs/judges/`: Judge configurations
-- `configs/tasks/`: Evaluation task configurations
-
-### Documentation Generation
-
-Generate documentation using Sphinx:
-
+1. Clone the repository and download benchmark data:
 ```bash
-cd docs
-sphinx-apidoc -o source/ ../src/panda_guard/
-make html
+mkdir benchmarks
+# Download the benchmark data from HuggingFace
+python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Beijing-AISI/panda-bench', local_dir='./benchmarks')"
 ```
 
-### Project Structure
+The downloaded data includes:
+- `panda-bench.csv`: Contains the summarized final benchmark results
+- `benchmark.zip`: Contains all the original conversation data and detailed evaluation information. When extracted, it creates the directory structure described in the "Using Specific Configurations" section below.
 
+
+1. Find the configuration in the benchmark repository:
 ```
-panda_guard
-├── __init__.py                # Package initialization
-├── cli                        # Command line interface
-│   ├── __init__.py
-│   ├── chat.py                # Chat command
-│   ├── main.py                # Main entry
-│   └── serve.py               # API service
-├── llms                       # LLM abstraction layer
-│   ├── __init__.py
-│   ├── base.py                # Base LLM class
-│   ├── claude.py              # Claude model interface
-│   ├── gemini.py              # Gemini model interface
-│   ├── hf.py                  # HuggingFace model interface
-│   ├── llm_registry.py        # LLM registry
-│   ├── oai.py                 # OpenAI model interface
-│   └── vllm.py                # VLLM acceleration interface
-├── pipelines                  # Processing pipelines
-│   ├── __init__.py
-│   └── inference.py           # Inference pipeline
-└── role                       # Role components
-    ├── attacks                # Attack algorithms
-    │   ├── art_prompt.py      # ArtPrompt attack
-    │   ├── base.py            # Base attack class
-    │   ├── cold_attack/       # COLD attack
-    │   ├── deepinception.py   # DeepInception attack
-    │   ├── gcg.py             # GCG attack
-    │   ├── gpt4_cipher.py     # GPT4-Cipher attack
-    │   ├── gptfuzzer_attack/  # GPTFuzzer attack
-    │   ├── ica.py             # ICA attack
-    │   ├── overload.py        # Overload attack
-    │   ├── pair.py            # PAIR attack
-    │   ├── random_search.py   # RandomSearch attack
-    │   ├── renellm_attack/    # ReNeLLM attack
-    │   ├── rewrite.py         # Rewrite attack
-    │   ├── scav.py            # SCAV attack
-    │   ├── tap.py             # TAP attack
-    │   └── transfer.py        # Transfer attack
-    ├── defenses               # Defense algorithms
-    │   ├── back_translate.py  # Back-translation defense
-    │   ├── base.py            # Base defense class
-    │   ├── goal_priority.py   # Goal priority defense
-    │   ├── gradsafe.py        # GradSafe defense
-    │   ├── icl.py             # In-context learning defense
-    │   ├── paraphrase.py      # Paraphrase defense
-    │   ├── perplexity_filter.py # Perplexity filtering
-    │   ├── repe.py            # RePE defense
-    │   ├── repe_utils/        # RePE utilities
-    │   ├── rewrite.py         # Rewrite defense
-    │   ├── rpo.py             # RPO defense
-    │   ├── self_defense.py    # Self defense
-    │   ├── semantic_smoothing_templates/ # Semantic smoothing templates
-    │   ├── semantic_smoothllm.py # Semantic smoothing defense
-    │   └── smoothllm.py       # SmoothLLM defense
-    └── judges                 # Judges
-        ├── base.py            # Base judge class
-        ├── llm_based.py       # LLM-based judge
-        └── rule_based.py      # Rule-based judge
+benchmarks/
+├── jbb/                                       # Raw jailbreak results
+│   └── [model_name]/
+│       └── [attack_name]/
+│           └── [defense_name]/
+│               ├── results.json              # Results
+│               └── config.yaml               # Configuration
+├── jbb_judged/                               # Judged jailbreak results
+│   └── [model_name]/
+│       └── [attack_name]/
+│           └── [defense_name]/
+│               └── [judge_results]
+├── alpaca_eval/                              # Raw capability evaluation results
+│   └── [model_name]/
+│       └── [defense_name]/
+│           ├── results.json                  # Results
+│           └── config.yaml                   # Configuration
+└── alpaca_eval_judged/                       # Judged capability results
+    └── [model_name]/
+        └── [defense_name]/
+            └── [judge_name]/
+                ├── annotations.json          # Detailed annotations
+                └── leaderboard.csv           # Summary metrics
 ```
 
-### Code Standards
-
-PandaGuard follows these code standards:
-
-- **Docstrings**: Use 'reStructuredText' (rst) format
-- **Code formatting**: Use 'black' formatting tool
-- **Static checking**: Use 'flake8' for code checking
-- **Import sorting**: Use 'isort' to sort import statements
 
 ### Common Development Tasks
 
@@ -389,76 +340,70 @@ PandaGuard follows these code standards:
 6. Register in `pyproject.toml`
 7. Run evaluation experiments to validate effectiveness
 
-## Currently Supported Algorithms
+## Currently Supported Components
 
 ### Attack Algorithms
 
-- [x] Transfer-based Attacks (various templates)
-- [x] Rewrite Attack
-- [x] PAIR (Personalized Adversarial Iterative Refinement)
-- [x] GCG (Greedy Coordinate Gradient)
-- [x] TAP (Tree of Attacks with Pruning)
-- [x] Overload Attack
-- [x] ArtPrompt
-- [x] DeepInception
-- [x] GPT4-Cipher
-- [x] SCAV
-- [x] RandomSearch
-- [x] ICA (In-Context Attack)
-- [x] Cold Attack
-- [x] GPTFuzzer
-- [x] ReNeLLM
+| Status | Algorithm              | Source                                                                                                 |
+|:------:|------------------------|--------------------------------------------------------------------------------------------------------|
+|   ✅    | Transfer-based Attacks | Various templates from [JailbreakChat](https://jailbreakchat-hko42cs2r-alexalbertt-s-team.vercel.app/) |
+|   ✅    | Rewrite Attack         | "Does Refusal Training in LLMs Generalize to the Past Tense?"                                          |
+|   ✅    | [PAIR](https://arxiv.org/abs/2310.08419)                   | "Jailbreaking Black Box Large Language Models in Twenty Queries"                                       |
+|   ✅    | [GCG](https://arxiv.org/abs/2307.15043)                    | "Universal and Transferable Adversarial Attacks on Aligned Language Models"                            |
+|   ✅    | [AutoDAN](https://arxiv.org/abs/2310.04451)                | "Improved Generation of Adversarial Examples Against Safety-aligned LLMs"                              |
+|   ✅    | [TAP](https://arxiv.org/abs/2312.02119)                    | "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically"                                           |
+|   ✅    | Overload Attack        | "Harnessing Task Overload for Scalable Jailbreak Attacks on Large Language Models"                     |
+|   ✅    | ArtPrompt              | "ArtPrompt: ASCII Art-Based Jailbreak Attacks Against Aligned LLMs"                                    |
+|   ✅    | [DeepInception](https://arxiv.org/abs/2311.03191)          | "DeepInception: Hypnotize Large Language Model to Be Jailbreaker"                                      |
+|   ✅    | GPT4-Cipher            | "GPT-4 Is Too Smart To Be Safe: Stealthy Chat with LLMs via Cipher"                                    |
+|   ✅    | SCAV                   | "Uncovering Safety Risks of Large Language Models Through Concept Activation Vector"                   |
+|   ✅    | RandomSearch           | "Jailbreaking Leading Safety-Aligned LLMs with Simple Adaptive Attacks"                                |
+|   ✅    | [ICA](https://arxiv.org/abs/2310.06387)                    | "Jailbreak and Guard Aligned Language Models with Only Few In-Context Demonstrations"                  |
+|   ✅    | [Cold Attack](https://arxiv.org/abs/2402.08679)            | "COLD-Attack: Jailbreaking LLMs with Stealthiness and Controllability"                                |
+|   ✅    | [GPTFuzzer](https://arxiv.org/abs/2309.10253)              | "GPTFuzzer: Red Teaming Large Language Models with Auto-Generated Jailbreak Prompts"                   |
+|   ✅    | [ReNeLLM](https://arxiv.org/abs/2311.08268)                | "A Wolf in Sheep's Clothing: Generalized Nested Jailbreak Prompts can Fool Large Language Models Easily"                              |
+
 
 ### Defense Algorithms
 
-- [x] SelfReminder
-- [x] ICL (In-Context Learning)
-- [x] SmoothLLM
-- [x] SemanticSmoothLLM
-- [x] Paraphrase
-- [x] BackTranslation
-- [x] PerplexityFilter
-- [x] RePE
-- [x] GradSafe
-- [x] SelfDefense
-- [x] GoalPriority
-- [x] RPO
+| Status | Algorithm         | Source                                                                                                             |
+|:------:|-------------------|--------------------------------------------------------------------------------------------------------------------|
+|   ✅    | SelfReminder      | "Defending ChatGPT against Jailbreak Attack via Self-Reminders"                                                    |
+|   ✅    | ICL               | "Jailbreak and Guard Aligned Language Models with Only Few In-Context Demonstrations"                              |
+|   ✅    | SmoothLLM         | "SmoothLLM: Defending Large Language Models Against Jailbreaking Attacks"                                          |
+|   ✅    | SemanticSmoothLLM | "Defending Large Language Models Against Jailbreak Attacks via Semantic Smoothing"                                 |
+|   ✅    | Paraphrase        | "Baseline Defenses for Adversarial Attacks Against Aligned Language Models"                                        |
+|   ✅    | BackTranslation   | "Defending LLMs against Jailbreaking Attacks via Backtranslation"                                                  |
+|   ✅    | PerplexityFilter  | "Baseline Defenses for Adversarial Attacks Against Aligned Language Models"                                        |
+|   ✅    | RePE              | "Representation Engineering: A Top-Down Approach to AI Transparency"                                               |
+|   ✅    | [GradSafe](https://arxiv.org/abs/2402.13494)          | "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis"                             |
+|   ✅    | [SelfDefense](https://arxiv.org/abs/2308.07308)       | "LLM Self Defense: By Self Examination, LLMs Know They Are Being Tricked"                                          |
+|   ✅    | [GoalPriority](https://arxiv.org/abs/2311.09096)      | "Defending Large Language Models Against Jailbreaking Attacks Through Goal Prioritization"                         |
+|   ✅    | [RPO](https://arxiv.org/abs/2401.17263)               | "Robust Prompt Optimization for Defending Language Models Against Jailbreaking Attacks"                            |
+|   ✅    | JailbreakAntidote | "Jailbreak Antidote: Runtime Safety-Utility Balance via Sparse Representation Adjustment in Large Language Models" |
 
-### Judges
 
-- [x] RuleBasedJudge
-- [x] LMMJudge (PairLLMJudge)
-- [x] TAPLLMJudge
+### Judge Algorithms
 
-## TODO
+| Status | Algorithm      | Source                                                                      |
+|:------:|----------------|-----------------------------------------------------------------------------|
+|   ✅    | RuleBasedJudge | "Universal and Transferable Adversarial Attacks on Aligned Language Models" |
+|   ✅    | [PairLLMJudge](https://arxiv.org/abs/2310.08419)   | "Jailbreaking Black Box Large Language Models in Twenty Queries"            |
+|   ✅    | [TAPLLMJudge](https://arxiv.org/abs/2312.02119)    | "Tree of Attacks: Jailbreaking Black-Box LLMs Automatically"                |
 
-- [ ] Write test cases (**@Feng Linghao**)
-    - [ ] Test cases for different LLM interfaces
-    - [ ] Test cases for different attack/defense/evaluation methods (select one from each category)
-- [ ] Complete other CLI functions, including at least (**@HE Xiang**)
-    - [ ] attack: user inputs a command and outputs the corresponding attack results
-    - [ ] inference: functionality consistent with jailbreak-baselines/jbb_inference.py
-    - [ ] eval: testing, consistent with jailbreak-baselines/jbb_eval.py
-- [ ] Revise documentation (**@TONG Haibo**, **@ZHENG Xiang**)
-    - [ ] Review each code file's documentation to ensure it meets standards and compiles correctly
-    - [ ] Research how to separate Chinese/English documentation
-    - [ ] Create independent GitHub account and repo for documentation, e.g., [panda-guard/docs.github.io](http://panda-guard.github.io) or under the BrainCog organization: braincog/panda-guard.github.io
-- [ ] Create project website, [panda-guard.github.io](http://panda-guard.github.io), similar to [https://eureka-research.github.io](https://eureka-research.github.io/) (**@LI Jindong**)
-    - [ ] First apply for GitHub account and set up the framework, image materials to be added later
-    - [ ] GitHub organization account (Beijing-AISI)
-- [ ] HuggingFace related tasks (**@SHEN Sicheng**, **@WANG Jihang**)
-    - [ ] Create a HuggingFace organization account (Beijing-AISI)
-    - [ ] Separate the content in the benchmarks directory and place it in a HuggingFace dataset
-    - [ ] Create a space corresponding to the leaderboard
-- [ ] Upload to pip (**@DONG Yiting**)
 
-## Guidelines
+### LLM Interfaces
 
-- Do not commit code directly to the `main` branch; instead, `checkout` a new branch and merge to `main` through a `pull request`.
-- Do not commit large files directly; use `git lfs` for storage.
-- Do not commit sensitive information such as API keys or tokens.
-- Avoid committing unnecessary files such as `__pycache__`, `.idea`, `.vscode`; use `.gitignore` to ignore them.
-- Do not commit unnecessary code such as `print` or debug code; use `logging` for logging.
+| Status | Interface   | Description                                                                          |
+|:------:|-------------|--------------------------------------------------------------------------------------|
+|   ✅    | OpenAI API  | Interface for OpenAI models (GPT-4o, GPT-4o-mini, etc.)                              |
+|   ✅    | Claude API  | Interface for Anthropic's Claude models (Claude-3.7-sonnet, Claude-3.5-sonnet, etc.) |
+|   ✅    | Gemini API  | Interface for Google's Gemini models (Gemini-2.0-pro, Gemini-2.0-flash, etc.)        |
+|   ✅    | HuggingFace | Interface for models through HuggingFace Transformers library                        |
+|   ✅    | [vLLM](https://github.com/vllm-project/vllm)        | High-performance inference engine for LLM deployment                                 |
+|   ✅    | [SGLang](https://github.com/sgl-project/sglang)      | Framework for efficient LLM program execution                                        |
+|   ✅    | [Ollama](https://ollama.com/)      | Local deployment for various open-source models                                      |
+
 
 ## Contribution Guide
 
@@ -469,3 +414,39 @@ PandaGuard follows these code standards:
 5. Submit your code and create a Pull Request
 
 We welcome all forms of contributions, including but not limited to: new algorithm implementations, documentation improvements, bug fixes, and feature enhancements.
+
+
+
+## Acknowledgements
+
+We would like to express our gratitude to the following projects and their contributors for developing the foundation upon which PandaGuard builds:
+
+- [LLM-Attacks (GCG)](https://github.com/llm-attacks/llm-attacks)
+- [AutoDAN](https://github.com/SheltonLiu-N/AutoDAN)
+- [PAIR](https://github.com/patrickrchao/JailbreakingLLMs)
+- [TAP](https://github.com/RICommunity/TAP)
+- [GPTFuzz](https://github.com/sherdencooper/GPTFuzz)
+- [SelfReminder](https://www.nature.com/articles/s42256-023-00765-8)
+- [RPO](https://github.com/lapisrocks/rpo)
+- [SmoothLLM](https://github.com/arobey1/smooth-llm)
+- [JailbreakBench](https://arxiv.org/abs/2404.01318)
+- [AlpacaEval](https://github.com/tatsu-lab/alpaca_eval)
+- [JailbreakChat](https://jailbreakchat-hko42cs2r-alexalbertt-s-team.vercel.app/)
+- [GoalPriority](https://github.com/thu-coai/JailbreakDefense_GoalPriority)
+- [GradSafe](https://github.com/xyq7/GradSafe)
+- [DeepInception](https://github.com/tmlr-group/DeepInception)
+- [vLLM](https://github.com/vllm-project/vllm)
+- [SGLang](https://github.com/sgl-project/sglang)
+- [Ollama](https://ollama.com/)
+
+Special thanks to all the researchers who have contributed to the field of LLM safety and helped advance our understanding of jailbreak attacks and defense mechanisms.
+
+## Contact
+
+For questions, suggestions, or collaboration, please contact us:
+
+- **Email**: [shenguobin2021@ia.ac.cn](mailto:shenguobin2021@ia.ac.cn), [dongcheng.zhao@beijing-aisi.ac.cn](mailto:dongcheng.zhao@beijing-aisi.ac.cn), [yi.zeng@ia.ac.cn](mailto:yi.zeng@ia.ac.cn)
+- **GitHub**: [https://github.com/Beijing-AISI/panda-guard](https://github.com/Beijing-AISI/panda-guard)
+- **Homepage**: [https://panda-guard.github.io](https://panda-guard.github.io)
+
+We welcome contributions from the community and are committed to advancing the field of LLM safety research.

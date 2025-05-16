@@ -85,7 +85,7 @@ class SelfDefenseDefender(BaseDefender):
         """
 
         # without response
-        naive_response = self.response(message=messages[:])
+        naive_response = self.response(message=messages)
 
         # judge
         judge_score = self.judge.judge(messages=naive_response)
