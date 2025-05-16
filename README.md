@@ -32,13 +32,13 @@ PandaGuard offers two main usage methods:
 #### 1. Command Line Interactive Mode
 
 ```bash
-panda-guard chat start --defense rpo --model gpt-4o-mini
+panda-guard chat --defense rpo --model gpt-4o-mini
 ```
 
 View help information:
 
 ```bash
-panda-guard chat start --help
+panda-guard chat --help
 ```
 
 Key command line options include:
@@ -107,7 +107,7 @@ judges:
 Start with a configuration file:
 
 ```bash
-panda-guard chat start --config <your_config_file>
+panda-guard chat --config <your_config_file>
 ```
 
 Example interaction:
@@ -136,7 +136,7 @@ User:
 Start an OpenAI API-compatible service:
 
 ```bash
-panda-guard serve start
+panda-guard serve
 ```
 
 Example curl request:
