@@ -428,7 +428,6 @@ class GCGAttacker(BaseAttacker):
 
         return optim_ids_onehot_grad
 
-
     def compute_candidates_loss(
             self,
             search_batch_size: int,
