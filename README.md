@@ -10,15 +10,7 @@ This repository contains the source code for `Panda Guard`, designed for researc
 
 ## Quick Start
 
-### Installation
-
-To install the stable release:
-
-```bash
-pip install panda-guard 
-```
-
-To install the latest development version:
+To install the latest version:
 
 ```bash
 pip install git+https://github.com/Beijing-AISI/panda-guard.git
