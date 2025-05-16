@@ -1068,7 +1068,7 @@ def vocab_prune(model, y_logits, topk, x_onehot, x_past, tokenizer, extra_mask=N
         logits_t = model_outputs.logits[:, -1:, :]  # Select the logits of the last word
         assert logits_t.shape[1] == 1, logits_t.shape   
         _, indices_t = torch.topk(logits_t, topk)   # topk logits of the last word
-        mask_t = torch.zeros_like(logits_t).scatter_(2, indices_t, 1)   # 变mask
+        mask_t = torch.zeros_like(logits_t).scatter_(2, indices_t, 1)   # change mask
         mask_t_all = mask_t if mask_t_all is None else torch.cat((mask_t_all, mask_t), dim=1)   # topk-mask of the i-th word
         logits_so_far = logits_t if logits_so_far is None else torch.cat((logits_so_far, logits_t), dim=1)  # Generated logits of y
         if i < length - 1:
