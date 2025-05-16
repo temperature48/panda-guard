@@ -29,14 +29,14 @@ class GPTFuzzAttackerConfig(BaseAttackerConfig):
     """
     Configuration for the GPTFuzz Attacker.
 
-    :param attacker_cls: Class of the attacker, default is "TransferAttacker".  攻击者的类型，默认值为 "GPTFuzzAttacker"
-    :param attacker_name: Name of the attacker.  攻击者的名称
-    :param attacker_llm_config: Configuration of attacker llm. 攻击时使用的llm配置
-    :param attacker_llm_gen_config: Generation configuration for the attacker's LLM. 攻击者 LLM 的生成配置
-    :param target_llm_config: Configuration of target llm. 攻击目标的llm配置
-    :param target_llm_gen_config: Generation configuration for the attacker's LLM. 被攻击的LLM 的生成配置
-    :param initial_seed: initial seed. 有害prompt template集合, 当作初始种子
-    :param predict_model: A model for determining whether a jailbreak attack has succeeded, with an output of 0 or 1. 用于判断是否越狱攻击成功的模型, 输出为0或者1
+    :param attacker_cls: Class of the attacker, default is "TransferAttacker".  
+    :param attacker_name: Name of the attacker.  
+    :param attacker_llm_config: Configuration of attacker llm. 
+    :param attacker_llm_gen_config: Generation configuration for the attacker's LLM. 
+    :param target_llm_config: Configuration of target llm. 
+    :param target_llm_gen_config: Generation configuration for the attacker's LLM. 
+    :param initial_seed: initial seed. 
+    :param predict_model: A model for determining whether a jailbreak attack has succeeded, with an output of 0 or 1. 
     """
 
     attacker_cls: str = field(default="GPTFuzzAttacker")
@@ -56,7 +56,7 @@ class GPTFuzzAttacker(BaseAttacker):
 
     Reference: Yu J, Lin X, Yu Z, et al. Gptfuzzer: Red teaming large language models with auto-generated jailbreak prompts[J]. arXiv preprint arXiv:2309.10253, 2023.
 
-    :param config: Configuration for the GPTFuzzAttacker.  用于GPTFuzzAttacker的配置
+    :param config: Configuration for the GPTFuzzAttacker.  
     """
 
     def __init__(self, config: GPTFuzzAttackerConfig):
@@ -74,9 +74,9 @@ class GPTFuzzAttacker(BaseAttacker):
         """
         Execute an attack by transferring a reformulated request into the conversation.
 
-        :param messages: List of messages in the conversation.  对话中的消息列表
-        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  额外攻击参数
-        :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 含有目标的有害攻击的prompt, 是"role: user, content: xx的形式"
+        :param messages: List of messages in the conversation.  
+        :param kwargs: Additional parameters for the attack, must include "request_reformulated".  
+        :return: Prompts containing harmful attacks on the target, is of the form “role: user, content: xx”. 
         """
 
 
