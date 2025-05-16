@@ -1,12 +1,3 @@
-# encoding: utf-8
-# Author    : Floyed<Floyed_Shen@outlook.com>
-# Datetime  : 2024/9/4 14:37
-# User      :
-# Product   : PyCharm
-# Project   : panda-guard
-# File      : chat.py
-# explain   :
-
 import sys
 import os
 import yaml
@@ -23,7 +14,7 @@ from rich import box
 from panda_guard.pipelines.inference import InferPipeline, InferPipelineConfig
 from panda_guard.utils import parse_configs_from_dict
 
-app = typer.Typer(help="Interactive chat with language models", invoke_without_command=True)
+app = typer.Typer(help="Interactive language model jailbreak attacks", invoke_without_command=True)
 console = Console()
 
 
@@ -122,7 +113,7 @@ def display_help():
     help_table.add_column("Command", style="cyan")
     help_table.add_column("Description", style="green")
 
-    help_table.add_row("/exit", "Exit the chat")
+    help_table.add_row("/exit", "Exit the attack")
     help_table.add_row("/reset", "Reset the conversation")
     help_table.add_row("/help", "Display this help message")
     help_table.add_row("/verbose", "Toggle verbose mode (show token usage)")
@@ -135,23 +126,20 @@ def display_help():
 @app.callback(invoke_without_command=True)
 def start(
         config: Optional[str] = typer.Argument(None, help="Path to YAML configuration file"),
-        defense: Optional[Path] = typer.Option(None, "--defense", "-d",
-                                               help="Path to defense configuration file or defense type (goal_priority/icl/none/rpo/self_reminder/smoothllm)"),
-        judge: Optional[str] = typer.Option(None, "--judge", "-j",
-                                            help="Path to judge configuration file or defense type (llm_based/rule_based). Multiple judges can be specified using comma separation."),
+        attacker: Optional[Path] = typer.Option(None, "--attacker", "-a",
+                                               help="Path to attack configuration file or attack method (#todo)"),
         endpoint: Optional[Path] = typer.Option(None, "--endpoint", "-e",
-                                                help="Path to endpoint configuration file or endpoint type (openai/gemini/claude)"),
+                                                help="Path to endpoint configuration file or endpoint type (openai/gemini/claude/hf)"),
         model: Optional[Path] = typer.Option(None, "--model", "-m", help="model name"),
-        temperature: Optional[float] = typer.Option(None, "--temperature", "-t", help="Override temperature setting"),
         device: Optional[str] = typer.Option(None, "--device", help="Device to run the model on (e.g., 'cuda:0')"),
         log_level: str = typer.Option("WARNING", "--log-level", help="Logging level (DEBUG, INFO, WARNING, ERROR)"),
-        output: Optional[Path] = typer.Option(None, "--output", "-o", help="Save chat history to file"),
+        output: Optional[Path] = typer.Option(None, "--output", "-o", help="Save attack history to file"),
         stream: bool = typer.Option(True, "--stream/--no-stream", help="Enable/disable streaming output"),
         verbose: bool = typer.Option(False, "--verbose/--no-verbose",
                                      help="Enable/disable verbose mode with token usage info"),
 ):
     """
-    Start an interactive chat session using configuration from a YAML file or a predefined model type.
+    Start an interactive attack session using configuration from a YAML file or a predefined model type.
 
     If config is a file path ending with .yaml, it will load configuration from that file.
     If config is one of 'openai', 'gemini', or 'claude', it will load a default configuration and
@@ -165,7 +153,7 @@ def start(
         config_dict = {}
 
         if config is None:
-            config_path = get_package_config_path('tasks/chat')
+            config_path = get_package_config_path('tasks/attack')
             config_dict = load_yaml(config_path)
         else:
             config_path = Path(config)
@@ -175,54 +163,16 @@ def start(
 
             config_dict = load_yaml(config_path)
 
-        # Load and merge defense config if provided
-        if defense:
-            if not defense.exists():
-                defense_path = get_package_config_path(f'defenses/{defense}')
+        if attacker:
+            if not attacker.exists():
+                attacker_path = get_package_config_path(f'attacks/{attacker}')
 
-                if not defense_path.exists():
-                    typer.echo(f"Error: Defense config file {defense} not found", err=True)
+                if not attacker_path.exists():
+                    typer.echo(f"Error: Defense config file {attacker} not found", err=True)
                     raise typer.Exit(1)
 
-                defense = defense_path
-            config_dict["defender"] = load_yaml(defense)
-
-        # Parse multiple judges if provided
-        judge_configs = []
-        if judge:
-            judge_names = [j.strip() for j in judge.split(',')]
-            for judge_name in judge_names:
-                judge_path = Path(judge_name)
-                if not judge_path.exists():
-                    judge_path = get_package_config_path(f'judges/{judge_name}')
-
-                    if not judge_path.exists():
-                        typer.echo(f"Error: Judge config file {judge_name} not found", err=True)
-                        raise typer.Exit(1)
-
-                judge_config = load_yaml(judge_path)
-                judge_configs.append(judge_config)
-
-            config_dict["judges"] = judge_configs
-
-        if len(config_dict.get("judges") or []) > 0:
-            for judge_config_ids in range(len(config_dict.get("judges", []))):
-                if 'judge_llm_config' in config_dict["judges"][judge_config_ids]:
-                    print("judge_llm_config:", config_dict["judges"][judge_config_ids])
-                    if config_dict["judges"][judge_config_ids]["judge_llm_config"].get("base_url", None) is None:
-                        if os.environ.get("OPENAI_BASE_URL"):
-                            config_dict["judges"][judge_config_ids]["judge_llm_config"]["base_url"] = os.environ[
-                                "OPENAI_BASE_URL"]
-                        else:
-                            config_dict["judges"][judge_config_ids]["judge_llm_config"][
-                                "base_url"] = "https://api.openai.com/v1"
-
-                    if config_dict["judges"][judge_config_ids]["judge_llm_config"].get("api_key", None) is None:
-                        if os.environ.get("OPENAI_API_KEY"):
-                            config_dict["judges"][judge_config_ids]["judge_llm_config"]["api_key"] = os.environ[
-                                "OPENAI_API_KEY"]
-                        else:
-                            raise ValueError("API key not found for judge LLM config")
+                attacker = attacker_path
+            config_dict["attacker"] = load_yaml(attacker)
 
         endpoint_type = None
 
@@ -254,14 +204,15 @@ def start(
         # Load and merge model config if provided
         if model:
             config_dict["defender"]["target_llm_config"]['model_name'] = str(model)
+            if "attacker" in config_dict and "target_llm_config" in config_dict.get("attacker", {}):
+                config_dict["attacker"]["target_llm_config"]['llm_type'] = load_yaml(endpoint_path)['llm_type']
+                config_dict["attacker"]["target_llm_config"]['model_name'] = str(model)
 
         # Override device if specified
         if device:
-            config_dict["defender"]["target_llm_config"]["device_map"] = device
-
-        # Override temperature if specified
-        if temperature is not None:
-            config_dict["defender"]["target_llm_gen_config"]["temperature"] = temperature
+            llm_type = config_dict["defender"]["target_llm_config"].get("llm_type", "")
+            if llm_type in ["HuggingFaceLLM"]:
+                config_dict["defender"]["target_llm_config"]["device_map"] = device
 
         # Enable or disable streaming in the configuration
         config_dict["defender"]["target_llm_gen_config"]["stream"] = stream
@@ -281,10 +232,10 @@ def start(
         )
 
         console.print(
-            f"[bold green]Chat initialized with {config_dict['defender']['target_llm_config']['model_name']}[/bold green]")
-        console.print("[bold]Type your message (or '/help' for available commands)[/bold]")
+            f"[bold green]Jailbreak attacks on {config_dict['defender']['target_llm_config']['model_name']}[/bold green]")
+        console.print("[bold]Type your message, and the model will output the corresponding result after the given attack[/bold]")
 
-        # Initialize chat history and variables for tracking statistics
+        # Initialize attack history and variables for tracking statistics
         messages = []
         total_usage = {"attacker": {"prompt_tokens": 0, "completion_tokens": 0},
                        "defender": {"prompt_tokens": 0, "completion_tokens": 0}}
@@ -406,7 +357,7 @@ def start(
                     console.print("[bold green]Assistant:[/bold green]")
                     console.print(Markdown(assistant_response))
 
-                # Within the chat loop where response time is calculated and usage is displayed:
+                # Within the attack loop where response time is calculated and usage is displayed:
 
                 # Calculate response time
                 response_time = time.time() - start_time
@@ -430,40 +381,21 @@ def start(
                     console.print("")  # Add an empty line for better readability
                     display_token_info(current_usage, response_time)  # Pass the actual response_time value
 
-                # Run judge evaluation if judges are available
-                if run_judges and isinstance(messages, list) and len(messages) >= 2:
-                    user_msg = messages[-2]["content"] if len(messages) >= 2 else ""
-                    assistant_msg = messages[-1]["content"]
-
-                    # Create messages for judge evaluation
-                    judge_messages = [
-                        {"role": "user", "content": user_msg},
-                        {"role": "assistant", "content": assistant_msg}
-                    ]
-
-                    # Run judges in parallel
-                    judge_results = pipe.parallel_judging(judge_messages, user_msg)
-
-                    # Display judge results if verbose or if judges were specified
-                    if judge_results:
-                        console.print("")  # Add an empty line for better readability
-                        display_judge_results(judge_results)
-
             except Exception as e:
                 console.print(f"[bold red]Error: {str(e)}[/bold red]")
-                logging.exception("Exception during chat")
+                logging.exception("Exception during attack")
                 continue
 
-        # Save chat history if requested
+        # Save attack history if requested
         if output:
             import json
             with open(output, 'w') as f:
                 json.dump(messages, f, indent=2)
-            console.print(f"[bold]Chat history saved to {output}[/bold]")
+            console.print(f"[bold]Attack history saved to {output}[/bold]")
 
     except Exception as e:
-        typer.echo(f"Error during chat: {str(e)}", err=True)
-        logging.exception("Exception during chat")
+        typer.echo(f"Error during attack: {str(e)}", err=True)
+        logging.exception("Exception during attack")
         raise typer.Exit(1)
 
 
