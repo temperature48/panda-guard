@@ -22,14 +22,6 @@ panda\_guard.role.attacks.art\_prompt module
    :undoc-members:
    :show-inheritance:
 
-panda\_guard.role.attacks.attacker\_registry module
----------------------------------------------------
-
-.. automodule:: panda_guard.role.attacks.attacker_registry
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 panda\_guard.role.attacks.base module
 -------------------------------------
 
