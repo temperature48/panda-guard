@@ -445,7 +445,7 @@ Special thanks to all the researchers who have contributed to the field of LLM s
 
 For questions, suggestions, or collaboration, please contact us:
 
-- **Email**: [shenguobin2021@ia.ac.cn](mailto:shenguobin2021@ia.ac.cn), [dongcheng.zhao@beijing-aisi.ac.cn](mailto:dongcheng.zhao@beijing-aisi.ac.cn), [yi.zeng@ia.ac.cn](mailto:yi.zeng@ia.ac.cn)
+- **Email**: [guobin.shen@beijing-aisi.ac.cn](mailto:shenguobin2021@ia.ac.cn), [dongcheng.zhao@beijing-aisi.ac.cn](mailto:dongcheng.zhao@beijing-aisi.ac.cn), [yi.zeng@beijing-aisi.ac.cn](mailto:yi.zeng@beijing-aisi.ac.cn)
 - **GitHub**: [https://github.com/Beijing-AISI/panda-guard](https://github.com/Beijing-AISI/panda-guard)
 - **Homepage**: [https://panda-guard.github.io](https://panda-guard.github.io)
 
