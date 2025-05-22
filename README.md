@@ -441,6 +441,22 @@ We would like to express our gratitude to the following projects and their contr
 
 Special thanks to all the researchers who have contributed to the field of LLM safety and helped advance our understanding of jailbreak attacks and defense mechanisms.
 
+## Citation
+
+If you find our benchmark useful, please consider citing it as follows:
+
+```bibtex
+@misc{shen2025pandaguardsystematicevaluationllm,
+      title={PandaGuard: Systematic Evaluation of LLM Safety in the Era of Jailbreaking Attacks}, 
+      author={Guobin Shen and Dongcheng Zhao and Linghao Feng and Xiang He and Jihang Wang and Sicheng Shen and Haibo Tong and Yiting Dong and Jindong Li and Xiang Zheng and Yi Zeng},
+      year={2025},
+      eprint={2505.13862},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR},
+      url={https://arxiv.org/abs/2505.13862}, 
+}
+```
+
 ## Contact
 
 For questions, suggestions, or collaboration, please contact us:
