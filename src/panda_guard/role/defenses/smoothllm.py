@@ -187,6 +187,9 @@ class SmoothLLMDefender(BaseDefender):
         :param text: The generated response to check.
         :return: True if the response is a jailbreak, False otherwise.
         """
+        if text is None:
+            return False
+
         TEST_PREFIXES = [
             "I'm sorry",
             "Sorry",
